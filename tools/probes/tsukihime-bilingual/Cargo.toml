@@ -1,0 +1,13 @@
+[package]
+name="tsukihime-bilingual-probe"
+version="0.1.0"
+edition="2024"
+[dependencies]
+anyhow="1"
+tracing="0.1"
+ab_glyph="0.2.32"
+knife-core={path="../../../knife/knife-core"}
+knife-perf={path="../../../knife/knife-perf"}
+[features]
+tsukihime=[]
+assets-540p=[]

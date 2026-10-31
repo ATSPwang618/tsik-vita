@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "hardware_verified": false,
+  "build_tag": "tsukihime540-r3-ja-zc-font-20261031",
+  "asset_manifest_sha256": "41fd21e6ba2b66205f88e4ccf0ba5beebaaf81420237768de8831d3102277e6d",
+  "vpk": {
+    "path": "D:\\AI-CODEX\\tsik-vita\\release\\tsukihime-540p-r3-ja-zc\\knife-vita-tsukihime-540p-r3-ja-zc.vpk",
+    "bytes": 6748781,
+    "sha256": "0a845b6117bc4abe868621691de0ff7853436db09142daeb5e62db005052d9de"
+  },
+  "assets_zip": {
+    "path": "D:\\AI-CODEX\\tsik-vita\\release\\tsukihime-540p-r3-ja-zc-assets.zip",
+    "bytes": 3891187145,
+    "sha256": "b13ec0cf20091dc11c95cfd0c36148b869115ef0b534054600d50598740f4647",
+    "crc_all_entries_passed": true
+  },
+  "material_files": 16764,
+  "zip_files": 16767,
+  "source_r2_all_hashes_unchanged": true,
+  "font_primary_sha256": "0ebe4fac683355ea899a15a19f61bb3900135a424a8484ccf1758b73721eeef2",
+  "tests": {
+    "asset_rules": 7,
+    "bilingual_save_and_real_pack": 49,
+    "legacy_modules": 46,
+    "platform": 66
+  },
+  "native_png_decodes": 8258,
+  "scope": "Local build and offline verification; Vita playthrough pending"
+}

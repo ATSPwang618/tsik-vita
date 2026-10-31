@@ -1,0 +1,424 @@
++ rustc +nightly-2026-05-28 -vV
+rustc 1.98.0-nightly (57d06900f 2026-05-27)
+binary: rustc
+commit-hash: 57d06900fd7d9ee06d3a7f323bb77f17ab3cfaf8
+commit-date: 2026-05-27
+host: x86_64-unknown-linux-gnu
+release: 1.98.0-nightly
+LLVM version: 22.1.6
++ arm-vita-eabi-gcc --version
+arm-vita-eabi-gcc (GNU Tools for ARM Embedded Processors) 15.2.0
+Copyright (C) 2025 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
++ cmake --version
+cmake version 3.28.3
+
+CMake suite maintained and supported by Kitware (kitware.com/cmake).
++ cd /mnt/d/AI-CODEX/tsik-vita/knife
++ cargo +nightly-2026-05-28 rustc -Z build-std=std,panic_abort --locked --offline --manifest-path /mnt/d/AI-CODEX/tsik-vita/knife/Cargo.toml -p knife --bin knife --features vita-gxm,assets-540p,tsukihime --profile vita --target armv7-sony-vita-newlibeabihf -- -C link-arg=-Wl,-Map=/mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p/knife.map -C link-arg=-Wl,--undefined=_newlib_heap_size_user -C link-arg=-Wl,--undefined=sceLibcHeapSize -C link-arg=-Wl,--undefined=sceUserMainThreadStackSize -C link-arg=-Wl,--undefined=sceUserMainThreadPriority -C link-arg=-Wl,--defsym=__sce_headroom=0x10000
+warning: method `dev_swap_display_target` is never used
+   --> knife-platform-vita/src/gxm.rs:448:19
+    |
+148 | impl Gxm {
+    | -------- method in this implementation
+...
+448 |     pub(crate) fn dev_s...arget(&m...
+    |                   ^^^^^...^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `kv_gxm_dev_swap_display_target` is never used
+  --> knife-platform-vita/src/gxm.rs:41:8
+   |
+41 | ...fn kv_gx...arget(g:...
+   |       ^^^^^...^^^^^
+
+warning: `knife-platform-vita` (lib) generated 2 warnings
+warning: type `vita::Command` is more private than the item `analyse_passes`
+   --> knife-render/src/vita.rs:712:1
+    |
+712 | pub(c... u64) {
+    | ^^^^^...^^^^^ function `analyse_passes` is reachable at visibility `pub(crate)`
+    |
+note: but type `vita::Command` is only usable at visibility `pub(self)`
+   --> knife-render/src/vita.rs:815:1
+    |
+815 | enum Command {
+    | ^^^^^^^^^^^^
+    = note: `#[warn(private_interfaces)]` on by default
+
+warning: type `vita::Command` is more private than the item `pass_finish_flags`
+   --> knife-render/src/vita.rs:719:1
+    |
+719 | pub(c...bool> {
+    | ^^^^^...^^^^^ function `pass_finish_flags` is reachable at visibility `pub(crate)`
+    |
+note: but type `vita::Command` is only usable at visibility `pub(self)`
+   --> knife-render/src/vita.rs:815:1
+    |
+815 | enum Command {
+    | ^^^^^^^^^^^^
+
+warning: type `vita::Command` is more private than the item `analyse_passes_unused`
+   --> knife-render/src/vita.rs:769:1
+    |
+769 | pub(c... u64) {
+    | ^^^^^...^^^^^ function `analyse_passes_unused` is reachable at visibility `pub(crate)`
+    |
+note: but type `vita::Command` is only usable at visibility `pub(self)`
+   --> knife-render/src/vita.rs:815:1
+    |
+815 | enum Command {
+    | ^^^^^^^^^^^^
+
+warning: function `analyse_passes_unused` is never used
+   --> knife-render/src/vita.rs:769:15
+    |
+769 | ...fn analy...nused(co...
+    |       ^^^^^...^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `execute` is never used
+    --> knife-render/src/vita.rs:2891:4
+     |
+2891 | fn execute(de...
+     |    ^^^^^^^
+
+warning: static `BAKES` is never used
+   --> knife-render/src/vita.rs:102:12
+    |
+102 | ...ic BAKES: A...
+    |       ^^^^^
+
+warning: function `bake_begin` is never used
+   --> knife-render/src/vita.rs:232:19
+    |
+232 | ...fn bake_begin(te...
+    |       ^^^^^^^^^^
+
+warning: function `bake_end` is never used
+   --> knife-render/src/vita.rs:245:19
+    |
+245 | ...fn bake_end(in...
+    |       ^^^^^^^^
+
+warning: `knife-render` (lib) generated 8 warnings
+   Compiling knife v0.9.4 (/mnt/d/AI-CODEX/tsik-vita/knife/knife)
+warning: unused doc comment
+  --> knife/src/vita_entry.rs:27:1
+   |
+27 |   /// B...used.
+   |   ^^^^^...^^^^^
+28 | / unsafe extern "C" {
+29 | |     fn kv_set_performance_clock(arm: *mut i32, bus: *mut i32, gpu: *mut i32, xbar: *...
+30 | |     fn kv_clock_mhz(arm: *mut u32, bus: *mut u32, gpu: *mut u32);
+31 | | }
+   | |_- rustdoc does not generate documentation for extern blocks
+   |
+   = help: use `//` for a plain comment
+   = note: `#[warn(unused_doc_comments)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `srgb`
+    --> knife/src/assets.rs:1525:71
+     |
+1525 | ...e, srgb, b...
+     |       ^^^^ help: try ignoring the field: `srgb: _`
+     |
+     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `baked`
+    --> knife/src/assets.rs:1525:77
+     |
+1525 | ...b, baked } ...
+     |       ^^^^^ help: try ignoring the field: `baked: _`
+
+warning: unused variable: `alter`
+    --> knife/src/assets.rs:1530:41
+     |
+1530 | ...t, alter) =...
+     |       ^^^^^ help: if this is intentional, prefix it with an underscore: `_alter`
+
+warning: unused variable: `srgb`
+    --> knife/src/assets.rs:1449:36
+     |
+1449 | ...me(srgb) =...
+     |       ^^^^ help: if this is intentional, prefix it with an underscore: `_srgb`
+
+warning: unused variable: `srgb`
+    --> knife/src/assets.rs:2108:17
+     |
+2108 | ...l, srgb) =...
+     |       ^^^^ help: if this is intentional, prefix it with an underscore: `_srgb`
+
+warning: unused variable: `srgb`
+    --> knife/src/assets.rs:2217:55
+     |
+2217 | ...e, srgb, b...
+     |       ^^^^ help: try ignoring the field: `srgb: _`
+
+warning: unused variable: `baked`
+    --> knife/src/assets.rs:2217:61
+     |
+2217 | ...b, baked } =>
+     |       ^^^^^ help: try ignoring the field: `baked: _`
+
+warning: method `key` is never used
+   --> knife/src/assets.rs:199:12
+    |
+197 | impl Decoded {
+    | ------------ method in this implementation
+198 |     /// The image...
+199 |     pub fn key(&s...
+    |            ^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `TITLE` is never used
+   --> knife/src/assets.rs:438:11
+    |
+438 | ...st TITLE: &...
+    |       ^^^^^
+
+warning: constant `OVERSEAS_TITLES` is never used
+   --> knife/src/assets.rs:441:7
+    |
+441 | const OVERS...ITLES: [...
+    |       ^^^^^...^^^^^
+
+warning: constant `WITCH_TITLES` is never used
+   --> knife/src/assets.rs:445:7
+    |
+445 | const WITCH_TITLES: [...
+    |       ^^^^^^^^^^^^
+
+warning: associated items `languages`, `title`, `decode_image_pixels`, and `voice` are never used
+    --> knife/src/assets.rs:621:12
+     |
+ 483 | impl Assets {
+     | ----------- associated items in this implementation
+...
+ 621 |     pub fn languages(&self) -...
+     |            ^^^^^^^^^
+...
+ 664 |     pub fn title(&self) -> &'...
+     |            ^^^^^
+...
+1268 |     fn decod...ixels(da...
+     |        ^^^^^...^^^^^
+...
+2100 |     pub fn voice(&self, name:...
+     |            ^^^^^
+
+warning: function `lookup` is never used
+  --> knife/src/graded_cache.rs:62:8
+   |
+62 | ...fn lookup(ar...
+   |       ^^^^^^
+
+warning: function `node_entry` is never used
+  --> knife/src/flow.rs:54:8
+   |
+54 | ...fn node_entry(n:...
+   |       ^^^^^^^^^^
+
+warning: methods `jump_node` and `screenshot` are never used
+    --> knife/src/game.rs:7953:12
+     |
+ 989 | impl Game {
+     | --------- methods in this implementation
+...
+7953 |     pub fn jump_node(&mu...
+     |            ^^^^^^^^^
+...
+8047 |     pub fn screenshot(&s...
+     |            ^^^^^^^^^^
+
+warning: function `set_language_override` is never used
+   --> knife/src/savedata.rs:746:8
+    |
+746 | ...fn set_l...rride(la...
+    |       ^^^^^...^^^^^
+
+warning: associated function `load_from` is never used
+   --> knife/src/savedata.rs:784:12
+    |
+754 | impl SaveFile {
+    | ------------- associated function in this implementation
+...
+784 |     pub fn load_from(pa...
+    |            ^^^^^^^^^
+
+warning: variants `Prefix` and `Whole` are never constructed
+  --> knife/src/sound.rs:80:5
+   |
+78 | enum Loaded {
+   |      ------ variants in this enum
+79 |     /// the st...
+80 |     Prefix(usi...
+   |     ^^^^^^
+81 |     Whole(Pcm),
+   |     ^^^^^
+
+warning: variant `Pcm` is never constructed
+   --> knife/src/sound.rs:102:5
+    |
+101 | enum VoiceSource {
+    |      ----------- variant in this enum
+102 |     Pcm(Arc<Pcm>),
+    |     ^^^
+
+warning: field `tx` is never read
+   --> knife/src/sound.rs:196:5
+    |
+149 | pub struct Sound {
+    |            ----- field in this struct
+...
+196 |     tx: mpsc::Sende...
+    |     ^^
+
+warning: methods `play_voice_gain` and `play_test_voice` are never used
+   --> knife/src/sound.rs:676:12
+    |
+202 | impl Sound {
+    | ---------- methods in this implementation
+...
+676 |     pub fn play_..._gain(&m...
+    |            ^^^^^...^^^^^
+...
+706 |     pub fn play_...voice(&m...
+    |            ^^^^^...^^^^^
+
+warning: function `tag_symbol` is never used
+    --> knife/src/text.rs:1079:8
+     |
+1079 | ...fn tag_symbol(c:...
+     |       ^^^^^^^^^^
+
+warning: methods `size` and `get` are never used
+   --> knife/src/text/atlas.rs:214:12
+    |
+209 | impl<...T, G> {
+    | -----...----- methods in this implementation
+...
+214 |     pub fn size(&self) -> u32 ...
+    |            ^^^^
+...
+234 |     pub fn get(&self, c: char)...
+    |            ^^^
+
+warning: constant `SAVE_WHEEL_ROW` is never used
+  --> knife/src/ui.rs:39:11
+   |
+39 | ...st SAVE_...L_ROW: f...
+   |       ^^^^^...^^^^^
+
+warning: constant `WITCH_LOG_ROW` is never used
+  --> knife/src/ui.rs:42:7
+   |
+42 | const WITCH_LOG_ROW: f...
+   |       ^^^^^^^^^^^^^
+
+warning: methods `debug_open`, `in_game`, `debug_intro`, `wheel`, `debug_save`, and `debug_load` are never used
+    --> knife/src/ui.rs:1918:12
+     |
+1031 | impl Ui {
+     | ------- methods in this implementation
+...
+1918 |     pub fn debug_open(&mu...
+     |            ^^^^^^^^^^
+...
+2124 |     pub fn in_game(&self)...
+     |            ^^^^^^^
+...
+2366 |     pub fn debug_intro(&m...
+     |            ^^^^^^^^^^^
+...
+4595 |     pub fn wheel(&mut sel...
+     |            ^^^^^
+...
+5591 |     pub fn debug_save(&mu...
+     |            ^^^^^^^^^^
+...
+5600 |     pub fn debug_load(&mu...
+     |            ^^^^^^^^^^
+
+warning: variants `ZL`, `ZR`, `R3`, and `L3` are never constructed
+  --> knife/src/ui/pad.rs:30:5
+   |
+19 | pub enum Pad {
+   |          --- variants in this enum
+...
+30 |     ZL,
+   |     ^^
+31 |     ZR,
+   |     ^^
+32 |     /// right s...
+33 |     R3,
+   |     ^^
+34 |     /// left st...
+35 |     L3,
+   |     ^^
+   |
+   = note: `Pad` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: methods `wheel` and `wheel_rows` are never used
+   --> knife/src/ui/witch.rs:165:12
+    |
+123 | impl WIn {
+    | -------- methods in this implementation
+...
+165 |     pub fn wheel(&mut se...
+    |            ^^^^^
+...
+173 |     pub fn wheel_rows(&m...
+    |            ^^^^^^^^^^
+
+warning: struct `PrefetchWindow` is never constructed
+  --> knife/src/vita_image_cache.rs:61:12
+   |
+61 | ...ct Prefe...indow {
+   |       ^^^^^...^^^^^
+
+warning: methods `retain_window`, `accepts`, and `claim` are never used
+  --> knife/src/vita_image_cache.rs:67:12
+   |
+66 | impl ...indow {
+   | -----...----- methods in this implementation
+67 |     pub fn retain_window(&m...
+   |            ^^^^^^^^^^^^^
+...
+82 |     pub fn accepts(&self, k...
+   |            ^^^^^^^
+...
+86 |     pub fn claim(&mut self,...
+   |            ^^^^^
+
+warning: `knife` (bin "knife") generated 31 warnings (run `cargo fix --bin "knife" -p knife` to apply 7 suggestions)
+    Finished `vita` profile [optimized] target(s) in 30.33s
++ cp /root/.cache/knife-vita-tsik/armv7-sony-vita-newlibeabihf/vita/knife.elf /mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p/knife.elf
++ arm-vita-eabi-strip --strip-debug /mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p/knife.elf
++ python3 /mnt/d/AI-CODEX/tsik-vita/tools/sanitize-vita-elf.py /mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p/knife.elf
+Package ELF: 0 SDK source filenames sanitized; executable bytes unchanged
++ arm-vita-eabi-readelf -h -A /mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p/knife.elf
++ arm-vita-eabi-nm -u /mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p/knife.elf
++ vita-elf-create /mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p/knife.elf /mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p/knife.velf
++ vita-make-fself -s /mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p/knife.velf /mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p/eboot.bin
++ vita-mksfoex -s TITLE_ID=KNIF00541 -s APP_VER=00.01 -d ATTRIBUTE2=12 'TSUKIHIME A piece of blue glass moon 540p' /mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p/param.sfo
++ python3 - /mnt/d/AI-CODEX/tsik-vita/knife/vita/vendor/shacccg-ext /mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p/SceShaccCgExt-NOTICE.txt
++ PACKAGE_EXTRA=(-a "$OUTPUT/SceShaccCgExt-NOTICE.txt=sce_module/SceShaccCgExt-NOTICE.txt" -a "$ROOT/knife/vita/vendor/dependencies/licenses=licenses/native-dependencies")
++ [[ game = game ]]
++ PACKAGE_EXTRA+=(-a "$KNIFE_VITA_SHADER_COMPILER=sce_module/libshacccg.suprx")
++ vita-pack-vpk -s /mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p/param.sfo -b /mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p/eboot.bin -a /mnt/d/AI-CODEX/tsik-vita/knife/vita/sce_sys=sce_sys -a /mnt/d/AI-CODEX/tsik-vita/knife/LICENSE=LICENSE -a /mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p/SceShaccCgExt-NOTICE.txt=sce_module/SceShaccCgExt-NOTICE.txt -a /mnt/d/AI-CODEX/tsik-vita/knife/vita/vendor/dependencies/licenses=licenses/native-dependencies -a /mnt/d/AI-CODEX/tsik-vita/knife/vita/vendor/shacccg/libshacccg.suprx=sce_module/libshacccg.suprx /mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p/knife-vita-tsukihime-540p.vpk
++ python3 /mnt/d/AI-CODEX/tsik-vita/tools/check-vita-package.py /mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p/knife-vita-tsukihime-540p.vpk KNIF00541 --release
+PASS: KNIF00541 ATTRIBUTE2=12; 21 engine-only entries; no game data
++ python3 /mnt/d/AI-CODEX/tsik-vita/tools/vita-build-receipt.py /mnt/d/AI-CODEX/tsik-vita /mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p nightly-2026-05-28 armv7-sony-vita-newlibeabihf game
+Build receipt: /mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p/vita-game-release-tsukihime-540p-build.json
++ RELEASE_DIR=/mnt/d/AI-CODEX/tsik-vita/release
++ mkdir -p /mnt/d/AI-CODEX/tsik-vita/release
++ cp -f /mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p/knife-vita-tsukihime-540p.vpk /mnt/d/AI-CODEX/tsik-vita/release/knife-vita-tsukihime-540p.vpk
++ python3 - /mnt/d/AI-CODEX/tsik-vita/release/knife-vita-tsukihime-540p.vpk
+published /mnt/d/AI-CODEX/tsik-vita/release/knife-vita-tsukihime-540p.vpk (6748781 bytes)
+0a845b6117bc4abe868621691de0ff7853436db09142daeb5e62db005052d9de /mnt/d/AI-CODEX/tsik-vita/release/knife-vita-tsukihime-540p.vpk

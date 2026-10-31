@@ -1,0 +1,270 @@
+{
+  "schema": "tsik-mofa-parity-audit-v1",
+  "created_at": "2026-10-31T16:24:05.174154+00:00",
+  "scope": "local source parity, existing package and assets, host tests; no emulator or hardware run; no engine or asset changes",
+  "baseline": {
+    "path": "D:\\AI-CODEX\\mofa-vita",
+    "branch": "perf/render",
+    "commit": "143499848bdb6ec08a08b5b12b997cf7aea3d762",
+    "remote_perf_render_observed": "143499848bdb6ec08a08b5b12b997cf7aea3d762",
+    "remote_observation_command": "git ls-remote --heads origin perf/render",
+    "worktree_clean": true
+  },
+  "target": {
+    "path": "D:\\AI-CODEX\\tsik-vita",
+    "has_git_metadata": false,
+    "vpk": {
+      "path": "release/knife-vita-tsukihime-540p.vpk",
+      "bytes": 6723076,
+      "sha256": "df49c9c5e8353029d473a6bf8734e66de6b1185b3bd4594d811ad33afc232e09"
+    },
+    "existing_build_receipt_source_files": 301,
+    "receipt_source_mismatches": [],
+    "runtime_verified": false,
+    "hardware_verified": false
+  },
+  "file_parity": {
+    "tracked_baseline_files": 486,
+    "counts": {
+      "identical": 458,
+      "changed": 26,
+      "missing": 2
+    },
+    "missing": [
+      "knife/knife-audio/src/pcm_cache.rs",
+      "knife/knife-audio/tests/fwav_memory.rs"
+    ],
+    "details_path": ".work/audit/mofa-file-parity.json",
+    "details_sha256": "f98670f6ea161f96b4604667a831335b34340bac8d6869ddaf0042fab63fcd78",
+    "sources_unchanged_after_checks": true
+  },
+  "asset_verification": {
+    "files_checked": 16832,
+    "bytes_checked": 4027446641,
+    "manifest_sha256": "933fa16cbf868d4f075a8df7dd0a6a348f9043fec20a77231429d1dc8694010e",
+    "manifest_bytes": 2745701,
+    "errors": [],
+    "unexpected_files": [],
+    "seconds": 36.18
+  },
+  "gxt_verification": {
+    "label": "tsik-mofa-parity-audit",
+    "pack": "D:\\AI-CODEX\\tsik-vita\\dist\\Tsukihime-540p-Vita\\assets",
+    "validated_gxt": {
+      "total": 21389,
+      "pass": 21389,
+      "fail": 0
+    },
+    "codecs_present": {
+      "2": 321,
+      "7": 2214,
+      "9": 21389
+    },
+    "failures": [],
+    "seconds": 40.2
+  },
+  "other_checks": {
+    "package_check": "PASS: KNIF00541 ATTRIBUTE2=12; 21 engine-only entries; no game data",
+    "build_environment": "WSL pocket-ubuntu, /opt/vitasdk GCC 15.2.0, nightly-2026-05-28 + rust-src: ready",
+    "asset_profile": "PASS; 175 key files; 25458232 startup read bytes",
+    "official_atlas_generator": "FAIL: KeyError allui.hed",
+    "adapted_local_atlas_generator": "PASS with PYTHONPATH=tools; 40 atlases, 736 members, 472 GXT, 264 other",
+    "stream_index_content_matches_manifest": true,
+    "performance_test": "FAIL: ModuleNotFoundError vita_audit_log"
+  },
+  "host_test_commands": [
+    "CARGO_TARGET_DIR=/root/.cache/knife-vita-tsik-audit-host cargo +nightly-2026-05-28 test --manifest-path knife/Cargo.toml --locked --offline -p knife-core -p knife-audio -p knife-perf -p knife-platform-vita -p knife-render --features knife-platform-vita/tsukihime,knife-platform-vita/assets-540p,knife-render/assets-540p",
+    "CARGO_TARGET_DIR=/root/.cache/knife-vita-tsik-audit-host cargo +nightly-2026-05-28 test --manifest-path knife/Cargo.toml --locked --offline -p knife-render --features assets-540p",
+    "wsl.exe -d pocket-ubuntu -- bash -lc \"python3 /mnt/d/AI-CODEX/tsik-vita/.work/audit/run_parity_probes.py\""
+  ],
+  "test_scope": {
+    "audio": {
+      "passed": 20,
+      "failed": 0
+    },
+    "core": {
+      "passed": 46,
+      "failed": 0
+    },
+    "perf": {
+      "passed": 2,
+      "failed": 0
+    },
+    "platform_tsukihime_540p": {
+      "passed": 65,
+      "failed": 1
+    },
+    "renderer_540p": {
+      "passed": 97,
+      "failed": 0
+    },
+    "baseline_fwav_test_linked_to_target": {
+      "passed": 0,
+      "failed": 1,
+      "actual_large_alloc_bytes": 49164,
+      "expected_bytes": 32776,
+      "simulated_oom_portion_executed": false
+    },
+    "manifest_probe": "confirmed actual hash rejects both production indexes; correct hash accepts both; no GPU; minimal atlas argument type stubs"
+  },
+  "manifest_binding": {
+    "expected_tsukihime": "933fa16cbf868d4f075a8df7dd0a6a348f9043fec20a77231429d1dc8694010e",
+    "actual_generated": "a66a1318a147a901c7f76e9868e04f0551131f1128bb8dc591c242402de79d41",
+    "observed_in": "fresh host build + existing ARM build cache; both hashes also occur in existing eboot strings",
+    "effects": [
+      "atlas metadata registration rejects mismatch",
+      "targeted UI atlas prewarm exits",
+      "stream index parse rejects mismatch; resolver uses filesystem fallback"
+    ]
+  },
+  "findings": [
+    {
+      "id": "F01",
+      "priority": "P1",
+      "title": "platform build.rs selects WoH manifest for Tsukihime"
+    },
+    {
+      "id": "F02",
+      "priority": "P1",
+      "title": "mofa 1434998 PCM memory fix missing"
+    },
+    {
+      "id": "F03",
+      "priority": "P2",
+      "title": "public asset generator hardcodes allui; required adapted pipeline in ignored .work"
+    },
+    {
+      "id": "F04",
+      "priority": "P2",
+      "title": "runtime diagnostic profile and receipt fields identify wrong or provisional data"
+    },
+    {
+      "id": "F05",
+      "priority": "P2",
+      "title": "platform namespace regression fails with Tsukihime feature"
+    },
+    {
+      "id": "F06",
+      "priority": "P2",
+      "title": "default build remains WoH and default cache is shared"
+    },
+    {
+      "id": "F07",
+      "priority": "acceptance-gate",
+      "title": "no target runtime/hardware evidence"
+    },
+    {
+      "id": "F08",
+      "priority": "inherited-tooling-gap",
+      "title": "performance analyzer dependencies absent from both projects"
+    }
+  ],
+  "sources": [
+    {
+      "path": "knife/knife-platform-vita/build.rs",
+      "sha256": "428cba520a2935436e105b301ccf6836b5bd6a985c616fd5fc918777644f8b85"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/asset_check.rs",
+      "sha256": "98812d593263fa1ac9ecc7739a7cb2b9c89cb779c7787e295201de4130960952"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/asset_profile_tsukihime_540p.rs",
+      "sha256": "a5cbb8c858c16e927ec3b15c4aee063ede5a399fdb62036fcf85a82c890769a2"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/asset_profile_540p.rs",
+      "sha256": "50ab563453a4e4c57ef460b17250d78e4eeb93cae656bccc071cc7fba46105c8"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/storage.rs",
+      "sha256": "9452f3fbff99fcbb7ded763f88599d6ab273e7cdc3fffdd6df278ac99d00e1d3"
+    },
+    {
+      "path": "knife/knife/src/assets.rs",
+      "sha256": "1edf8775287224f7707db957609bb07cd57eba276b02bb47c65e066aee30551f"
+    },
+    {
+      "path": "knife/knife/src/vita_atlas_index.rs",
+      "sha256": "fdb7358284e6891ca6a409dd247053b34d4f127f1a9620fb92c05a5b6aae966e"
+    },
+    {
+      "path": "knife/knife/src/vita_stream_index.rs",
+      "sha256": "64514a37b0400ee9416bd38115fdd21e662267865027f3971bfb73777be6f978"
+    },
+    {
+      "path": "knife/knife-audio/src/bfsar.rs",
+      "sha256": "48267f3a574ea41b5822205e8f37179b8b987321115cfef80df3fd491b0476cc"
+    },
+    {
+      "path": "knife/knife/data/vita_atlas_index_tsukihime_540p.rs",
+      "sha256": "f14e2511eda59b595c7b56fc534f666cd49aba3b939f27226bb13aa167cfdddb"
+    },
+    {
+      "path": "knife/knife/data/vita_stream_index_tsukihime_540p.txt",
+      "sha256": "5c806e0bed6efda0bc368afcf88fee227b306c3e540f8f5f7a6c577a8d7fd449"
+    },
+    {
+      "path": "tools/build-vita.sh",
+      "sha256": "023bb7bd7320fb0d9cb00f67d7c6e34a355ed3edbccd654811a8a5a86293028f"
+    },
+    {
+      "path": "tools/vita-build-receipt.py",
+      "sha256": "c407f2bf5ddf88d6bb106c243afd17e201f2755d87d429533b01fe2a550ff740"
+    },
+    {
+      "path": "tools/generate-vita-atlas-index.py",
+      "sha256": "6cb932b2b6e4f895d54270f7c11c76e189b0ef9a80e079c68efe7c0713acf5c3"
+    }
+  ],
+  "logs": {
+    "host-tests.log": {
+      "path": ".work/audit/host-tests.log",
+      "bytes": 19552,
+      "sha256": "5758cd13f55af7e8389be6ea9e62a4971e2e04e30a6b8a013f2cc0b19a8812d1",
+      "test_result_lines": [
+        "test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+        "test result: ok. 36 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s",
+        "test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: FAILED. 65 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s"
+      ]
+    },
+    "renderer-tests.log": {
+      "path": ".work/audit/renderer-tests.log",
+      "bytes": 11912,
+      "sha256": "213993564172552e63ce9ed2a6fc420468e0341fd4777038ad3cb4eb70297605",
+      "test_result_lines": [
+        "test result: ok. 97 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ]
+    },
+    "manifest-probe.log": {
+      "path": ".work/audit/manifest-probe.log",
+      "bytes": 285,
+      "sha256": "13a8fc2750d97931de1af084416833a239777c1ecc10a496913a12a35b44039f",
+      "test_result_lines": []
+    },
+    "baseline-fwav-test.log": {
+      "path": ".work/audit/baseline-fwav-test.log",
+      "bytes": 708,
+      "sha256": "26b7db6d0e4acf53ce95826620ac4ec5fb9a4723353ee067ca5963fdddca1d11",
+      "test_result_lines": [
+        "test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ]
+    }
+  },
+  "report": {
+    "path": "doc/09-mofa-parity-audit.md",
+    "sha256": "86de90d6f8da5338776ec21e49e5be92a240eb6faf0af67583eb90e0988b256d"
+  },
+  "limitations": [
+    "No complete game or route playthrough",
+    "No true GXM pixel or timing validation",
+    "No fresh ARM/VPK rebuild in this audit",
+    "Asset hashes validate manifest consistency, not equivalence with all original game visuals",
+    "File parity is not a feature completion percentage"
+  ],
+  "verdict": "NOT_COMPLETE"
+}

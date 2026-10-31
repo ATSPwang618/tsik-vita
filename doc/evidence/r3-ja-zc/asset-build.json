@@ -1,0 +1,2104 @@
+{
+  "source_manifest_sha256": "c387c4101ff55f7c51e80e52c0fb06493e11f144cb42f710b0d608f5f0f80e1c",
+  "hardware_verified": false,
+  "kept_ids": [
+    0,
+    2
+  ],
+  "menu_ids": [
+    2,
+    0
+  ],
+  "default_id": 2,
+  "archives": {
+    "w_allpac": {
+      "changed": 26,
+      "removed": [],
+      "name": "w_allpac",
+      "entries": 29267,
+      "bytes": 2138384384,
+      "pixels": 3525364123,
+      "images": 21876,
+      "atlases": 0,
+      "codecs": {
+        "9": 14651,
+        "7": 7199,
+        "2": 26
+      }
+    },
+    "w_allpaccg": {
+      "changed": 0,
+      "removed": [],
+      "name": "w_allpaccg",
+      "entries": 1521,
+      "bytes": 283572224,
+      "pixels": 395902645,
+      "images": 1024,
+      "atlases": 0,
+      "codecs": {
+        "9": 716,
+        "7": 308
+      }
+    },
+    "w_allpacml": {
+      "changed": 277,
+      "removed": [],
+      "name": "w_allpacml",
+      "entries": 344,
+      "bytes": 32768000,
+      "pixels": 67071658,
+      "images": 277,
+      "atlases": 0,
+      "codecs": {
+        "2": 277
+      }
+    },
+    "w_allui": {
+      "changed": 24,
+      "removed": [
+        {
+          "index": 1,
+          "name": "CONF_PARTS_EN.NXGZ"
+        },
+        {
+          "index": 3,
+          "name": "CONF_PARTS_ZT.NXGZ"
+        },
+        {
+          "index": 5,
+          "name": "DISP_PARTS_EN.NXGZ"
+        },
+        {
+          "index": 7,
+          "name": "DISP_PARTS_ZT.NXGZ"
+        },
+        {
+          "index": 9,
+          "name": "MENU_PARTS_EN.NXGZ"
+        },
+        {
+          "index": 11,
+          "name": "MENU_PARTS_ZT.NXGZ"
+        },
+        {
+          "index": 13,
+          "name": "MODEPNL_PARTS_EN.NXGZ"
+        },
+        {
+          "index": 15,
+          "name": "MODEPNL_PARTS_ZT.NXGZ"
+        },
+        {
+          "index": 17,
+          "name": "SAVE_PARTS_EN.NXGZ"
+        },
+        {
+          "index": 19,
+          "name": "SAVE_PARTS_ZT.NXGZ"
+        },
+        {
+          "index": 21,
+          "name": "TITLE_PARTS_EN.NXGZ"
+        },
+        {
+          "index": 23,
+          "name": "TITLE_PARTS_ZT.NXGZ"
+        },
+        {
+          "index": 25,
+          "name": "DIALOG_PARTS_EN.NXGZ"
+        },
+        {
+          "index": 27,
+          "name": "DIALOG_PARTS_ZT.NXGZ"
+        },
+        {
+          "index": 29,
+          "name": "SELECT_PARTS_EN.NXGZ"
+        },
+        {
+          "index": 31,
+          "name": "SELECT_PARTS_ZT.NXGZ"
+        },
+        {
+          "index": 33,
+          "name": "GALLERY_PARTS_EN.NXGZ"
+        },
+        {
+          "index": 35,
+          "name": "GALLERY_PARTS_ZT.NXGZ"
+        },
+        {
+          "index": 44,
+          "name": "CG_THUMB_PARTS_EN.NXGZ"
+        },
+        {
+          "index": 46,
+          "name": "CG_THUMB_PARTS_ZT.NXGZ"
+        }
+      ],
+      "name": "w_allui",
+      "entries": 48,
+      "bytes": 20418560,
+      "pixels": 79691308,
+      "images": 386,
+      "atlases": 22,
+      "codecs": {
+        "9": 241,
+        "7": 127,
+        "2": 18
+      }
+    },
+    "allpachd": {
+      "changed": 0,
+      "removed": [],
+      "name": "allpachd",
+      "entries": 14765,
+      "bytes": 9590784,
+      "pixels": 0,
+      "images": 0,
+      "atlases": 0,
+      "codecs": {}
+    },
+    "parts": {
+      "changed": 0,
+      "removed": [],
+      "name": "parts",
+      "entries": 5,
+      "bytes": 120832,
+      "pixels": 2592000,
+      "images": 5,
+      "atlases": 0,
+      "codecs": {
+        "9": 5
+      }
+    }
+  },
+  "removed_files": [
+    "en/HelveticaNeueLTGEO-55Roman.otf",
+    "en2/DemosNextPro-Regular.otf",
+    "en3/FOT-SeuratPro-M.otf",
+    "ja/TT_TsukuMin-D.ttf",
+    "ja2/TT_TsukuGo-D.ttf",
+    "ja3/FOT-SeuratPro-M.otf",
+    "movie/op1_arc_en.mp4",
+    "movie/op2_ciel_en.mp4",
+    "movie/phasetitle_01_00_en.mp4",
+    "movie/phasetitle_01_00_zt.mp4",
+    "movie/phasetitle_02_00_en.mp4",
+    "movie/phasetitle_02_00_zt.mp4",
+    "movie/phasetitle_03_00_en.mp4",
+    "movie/phasetitle_03_00_zt.mp4",
+    "movie/phasetitle_04_00_en.mp4",
+    "movie/phasetitle_04_00_zt.mp4",
+    "movie/phasetitle_05_00_en.mp4",
+    "movie/phasetitle_05_00_zt.mp4",
+    "movie/phasetitle_05_01_en.mp4",
+    "movie/phasetitle_05_01_zt.mp4",
+    "movie/phasetitle_06_00_en.mp4",
+    "movie/phasetitle_06_00_zt.mp4",
+    "movie/phasetitle_06_01_en.mp4",
+    "movie/phasetitle_06_01_zt.mp4",
+    "movie/phasetitle_07_00_en.mp4",
+    "movie/phasetitle_07_00_zt.mp4",
+    "movie/phasetitle_07_01_en.mp4",
+    "movie/phasetitle_07_01_zt.mp4",
+    "movie/phasetitle_08_00_en.mp4",
+    "movie/phasetitle_08_00_zt.mp4",
+    "movie/phasetitle_08_01_en.mp4",
+    "movie/phasetitle_08_01_zt.mp4",
+    "movie/phasetitle_09_00_en.mp4",
+    "movie/phasetitle_09_00_zt.mp4",
+    "movie/phasetitle_09_01_en.mp4",
+    "movie/phasetitle_09_01_zt.mp4",
+    "movie/phasetitle_10_00_en.mp4",
+    "movie/phasetitle_10_00_zt.mp4",
+    "movie/phasetitle_10_01_en.mp4",
+    "movie/phasetitle_10_01_zt.mp4",
+    "movie/phasetitle_10_02_en.mp4",
+    "movie/phasetitle_10_02_zt.mp4",
+    "movie/phasetitle_11_00_en.mp4",
+    "movie/phasetitle_11_00_zt.mp4",
+    "movie/phasetitle_11_01_en.mp4",
+    "movie/phasetitle_11_01_zt.mp4",
+    "movie/phasetitle_12_00_en.mp4",
+    "movie/phasetitle_12_00_zt.mp4",
+    "movie/phasetitle_12_01_en.mp4",
+    "movie/phasetitle_12_01_zt.mp4",
+    "movie/phasetitle_13_00_en.mp4",
+    "movie/phasetitle_13_00_zt.mp4",
+    "movie/phasetitle_13_01_en.mp4",
+    "movie/phasetitle_13_01_zt.mp4",
+    "movie/phasetitle_14_00_en.mp4",
+    "movie/phasetitle_14_00_zt.mp4",
+    "movie/phasetitle_14_01_en.mp4",
+    "movie/phasetitle_14_01_zt.mp4",
+    "movie/phasetitle_15_01a_en.mp4",
+    "movie/phasetitle_15_01a_zt.mp4",
+    "movie/phasetitle_15_01b_en.mp4",
+    "movie/phasetitle_15_01b_zt.mp4",
+    "movie/prologue_en.mp4",
+    "movie/prologue_zt.mp4",
+    "saveicon_en.tga",
+    "saveicon_zt.tga",
+    "zc/arshanghaisonggbpro_lt.otf",
+    "zc2/MYingHeiPRC-W4.otf",
+    "zc3/MYingHeiPRC-W4.otf",
+    "zt/SungASC-Medium.TTF",
+    "zt2/HeiTASC-Medium.TTF",
+    "zt3/HeiTASC-Medium.TTF"
+  ],
+  "rewrites": [
+    {
+      "archive": "w_allpac",
+      "index": 6160,
+      "name": "IMG1701_01_01.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 6161,
+      "name": "IMG1701_02_02.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 6162,
+      "name": "IMG1701_03_03.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 6163,
+      "name": "IMG1701_04_04.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 6164,
+      "name": "IMG1702_10_10.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7184,
+      "name": "IMG2381_08_08.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7185,
+      "name": "IMG2385_04_04.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7186,
+      "name": "IMG2386_01_01.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7187,
+      "name": "IMG2386_07_07.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7188,
+      "name": "IMG2386_08_08.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7189,
+      "name": "IMG2386_09_09.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7190,
+      "name": "IMG2386_15_15.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7191,
+      "name": "IMG2400_01_01.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7192,
+      "name": "IMG2400_08_08.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7193,
+      "name": "IMG2412_07_07.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7194,
+      "name": "IMG2434_04_04.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7195,
+      "name": "IMG2436_04_04.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7196,
+      "name": "IMG2437_04_04.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7315,
+      "name": "IMG2577_01_01.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7316,
+      "name": "IMG2577_14_14.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7317,
+      "name": "IMG2578_01_01.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7318,
+      "name": "IMG2578_14_14.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7319,
+      "name": "IMG2579_23_23.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7320,
+      "name": "IMG2580_04_04.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7340,
+      "name": "IMG2624_11_11.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpac",
+      "index": 7341,
+      "name": "IMG2625_11_11.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 52,
+      "name": "IMG1699.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 53,
+      "name": "IMG1700.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 54,
+      "name": "IMG1701.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 55,
+      "name": "IMG1702.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 56,
+      "name": "IMG1736.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 57,
+      "name": "IMG1737.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 58,
+      "name": "IMG2378.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 59,
+      "name": "IMG2379.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 60,
+      "name": "IMG2380.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 61,
+      "name": "IMG2381.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 62,
+      "name": "IMG2382.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 63,
+      "name": "IMG2383.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 64,
+      "name": "IMG2384.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 65,
+      "name": "IMG2385.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 66,
+      "name": "IMG2386.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 67,
+      "name": "IMG2387.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 68,
+      "name": "IMG2388.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 69,
+      "name": "IMG2389.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 70,
+      "name": "IMG2390.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 71,
+      "name": "IMG2391.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 72,
+      "name": "IMG2392.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 73,
+      "name": "IMG2393.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 74,
+      "name": "IMG2394.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 75,
+      "name": "IMG2395.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 76,
+      "name": "IMG2396.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 77,
+      "name": "IMG2397.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 78,
+      "name": "IMG2398.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 79,
+      "name": "IMG2399.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 80,
+      "name": "IMG2400.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 81,
+      "name": "IMG2401.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 82,
+      "name": "IMG2402.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 83,
+      "name": "IMG2403.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 84,
+      "name": "IMG2404.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 85,
+      "name": "IMG2406.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 86,
+      "name": "IMG2407.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 87,
+      "name": "IMG2408.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 88,
+      "name": "IMG2409.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 89,
+      "name": "IMG2410.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 90,
+      "name": "IMG2411.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 91,
+      "name": "IMG2412.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 92,
+      "name": "IMG2413.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 93,
+      "name": "IMG2414.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 94,
+      "name": "IMG2416.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 95,
+      "name": "IMG2417.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 96,
+      "name": "IMG2418.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 97,
+      "name": "IMG2419.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 98,
+      "name": "IMG2420.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 99,
+      "name": "IMG2421.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 100,
+      "name": "IMG2422.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 101,
+      "name": "IMG2423.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 102,
+      "name": "IMG2424.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 103,
+      "name": "IMG2425.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 104,
+      "name": "IMG2426.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 105,
+      "name": "IMG2427.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 106,
+      "name": "IMG2428.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 107,
+      "name": "IMG2429.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 108,
+      "name": "IMG2430.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 109,
+      "name": "IMG2431.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 110,
+      "name": "IMG2432.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 111,
+      "name": "IMG2433.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 112,
+      "name": "IMG2434.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 113,
+      "name": "IMG2435.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 114,
+      "name": "IMG2436.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 115,
+      "name": "IMG2437.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 116,
+      "name": "IMG2458.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 117,
+      "name": "IMG2459.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 118,
+      "name": "IMG2460.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 119,
+      "name": "IMG2461.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 120,
+      "name": "IMG2462.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 121,
+      "name": "IMG2524.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 122,
+      "name": "IMG2575.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 123,
+      "name": "IMG2577.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 124,
+      "name": "IMG2578.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 125,
+      "name": "IMG2579.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 126,
+      "name": "IMG2580.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 127,
+      "name": "IMG2581.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 128,
+      "name": "IMG2582.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 129,
+      "name": "IMG2583.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 130,
+      "name": "IMG2584.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 131,
+      "name": "IMG2585.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 132,
+      "name": "IMG2586.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 133,
+      "name": "IMG2587.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 134,
+      "name": "IMG2592.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 135,
+      "name": "IMG2594.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 136,
+      "name": "IMG2596.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 137,
+      "name": "IMG2598.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 138,
+      "name": "IMG2610.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 139,
+      "name": "IMG2611.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 140,
+      "name": "IMG2612.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 141,
+      "name": "IMG2614.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 142,
+      "name": "IMG2616.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 143,
+      "name": "IMG2617.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 144,
+      "name": "IMG2618.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 145,
+      "name": "IMG2620.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 146,
+      "name": "IMG2623.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 147,
+      "name": "IMG2624.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 148,
+      "name": "IMG2625.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 149,
+      "name": "IMG2626.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 150,
+      "name": "IMG2627.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 151,
+      "name": "IMG2628.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 152,
+      "name": "IMG2629.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 153,
+      "name": "IMG2630.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 154,
+      "name": "IMG2631.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 155,
+      "name": "IMG2632.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 156,
+      "name": "IMG2633.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 157,
+      "name": "IMG2634.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 158,
+      "name": "IMG2635.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 159,
+      "name": "IMG2636.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 160,
+      "name": "IMG5000.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 161,
+      "name": "IMG5002.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 162,
+      "name": "IMG5013.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 163,
+      "name": "IMG5014.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 164,
+      "name": "IMG5026.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 165,
+      "name": "IMG6000.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 166,
+      "name": "IMG6001.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 167,
+      "name": "IMG6002.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 168,
+      "name": "IMG6003.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 169,
+      "name": "IMG6004.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 170,
+      "name": "IMG6005.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 171,
+      "name": "IMG6006.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 172,
+      "name": "IMG6007.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 173,
+      "name": "IMG6008.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 174,
+      "name": "IMG6009.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 175,
+      "name": "IMG6010.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 176,
+      "name": "IMG6011.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 177,
+      "name": "IMG6012.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 178,
+      "name": "IMG6013.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 179,
+      "name": "IMG6014.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 180,
+      "name": "IMG6015.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 181,
+      "name": "IMG6016.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 182,
+      "name": "IMG6017.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 183,
+      "name": "IMG6018.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 184,
+      "name": "IMG6019.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 185,
+      "name": "IMG6020.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 186,
+      "name": "IMG6021.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 187,
+      "name": "IMG6022.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 188,
+      "name": "IMG6023.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 189,
+      "name": "IMG6024.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 190,
+      "name": "IMG6025.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 191,
+      "name": "IMG6026.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 199,
+      "name": "IMG1699.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 200,
+      "name": "IMG1700.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 201,
+      "name": "IMG1701.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 202,
+      "name": "IMG1702.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 203,
+      "name": "IMG1736.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 204,
+      "name": "IMG1737.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 205,
+      "name": "IMG2378.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 206,
+      "name": "IMG2379.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 207,
+      "name": "IMG2380.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 208,
+      "name": "IMG2381.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 209,
+      "name": "IMG2382.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 210,
+      "name": "IMG2383.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 211,
+      "name": "IMG2384.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 212,
+      "name": "IMG2385.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 213,
+      "name": "IMG2386.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 214,
+      "name": "IMG2387.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 215,
+      "name": "IMG2388.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 216,
+      "name": "IMG2389.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 217,
+      "name": "IMG2390.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 218,
+      "name": "IMG2391.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 219,
+      "name": "IMG2392.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 220,
+      "name": "IMG2393.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 221,
+      "name": "IMG2394.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 222,
+      "name": "IMG2395.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 223,
+      "name": "IMG2396.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 224,
+      "name": "IMG2397.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 225,
+      "name": "IMG2398.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 226,
+      "name": "IMG2399.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 227,
+      "name": "IMG2400.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 228,
+      "name": "IMG2401.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 229,
+      "name": "IMG2402.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 230,
+      "name": "IMG2403.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 231,
+      "name": "IMG2404.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 232,
+      "name": "IMG2406.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 233,
+      "name": "IMG2407.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 234,
+      "name": "IMG2408.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 235,
+      "name": "IMG2409.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 236,
+      "name": "IMG2410.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 237,
+      "name": "IMG2411.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 238,
+      "name": "IMG2412.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 239,
+      "name": "IMG2413.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 240,
+      "name": "IMG2414.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 241,
+      "name": "IMG2416.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 242,
+      "name": "IMG2417.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 243,
+      "name": "IMG2418.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 244,
+      "name": "IMG2419.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 245,
+      "name": "IMG2420.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 246,
+      "name": "IMG2421.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 247,
+      "name": "IMG2422.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 248,
+      "name": "IMG2423.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 249,
+      "name": "IMG2424.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 250,
+      "name": "IMG2425.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 251,
+      "name": "IMG2426.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 252,
+      "name": "IMG2427.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 253,
+      "name": "IMG2428.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 254,
+      "name": "IMG2429.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 255,
+      "name": "IMG2430.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 256,
+      "name": "IMG2431.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 257,
+      "name": "IMG2432.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 258,
+      "name": "IMG2433.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 259,
+      "name": "IMG2434.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 260,
+      "name": "IMG2435.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 261,
+      "name": "IMG2436.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 262,
+      "name": "IMG2437.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 263,
+      "name": "IMG2458.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 264,
+      "name": "IMG2459.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 265,
+      "name": "IMG2460.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 266,
+      "name": "IMG2461.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 267,
+      "name": "IMG2462.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 268,
+      "name": "IMG2524.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 269,
+      "name": "IMG2575.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 270,
+      "name": "IMG2577.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 271,
+      "name": "IMG2578.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 272,
+      "name": "IMG2579.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 273,
+      "name": "IMG2580.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 274,
+      "name": "IMG2581.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 275,
+      "name": "IMG2582.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 276,
+      "name": "IMG2583.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 277,
+      "name": "IMG2584.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 278,
+      "name": "IMG2585.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 279,
+      "name": "IMG2586.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 280,
+      "name": "IMG2587.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 281,
+      "name": "IMG2592.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 282,
+      "name": "IMG2594.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 283,
+      "name": "IMG2596.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 284,
+      "name": "IMG2598.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 285,
+      "name": "IMG2610.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 286,
+      "name": "IMG2611.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 287,
+      "name": "IMG2612.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 288,
+      "name": "IMG2614.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 292,
+      "name": "IMG2620.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 293,
+      "name": "IMG2623.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 294,
+      "name": "IMG2624.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 295,
+      "name": "IMG2625.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 296,
+      "name": "IMG2626.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 297,
+      "name": "IMG2627.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 298,
+      "name": "IMG2628.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 299,
+      "name": "IMG2629.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 300,
+      "name": "IMG2630.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 301,
+      "name": "IMG2631.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 302,
+      "name": "IMG2632.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 303,
+      "name": "IMG2633.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 304,
+      "name": "IMG2634.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 305,
+      "name": "IMG2635.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 306,
+      "name": "IMG2636.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 307,
+      "name": "IMG5000.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 308,
+      "name": "IMG5002.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 309,
+      "name": "IMG5013.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 310,
+      "name": "IMG5014.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 311,
+      "name": "IMG5026.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 312,
+      "name": "IMG6000.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 313,
+      "name": "IMG6001.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 314,
+      "name": "IMG6002.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 315,
+      "name": "IMG6003.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 316,
+      "name": "IMG6004.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 317,
+      "name": "IMG6005.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 318,
+      "name": "IMG6006.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 319,
+      "name": "IMG6007.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 320,
+      "name": "IMG6008.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 321,
+      "name": "IMG6009.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 322,
+      "name": "IMG6010.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 323,
+      "name": "IMG6011.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 324,
+      "name": "IMG6012.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 325,
+      "name": "IMG6013.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 326,
+      "name": "IMG6014.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 327,
+      "name": "IMG6015.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 328,
+      "name": "IMG6016.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 329,
+      "name": "IMG6017.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 330,
+      "name": "IMG6018.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 331,
+      "name": "IMG6019.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 332,
+      "name": "IMG6020.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 333,
+      "name": "IMG6021.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 334,
+      "name": "IMG6022.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 335,
+      "name": "IMG6023.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 336,
+      "name": "IMG6024.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 337,
+      "name": "IMG6025.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    },
+    {
+      "archive": "w_allpacml",
+      "index": 338,
+      "name": "IMG6026.NXGZ",
+      "operation": "four-stripes-to-ja-zc"
+    }
+  ],
+  "lossless_stripes_verified": 606,
+  "script": {
+    "old_blocks": 10,
+    "blocks": 4,
+    "text_bytes_unchanged": true,
+    "retained_pair_sha256": [
+      "62b2edaae5edf8b19f945f8bf0f4ac18ec1b42f7531e420e71202e7b9f0248a4",
+      "0410e029f293686c06b77a59388e0e03d136d0a81eec7cdb8a6b0a6fdd4e8343",
+      "627e3d824fa6356c9a70be776d5aa9528854b76591c2ce483eb7812dd9edb715",
+      "96f851f9aebe5fb6cfb9074a58e7083093cdc1dec316cef49c37b112f75e177c"
+    ]
+  },
+  "fonts": {
+    "primary": {
+      "path": "fonts/main.ttf",
+      "sha256": "0ebe4fac683355ea899a15a19f61bb3900135a424a8484ccf1758b73721eeef2",
+      "bytes": 6249992,
+      "internal_name": "明朝金陵 Bold"
+    },
+    "fallback": {
+      "path": "fonts/fallback.otf",
+      "codepoints": [
+        "U+55DE",
+        "U+89CD"
+      ],
+      "source_sha256": "3ce62142f5fa548bf6bdd3b8899c04a0e7aa8c8aa8e522be9281a3ed549b4b5d",
+      "bytes": 2984,
+      "sha256": "77d4c99fafcb73c7f75f1d0ff29988cfc4d384b3b851638a55bdea63fd3bfbea"
+    }
+  },
+  "files": 16764,
+  "bytes": 3884337696,
+  "manifest_sha256": "41fd21e6ba2b66205f88e4ccf0ba5beebaaf81420237768de8831d3102277e6d"
+}

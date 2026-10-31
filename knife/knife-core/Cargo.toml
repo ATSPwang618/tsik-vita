@@ -1,0 +1,15 @@
+[package]
+name = "knife-core"
+version = "0.9.4"
+edition = "2024"
+license = "MPL-2.0"
+
+[dependencies]
+knife-perf = { path = "../knife-perf" }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+flate2 = { workspace = true }
+bcdec_rs = "0.2.0"
+
+[target.'cfg(not(target_os = "vita"))'.dependencies]
+memmap2 = { workspace = true }

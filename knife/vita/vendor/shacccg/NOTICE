@@ -1,0 +1,8 @@
+libshacccg.suprx: the locally supplied runtime compiler used by this port.
+This proprietary module is excluded from the public source repository.
+Supply your own local copy at knife/vita/vendor/shacccg/libshacccg.suprx before building.
+The existing packaging pipeline uses that local copy for first-start shader compilation.
+Size: 1776523 bytes
+SHA-256: 0c58b5d3e1cc47d9837b8c59ab6f3c299bfe7adf55a83f547d553f9fbb776552
+Load location in VPK: sce_module/libshacccg.suprx
+This proprietary runtime is separate from the GPL-licensed SceShaccCgExt library.
