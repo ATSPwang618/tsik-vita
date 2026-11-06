@@ -1,6 +1,6 @@
-//! Vita-only, bounded caches of contiguous text draws. Backgrounds and animated
-//! cursors remain in the original UI order. Keys compare every source quad bit;
-//! a reveal, fade, wobble, font atlas mutation or colour change cannot hit stale pixels.
+//! Bounded immutable text segments. Stable prefixes survive typewriter reveals;
+//! changing tails, backgrounds and cursors retain their original UI order.
+//! Keys retain every shader input, including per-glyph alpha and atlas versions.
 use std::sync::{Arc, Weak};
 
 use knife_perf::{Gauge, Metric, Scope, memory_budget};
@@ -13,10 +13,12 @@ use crate::vita::{Blend, CANVAS_H, CANVAS_W, CommandEncoder, GpuTexture, Quad,
 
 const MIN_GLYPHS: usize = 8;
 const MAX_GLYPHS: usize = 1024;
+const MAX_OBSERVATIONS: usize = MAX_GLYPHS / MIN_GLYPHS;
+const MAX_BUILDS_PER_FRAME: usize = 2;
 const IDLE_FRAMES: u64 = 600;
 
 #[derive(Clone, PartialEq, Eq)]
-struct Key(Vec<u64>);
+struct Key(Arc<[u64]>);
 
 struct Entry {
     key: Key,
@@ -24,10 +26,10 @@ struct Entry {
     // a false key hit, without retaining old font pages in GPU memory.
     sources: Vec<Weak<GpuTexture>>,
     target: RenderTarget,
-    rect: [f32; 4],
     bytes: usize,
     source_draws: usize,
     last_used: u64,
+    promoted: bool,
 }
 
 #[derive(Default)]
@@ -37,18 +39,34 @@ pub(super) struct Pool {
     observed: Vec<Key>,
     epoch: u64,
     bytes: usize,
+    key_scratch: Vec<u64>,
+    builds: usize,
 }
 
 impl Pool {
     pub fn begin_frame(&mut self) {
         self.epoch = self.epoch.wrapping_add(1).max(1);
-        self.previous = std::mem::take(&mut self.observed);
+        // Reuse both observation vectors. Repeated/cache-hit keys share their
+        // immutable words instead of allocating/copying every glyph's key.
+        std::mem::swap(&mut self.previous, &mut self.observed);
+        self.observed.clear();
+        self.builds = 0;
         let epoch = self.epoch;
         self.remove_where(|entry| epoch.saturating_sub(entry.last_used) > IDLE_FRAMES
             || entry.sources.iter().any(|source| source.strong_count() == 0));
     }
 
     pub fn bytes(&self) -> usize { self.bytes }
+
+    /// A resource barrier may surrender even the most recent cached output.
+    /// Recorded commands hold independent strong texture references; native
+    /// retirement supplies the fence after their last reader completes.
+    pub fn release_for_images(&mut self)->usize {
+        let bytes=self.bytes;
+        while !self.entries.is_empty() {self.remove(self.entries.len()-1);}
+        self.previous.clear();self.observed.clear();
+        bytes
+    }
 
     /// Current-frame readers stay pinned. Native texture retirement supplies the
     /// GPU completion fence after the last recorded command releases its handle.
@@ -75,48 +93,75 @@ impl Pool {
         }
     }
 
-    fn remove(&mut self, index: usize) {
+    fn take(&mut self, index: usize) -> Entry {
         let entry = self.entries.swap_remove(index);
         self.bytes -= entry.bytes;
         knife_perf::add(Metric::TextCacheEvict, entry.bytes as u64, 1);
         self.gauges();
+        entry
     }
+    fn remove(&mut self, index: usize) { drop(self.take(index)); }
 
     fn gauges(&self) {
         knife_perf::gauge_set(Gauge::TextCacheBytes, self.bytes as u64);
         knife_perf::gauge_set(Gauge::TextCacheEntries, self.entries.len() as u64);
     }
 
-    /// Draw unchanged prefixes/suffixes immediately around each cached run.
-    /// A cache build can close the current canvas pass, but cannot reorder UI.
+    /// Typing retains immutable eight-glyph prefixes. Once the caller confirms
+    /// completion, a repeated exact whole-run key promotes the run into one
+    /// surface, including its short tail. Per-glyph alpha remains baked exactly.
     pub fn draw_ui(&mut self, r: &mut Renderer, enc: &mut CommandEncoder,
-        canvas: &RenderTarget, quads: &[Quad]) {
+        canvas: &RenderTarget, quads: &[Quad], finished: bool) {
         let mut begin = 0;
         while begin < quads.len() {
             let text = eligible(&quads[begin]);
             let mut end = begin + 1;
             while end < quads.len() && eligible(&quads[end]) == text { end += 1; }
             let run = &quads[begin..end];
-            if !text || run.len() < MIN_GLYPHS || !self.draw_run(r, enc, canvas, run) {
+            if !text || run.len() > MAX_GLYPHS {
+                if text { knife_perf::add(Metric::TextCacheDirectGlyphs, 0, run.len() as u64); }
                 r.draw(enc, canvas, None, run);
+            } else if finished && self.draw_run(r, enc, canvas, run, true) {
+                // Keep non-text boundaries intact even when the full finished
+                // paragraph/page becomes one composite.
+            } else {
+                // Canonical boundaries never move when more glyphs appear.
+                // An incomplete tail is direct: brief pauses during typing do
+                // not create one target for every newly revealed character.
+                let mut line_begin = 0;
+                while line_begin < run.len() {
+                    let mut line_end = line_begin + 1;
+                    while line_end < run.len() && same_line(&run[line_end - 1], &run[line_end]) {
+                        line_end += 1;
+                    }
+                    for segment in run[line_begin..line_end].chunks(MIN_GLYPHS) {
+                        if segment.len() < MIN_GLYPHS || !self.draw_run(r, enc, canvas, segment, false) {
+                            knife_perf::add(Metric::TextCacheDirectGlyphs, 0, segment.len() as u64);
+                            r.draw(enc, canvas, None, segment);
+                        }
+                    }
+                    line_begin = line_end;
+                }
             }
             begin = end;
         }
     }
 
     fn draw_run(&mut self, r: &mut Renderer, enc: &mut CommandEncoder,
-        canvas: &RenderTarget, quads: &[Quad]) -> bool {
-        if quads.len() > MAX_GLYPHS || self.observed.len() >= memory_budget::GPU_TEXT_ENTRIES {
+        canvas: &RenderTarget, quads: &[Quad], promoted: bool) -> bool {
+        if self.observed.len() >= MAX_OBSERVATIONS {
             return false;
         }
         let Some(rect) = bounds(quads) else { return false };
-        let mut key = Vec::new();
+        self.key_scratch.clear();
+        self.key_scratch.extend([quads.len() as u64, rect[2].to_bits() as u64, rect[3].to_bits() as u64]);
         for quad in quads {
-            let values = quad.render_key();
-            key.push(values.len() as u64);
-            key.extend(values);
+            append_key(&mut self.key_scratch, quad, rect);
         }
-        let key = Key(key);
+        // Lookup compares exact words. A hash alone cannot establish a hit.
+        let key = self.previous.iter().chain(self.entries.iter().map(|entry| &entry.key))
+            .find(|key| key.0.as_ref() == self.key_scratch.as_slice()).cloned()
+            .unwrap_or_else(|| Key(Arc::from(self.key_scratch.as_slice())));
         if self.previous.get(self.observed.len()).is_some_and(|previous| previous != &key) {
             knife_perf::add(Metric::TextCacheInvalidate, 0, quads.len() as u64);
         }
@@ -124,7 +169,11 @@ impl Pool {
         if let Some(entry) = self.entries.iter_mut().find(|entry| entry.key == key
             && entry.sources.iter().all(|source| source.strong_count() != 0)) {
             entry.last_used = self.epoch;
-            if r.try_composite_text_cache(enc, canvas, &entry.target, entry.rect).is_ok() {
+            entry.promoted |= promoted;
+            // The key normalizes only an integer physical-pixel translation.
+            // Scroll the cached result using this frame's rect, with unchanged
+            // subpixel raster phase and unchanged per-glyph coverage.
+            if r.try_composite_text_cache(enc, canvas, &entry.target, rect).is_ok() {
                 knife_perf::add(Metric::TextCacheHit, entry.bytes as u64, quads.len() as u64);
                 knife_perf::add(Metric::TextCacheSavedDraws, 0, entry.source_draws.saturating_sub(1) as u64);
                 return true;
@@ -136,6 +185,11 @@ impl Pool {
         // During typing/fades/wobbles retain the original direct path. Building
         // only after a repeated signature avoids a render target for every glyph.
         if !self.previous.contains(&key) { return false }
+        if self.builds >= MAX_BUILDS_PER_FRAME {
+            knife_perf::add(Metric::TextCacheFallback, 0, 7);
+            return false;
+        }
+        self.builds += 1;
         if !r.text_cache_available().unwrap_or(false) {
             knife_perf::add(Metric::TextCacheFallback, 0, 6);
             return false;
@@ -144,6 +198,24 @@ impl Pool {
         let physical = [logical[0] / 2, logical[1] / 2];
         let Some(bytes) = charge(physical) else { return false };
         if bytes > memory_budget::GPU_TEXT_BYTES { return false }
+        // Recycle a cold matching surface when admission/capacity would require
+        // eviction anyway. Recorded readers retain owners and native WAR fences.
+        let pressured = self.bytes + bytes > memory_budget::GPU_TEXT_BYTES
+            || self.entries.len() >= memory_budget::GPU_TEXT_ENTRIES
+            || r.vita_cache_headroom().unwrap_or(0) < bytes + memory_budget::GPU_CACHE_SPARE_BYTES;
+        let recycled = if pressured {
+            self.entries.iter().enumerate().filter(|(_, entry)| entry.last_used != self.epoch
+                && entry.target.tex.width == logical[0] && entry.target.tex.height == logical[1]
+                && entry.target.tex.physical_size() == physical)
+                .min_by_key(|(_, entry)| entry.last_used).map(|(index, _)| index)
+                .map(|index| self.take(index).target)
+        } else { None };
+        // A failed promotion must keep its useful small-prefix fallback. Check
+        // native room before retiring any old representation for the large run.
+        let promotion_admitted = promoted && recycled.is_none();
+        if promotion_admitted && !r.vita_prepare_cache_allocation(enc, quads, bytes).unwrap_or(false) {
+            knife_perf::add(Metric::TextCacheFallback, 0, 8); return false;
+        }
         self.trim(memory_budget::GPU_TEXT_BYTES.saturating_sub(bytes));
         while self.entries.len() >= memory_budget::GPU_TEXT_ENTRIES {
             let victim = self.entries.iter().enumerate()
@@ -160,9 +232,20 @@ impl Pool {
             return false;
         }
         let build = Scope::new(Metric::TextCacheBuild);
-        let target = match r.try_create_scene_target(logical[0], logical[1], "text cache") {
-            Ok(target) => target,
-            Err(_) => { knife_perf::add(Metric::TextCacheFallback, 0, 4); return false }
+        let target = match recycled {
+            Some(target) => {
+                knife_perf::add(Metric::TextCacheTargetReuse, bytes as u64, 1);
+                target
+            }
+            None => {
+                if !promotion_admitted && !r.vita_prepare_cache_allocation(enc, quads, bytes).unwrap_or(false) {
+                    knife_perf::add(Metric::TextCacheFallback, 0, 8); return false;
+                }
+                match r.try_create_scene_target(logical[0], logical[1], "text cache") {
+                    Ok(target) => target,
+                    Err(_) => { knife_perf::add(Metric::TextCacheFallback, 0, 4); return false }
+                }
+            }
         };
         let mut shifted = quads.to_vec();
         for quad in &mut shifted {
@@ -186,17 +269,76 @@ impl Pool {
             let source = Arc::downgrade(&quad.tex);
             if !sources.iter().any(|existing| existing.ptr_eq(&source)) { sources.push(source); }
         }
-        self.entries.push(Entry { key, sources, target, rect, bytes, source_draws, last_used: self.epoch });
+        self.entries.push(Entry { key: key.clone(), sources, target, bytes, source_draws,
+            last_used: self.epoch, promoted });
         self.bytes += bytes;
+        if promoted {
+            self.retire_covered_segments(quads, &key);
+            knife_perf::add(Metric::TextCachePromote, bytes as u64, quads.len() as u64);
+        }
         self.gauges();
         build.finish(bytes as u64, quads.len() as u64);
         true
     }
+
+    /// The promoted surface replaces precisely these old immutable segments.
+    /// Do not retain both representations until a later pressure sweep. Any
+    /// segment already sampled by another draw_ui call this frame stays pinned.
+    fn retire_covered_segments(&mut self, quads: &[Quad], promoted: &Key) {
+        let mut begin = 0;
+        while begin < quads.len() {
+            let mut end = begin + 1;
+            while end < quads.len() && same_line(&quads[end - 1], &quads[end]) { end += 1; }
+            for segment in quads[begin..end].chunks(MIN_GLYPHS) {
+                if segment.len() != MIN_GLYPHS { continue; }
+                let Some(rect) = bounds(segment) else { continue; };
+                self.key_scratch.clear();
+                self.key_scratch.extend([segment.len() as u64, rect[2].to_bits() as u64, rect[3].to_bits() as u64]);
+                for q in segment { append_key(&mut self.key_scratch, q, rect); }
+                if let Some(index) = self.entries.iter().position(|entry| !entry.promoted
+                    && entry.last_used != self.epoch && entry.key != *promoted
+                    && entry.key.0.as_ref() == self.key_scratch.as_slice()) {
+                    self.remove(index);
+                }
+            }
+            begin = end;
+        }
+    }
+}
+
+/// This fixed layout covers every field admitted by eligible(): Alpha blend,
+/// no rule/clip/soft/mask. The origin is an exact physical-pixel boundary; all
+/// glyph positions and their mutual overlaps keep their original raster phase.
+fn append_key(words: &mut Vec<u64>, q: &Quad, rect: [f32; 4]) {
+    let (id, generation) = q.tex.render_identity();
+    words.extend([id as u64, generation, q.tex.width as u64, q.tex.height as u64]);
+    words.extend(q.tex.physical_size().map(u64::from));
+    words.push(q.shade as u64);
+    for p in q.pos {
+        words.extend([(p[0] - rect[0]).to_bits() as u64, (p[1] - rect[1]).to_bits() as u64]);
+    }
+    for p in q.uv { words.extend(p.map(|v| v.to_bits() as u64)); }
+    words.extend(q.color.map(|v| v.to_bits() as u64));
+    for p in q.haze { words.extend(p.map(|v| v.to_bits() as u64)); }
 }
 
 fn eligible(quad: &Quad) -> bool {
     matches!(quad.shade, Shade::Text | Shade::RimText) && quad.blend == Blend::Alpha
         && quad.clip.is_none() && quad.rule.is_none() && quad.soft.is_none() && !quad.masked
+}
+
+/// A clear vertical jump starts another segment row. This is a scheduling
+/// boundary only: superscripts/large wobble may split a row conservatively, but
+/// no glyph is moved or reordered. Removing a scrolled-off row cannot shift the
+/// canonical eight-glyph boundaries of every following visible row.
+fn same_line(a: &Quad, b: &Quad) -> bool {
+    let span = |q: &Quad| {
+        let min = q.pos.iter().map(|p| p[1]).fold(f32::INFINITY, f32::min);
+        let max = q.pos.iter().map(|p| p[1]).fold(f32::NEG_INFINITY, f32::max);
+        ((min + max) * 0.5, max - min)
+    };
+    let ((ay, ah), (by, bh)) = (span(a), span(b));
+    (by - ay).abs() <= ah.max(bh) * 0.5
 }
 
 /// Integer physical-pixel origin preserves the original raster phase. One pixel
@@ -238,7 +380,7 @@ mod tests {
     fn setup() -> (Renderer, Control, RenderTarget, Vec<Quad>) {
         let gxm = Gxm::new().unwrap();
         let control = gxm.control.clone();
-        control.borrow_mut().shader_capabilities |= (1 << 11) | (1 << 24);
+        control.borrow_mut().shader_capabilities |= (1 << 11) | (1 << 24) | (1 << 28);
         let renderer = Renderer::new_with_gxm(gxm).unwrap();
         let canvas = renderer.create_composite_target(CANVAS_W, CANVAS_H, "canvas");
         let atlas = renderer.upload(32, 32, Upload::R8(&[255; 1024]), "text test");
@@ -256,7 +398,7 @@ mod tests {
     fn frame(pool: &mut Pool, r: &mut Renderer, canvas: &RenderTarget, glyphs: &[Quad]) {
         pool.begin_frame();
         let mut encoder = r.encoder();
-        pool.draw_ui(r, &mut encoder, canvas, glyphs);
+        pool.draw_ui(r, &mut encoder, canvas, glyphs, false);
         r.try_present(encoder, canvas).unwrap();
     }
 
@@ -269,18 +411,18 @@ mod tests {
         control.borrow_mut().events.clear();
         frame(&mut pool, &mut r, &canvas, &glyphs);
         assert_eq!(pool.entries.len(), 1);
-        assert_eq!(pool.entries[0].source_draws, 8);
+        assert_eq!(pool.entries[0].source_draws, 1);
         assert!(control.borrow().events.iter().any(|event| matches!(event,
-            Event::Draw { shader: EffectShader::RimText, blend: EffectBlend::CoverageOver, .. })));
+            Event::Draw { shader: EffectShader::RimTextBatched, blend: EffectBlend::CoverageOver, .. })));
         control.borrow_mut().events.clear();
         frame(&mut pool, &mut r, &canvas, &glyphs);
         let trace = control.borrow();
         assert_eq!(trace.events.iter().filter(|event| matches!(event,
             Event::Draw { shader: EffectShader::Alter, blend: EffectBlend::Alpha, .. })).count(), 1);
         assert!(!trace.events.iter().any(|event| matches!(event,
-            Event::Draw { shader: EffectShader::Text | EffectShader::RimText, .. })));
+            Event::Draw { shader: EffectShader::Text | EffectShader::RimTextBatched, .. })));
         assert_eq!(pool.entries[0].target.tex.physical_size(),
-            [(pool.entries[0].rect[2] / 2.0) as u32, (pool.entries[0].rect[3] / 2.0) as u32]);
+            [(bounds(&glyphs).unwrap()[2] / 2.0) as u32, (bounds(&glyphs).unwrap()[3] / 2.0) as u32]);
     }
 
     #[test]
@@ -335,6 +477,26 @@ mod tests {
     }
 
     #[test]
+    fn text_cache_resource_barrier_releases_recent_pool_ownership_but_keeps_recorded_readers() {
+        let (mut r,control,canvas,glyphs)=setup();
+        let mut pool=Pool::default();
+        frame(&mut pool,&mut r,&canvas,&glyphs);
+        frame(&mut pool,&mut r,&canvas,&glyphs);
+        assert!(pool.bytes()>0);
+        pool.begin_frame();
+        let cached=std::rc::Rc::downgrade(&pool.entries[0].target.tex.native);
+        let mut encoder=r.encoder();pool.draw_ui(&mut r,&mut encoder,&canvas,&glyphs,false);
+        let bytes=pool.bytes();
+        assert_eq!(pool.release_for_images(),bytes);
+        assert_eq!(pool.bytes(),0);assert!(pool.entries.is_empty());
+        assert!(cached.upgrade().is_some(),"recorded command must keep the sampled owner alive");
+        r.try_present(encoder,&canvas).unwrap();
+        assert!(cached.upgrade().is_none());
+        assert!(control.borrow().events.iter().any(|e|matches!(e,Event::Destroy(_))));
+        frame(&mut pool,&mut r,&canvas,&glyphs); // cache miss draws original glyphs
+    }
+
+    #[test]
     fn text_cache_missing_passthrough_shader_keeps_original_glyphs() {
         let (mut r, control, canvas, glyphs) = setup();
         control.borrow_mut().shader_capabilities &= !(1 << 24);
@@ -346,7 +508,7 @@ mod tests {
         let trace = control.borrow();
         assert!(!trace.events.iter().any(|event| matches!(event, Event::Create { .. })));
         assert_eq!(trace.events.iter().filter(|event| matches!(event,
-            Event::Draw { shader: EffectShader::RimText, .. })).count(), 8);
+            Event::Draw { shader: EffectShader::RimTextBatched, vertices, .. } if vertices.len() == 8 * 6)).count(), 1);
     }
 
     #[test]
@@ -383,6 +545,82 @@ mod tests {
             Event::Draw { shader, .. } => Some(*shader), _ => None,
         }).collect();
         assert_eq!(shaders, [EffectShader::Sprite, EffectShader::Alter, EffectShader::Sprite]);
+    }
+
+    #[test]
+    fn typing_prefixes_survive_reveals_and_finished_run_retires_their_old_surfaces() {
+        let (mut r, control, canvas, first) = setup();
+        let mut glyphs = first.clone();
+        for i in 8..17 {
+            let mut q = first[0].clone();
+            for p in &mut q.pos { p[0] += i as f32 * 13.; }
+            glyphs.push(q);
+        }
+        let mut pool = Pool::default();
+        frame(&mut pool, &mut r, &canvas, &glyphs[..16]);
+        frame(&mut pool, &mut r, &canvas, &glyphs[..16]);
+        assert_eq!(pool.entries.len(), 2);
+        control.borrow_mut().events.clear();
+        frame(&mut pool, &mut r, &canvas, &glyphs);
+        assert_eq!(pool.entries.len(), 2, "one new character must not rebake stable prefixes");
+        assert!(!control.borrow().events.iter().any(|e| matches!(e, Event::Create { .. })));
+        for _ in 0..2 {
+            pool.begin_frame();
+            let mut enc = r.encoder();
+            pool.draw_ui(&mut r, &mut enc, &canvas, &glyphs, true);
+            r.try_present(enc, &canvas).unwrap();
+        }
+        assert_eq!(pool.entries.len(), 1, "finished run replaces rather than retains duplicate prefixes");
+        assert!(pool.entries[0].promoted);
+    }
+
+    #[test]
+    fn scroll_reuses_only_integer_physical_pixel_translations() {
+        let (mut r, control, canvas, glyphs) = setup();
+        let mut pool = Pool::default();
+        frame(&mut pool, &mut r, &canvas, &glyphs);
+        frame(&mut pool, &mut r, &canvas, &glyphs);
+        let key = pool.entries[0].key.clone();
+        let mut scrolled = glyphs;
+        for q in &mut scrolled { for p in &mut q.pos { p[0] += 20.; p[1] += 4.; } }
+        control.borrow_mut().events.clear();
+        frame(&mut pool, &mut r, &canvas, &scrolled);
+        assert!(pool.observed.iter().any(|observed| observed == &key));
+        assert!(!control.borrow().events.iter().any(|e| matches!(e,
+            Event::Draw { shader: EffectShader::RimTextBatched, .. } | Event::Create { .. })));
+        for q in &mut scrolled { for p in &mut q.pos { p[0] += 0.5; } }
+        control.borrow_mut().events.clear();
+        frame(&mut pool, &mut r, &canvas, &scrolled);
+        assert!(pool.observed.iter().all(|observed| observed != &key));
+        assert!(control.borrow().events.iter().any(|e| matches!(e,
+            Event::Draw { shader: EffectShader::RimTextBatched, .. })));
+    }
+
+    #[test]
+    fn ruby_and_short_lines_keep_glyph_geometry_and_order_without_partial_cache() {
+        let (mut r, control, canvas, mut glyphs) = setup();
+        // Four normal glyphs, two ruby glyphs, then a separate short line.
+        // Geometry, rather than language or font indices, defines row splits.
+        for (i, q) in glyphs.iter_mut().enumerate() {
+            q.color[0] = i as f32 / 16.;
+            if (4..6).contains(&i) { for p in &mut q.pos { p[1] -= 20.; } }
+            if i >= 6 { for p in &mut q.pos { p[1] += 50.; } }
+        }
+        let mut pool = Pool::default();
+        for _ in 0..2 {
+            control.borrow_mut().events.clear();
+            frame(&mut pool, &mut r, &canvas, &glyphs);
+            assert!(pool.entries.is_empty(), "each unfinished row is shorter than eight glyphs");
+            let trace = control.borrow();
+            let vertices: Vec<_> = trace.events.iter().filter_map(|e| match e {
+                Event::Draw { shader: EffectShader::RimTextBatched, vertices, .. } => Some(vertices), _ => None,
+            }).flatten().collect();
+            assert_eq!(vertices.len(), 8 * 6);
+            for (i, v) in vertices.chunks_exact(6).enumerate() {
+                assert!(v.iter().all(|vertex| vertex.color[0] == i as f32 / 16.));
+                assert!((v[0].pos[1] - (1. - glyphs[i].pos[0][1] / 540.)).abs() < 0.00001);
+            }
+        }
     }
 
     #[test]

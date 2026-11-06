@@ -7,6 +7,7 @@
 #include KV_GXM_BACKEND_SOURCE
 int sceGxmTextureValidate(const SceGxmTexture *t) { (void)t; return 0; }
 int sceGxmTextureSetData(SceGxmTexture *t, const void *data) { (void)t; (void)data; return 0; }
+int sceGxmTextureSetPalette(SceGxmTexture *t, const void *data) { (void)t; (void)data; return 0; }
 
 static volatile unsigned int host_completion[BATCH_SLOTS];
 volatile unsigned int *sceGxmGetNotificationRegion(void) { return host_completion; }
@@ -558,7 +559,57 @@ static void seal_invalid(void) {
     EXPECT(!g.closing && !call_order && !destroys && !memory_frees);
     printf("%s attachment release rejects active, foreign and unsupported textures\n",failures==before?"PASS":"FAIL");
 }
+static void material_specialization(void) {
+    ++cases;
+    const uint32_t old_options = kv_render_options();
+    kv_render_set_options(old_options | KV_OPT_SHADER_SPECIALIZATION);
+    KvEffectVertex v[6] = {0};
+    float params[8] = {1,0,960,540,-1,0,0,0};
+    KvEffects e = {0};
+    const uint32_t plain[] = {0,1,2,3,6,7,9,16};
+    for (uint32_t p=0;p<8;++p) {
+        EXPECT(effect_material_variant(v,6,plain[p],params)==48+p);
+        /* Signed-zero amplitude and nonzero premultiply flag remain valid. */
+        v[0].haze[0][0]=-0.0f; v[0].haze[0][3]=1;
+        EXPECT(effect_material_variant(v,6,plain[p],params)==48+p);
+        v[5].haze[1][0]=0.01f;
+        EXPECT(effect_material_variant(v,6,plain[p],params)==plain[p]);
+        v[5].haze[1][0]=0; v[4].soft[2][0]=0.01f;
+        EXPECT(effect_material_variant(v,6,plain[p],params)==plain[p]);
+        v[4].soft[2][0]=0;
+    }
+    memset(v,0,sizeof(v));
+    for (uint32_t f=0;f<4;++f) {
+        for (uint32_t i=0;i<6;++i) { v[i].haze[1][3]=(f>>1)&1; v[i].haze[1][2]=f&1; }
+        EXPECT(effect_material_variant(v,6,4,params)==56+f);
+        v[5].haze[1][2]=1-v[5].haze[1][2];
+        EXPECT(effect_material_variant(v,6,4,params)==4);
+    }
+    for (uint32_t m=0;m<3;++m) {
+        params[4]=(float)m;
+        EXPECT(effect_material_variant(v,6,10,params)==60+m);
+    }
+    for (uint32_t op=1;op<=24;++op) {
+        params[0]=(float)op;
+        EXPECT(effect_material_variant(v,6,14,params)==63+op);
+        EXPECT(effect_material_variant(v,6,17,params)==87+op);
+        EXPECT(effect_fetch_shader(87+op));
+        /* No admission or driver failure: preserve the snapshot/fetch family. */
+        EXPECT(effect_admitted_variant(&e,v,6,14,5,params)==14);
+        EXPECT(effect_admitted_variant(&e,v,6,17,5,params)==17);
+        e.fragment[87+op][5][0]=(SceGxmFragmentProgram *)(void *)&context_token;
+        EXPECT(effect_admitted_variant(&e,v,6,17,5,params)==87+op);
+        EXPECT(effect_admitted_variant(&e,v,6,17,0,params)==17);
+    }
+    EXPECT(effect_admitted_variant(NULL,v,6,17,5,params)==17);
+    EXPECT(effect_material_variant(v,6,28,params)==28);
+    EXPECT(effect_material_variant(v,6,27,params)==27);
+    kv_render_set_options(0);
+    EXPECT(effect_admitted_variant(&e,v,6,17,5,params)==17);
+    kv_render_set_options(old_options);
+}
 int main(void) {
+    material_specialization();
     kv_perf_set_enabled(1);
     offscreen_sync_pressure();
     run(480,270,1,1,0,0);

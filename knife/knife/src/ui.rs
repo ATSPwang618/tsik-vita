@@ -22,6 +22,12 @@ mod startup_credits;
 pub use pad::Pad;
 pub use witch::last_atlas_error;
 
+/// The BGM of a Witch on the Holy Night title (`witch::title_bgm`): `Game::play_title_bgm` must
+/// not use the generic engine's title-stage table there (BGM 72 is a voice stream in that game).
+pub fn witch_title_bgm(game: &crate::game::Game) -> i32 {
+    witch::title_bgm(witch::title_complete(game))
+}
+
 const W: f32 = CANVAS_W as f32;
 const H: f32 = CANVAS_H as f32;
 const SLOTS_PER_PAGE: usize = 4;
@@ -1218,6 +1224,7 @@ impl Ui {
             let atlas = game.assets.ui_atlas(stem);
             match game.assets.ui_textures(r, &atlas) {
                 Ok(list) => {
+                    tracing::info!(target: "ui", atlas = %atlas, bindings = list.len(), "UI atlas ready");
                     if stem == "CONF_PARTS"
                         && let Some((_, t)) = list.get(19)
                     {
@@ -2397,7 +2404,8 @@ impl Ui {
         self.title_entries().iter().position(|e| e.0 == act)
     }
 
-    /// Debug: the title in PRESS ANY BUTTON mode, or a caution screen.
+    /// Debug: the title in PRESS ANY BUTTON mode, a caution screen, or one of the launch's supporter-credit
+    /// pages (states 69..=72 of the Witch on the Holy Night title).
     pub fn debug_intro(&mut self, game: &mut Game, r: &Renderer, name: &str) -> bool {
         match name {
             "press" => {
@@ -2414,6 +2422,8 @@ impl Ui {
                 self.intro = Some(Intro::Caution { idx: usize::from(name == "caution1"), a: 1.0, t: 0.0, out: false, white: 0.0 });
                 self.screen = Screen::Intro;
             }
+            // "credit1" / "credit2": parts.mrg #2 / #3 of the launch's supporter-credit pages
+            "credit1" | "credit2" => self.wt_credit_debug(game, r, usize::from(name == "credit2")),
             _ => return false,
         }
         true
@@ -4924,7 +4934,7 @@ impl Ui {
                 self.black_speed = 0.0;
                 self.store_global(game);
                 game.reset();
-                game.play_bgm(if crate::ui::witch::title_complete(game) { 42 } else { 65 }, 1.0, 0.0);
+                game.play_bgm(crate::ui::witch::title_bgm(crate::ui::witch::title_complete(game)), 1.0, 0.0);
                 self.title_movie = false;
                 self.black = 0.0;
                 self.warc_init(game, false);
@@ -5071,7 +5081,7 @@ impl Ui {
                 }
             }
             Action::OpenGallery => {
-                if !self.tex.contains_key("cg_thumb_all") {
+                if !self.tex.contains_key("cg_thumb_all") && !self.tex.contains_key("cg_thumb_page_0") {
                     match game.assets.ui_textures(r, &game.assets.ui_atlas("CG_THUMB_PARTS")) {
                         Ok(list) => self.tex.extend(list),
                         Err(e) => tracing::warn!("gallery thumbnails: {e:#}"),
@@ -5386,7 +5396,7 @@ impl Ui {
             // jp_48AC0 mode 2 state 3, jp_47A90: the title's BGM at once, the Archive with its panel up
             self.store_global(game);
             game.reset();
-            game.play_bgm(if crate::ui::witch::title_complete(game) { 42 } else { 65 }, 1.0, 0.0);
+            game.play_bgm(crate::ui::witch::title_bgm(crate::ui::witch::title_complete(game)), 1.0, 0.0);
             self.title_movie = false;
             self.black = 0.0;
             self.black_speed = 0.0;
@@ -6340,13 +6350,19 @@ impl Ui {
             self.end_story(game);
         }
         #[cfg(target_os = "vita")]
-        if !matches!(self.w.scr, witch::WScr::Menu | witch::WScr::Save)
-            || !(self.screen == Screen::Witch || self.stack.contains(&Screen::Witch))
         {
-            // Menu/save own this 4 MiB pair only while that UI phase is alive.
-            // Release before Game::render prepares the next scene's textures;
-            // recorded encoders still retain any outstanding GPU references.
-            self.w.backdrop_rt = None;
+            let story_menu = matches!(self.w.scr, witch::WScr::Menu | witch::WScr::Save)
+                && (self.screen == Screen::Witch || self.stack.contains(&Screen::Witch));
+            // draw_title calls ws_draw in state 25 without entering Screen::Witch.
+            // Keep its pair until that load page closes, including a dialog above
+            // the title. Dropping it here recreated/zeroed two 540p targets each frame.
+            let title_load = self.wt.st == 25
+                && (self.screen == Screen::Title || self.stack.contains(&Screen::Title));
+            if !story_menu && !title_load {
+                // Release before the next scene's texture admission. Native
+                // retirement still fences any submitted readers of this pair.
+                self.w.backdrop_rt = None;
+            }
         }
     }
 
@@ -6533,12 +6549,10 @@ impl Ui {
             if rc[1] + rc[3] < GAL_CLIP[0] || rc[1] > GAL_CLIP[1] {
                 continue;
             }
-            // cg_thumb_all cell (154 * (t % 36), 88 * (t / 36))
+            // Compact pages keep cell density independent of the full 5544x4840 sheet.
             if let Some(e) = self.cg_thumb(sub, id) {
-                use crate::gallery::{THUMB_COLS, THUMB_H, THUMB_W};
-                let t = e.thumb as u32;
-                let src = [(t % THUMB_COLS) as f32 * THUMB_W, (t / THUMB_COLS) as f32 * THUMB_H, THUMB_W, THUMB_H - 1.0];
-                self.sprite(out, "cg_thumb_all", rc, Some(src));
+                let (name, src) = crate::ui_images::cg_thumb_source(u32::from(e.thumb), self.tex.contains_key("cg_thumb_page_0"));
+                self.sprite(out, &name, rc, Some(src));
             }
             if cur == Some(id) {
                 // cg_cursor frame (prio 250) and over it its glow (prio 210; lower draws on top) at

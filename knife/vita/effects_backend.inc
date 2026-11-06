@@ -1,26 +1,35 @@
 /* Private implementation included by gxm_backend.c. No host GL/VitaGL path. */
 #include "shaders/generated/effects.h"
+#if defined(KV_VITA_TSUKIHIME) && defined(__vita__)
+/* A single copy of immutable binaries, shared with the offline provider. */
+const SceGxmProgram *kv_gxm_offline_effect_program(uint32_t shader) {
+    return (const SceGxmProgram *)knife_offline_effect(shader);
+}
+#endif
 
-enum { EFFECT_SHADERS = 26, EFFECT_BLENDS = 10, EFFECT_VERTICES = 32760 };
+enum { EFFECT_SHADERS = 112, EFFECT_PUBLIC_SHADERS = 29, EFFECT_BLENDS = 10, EFFECT_VERTICES = 32760 };
 struct KvEffects {
     Block buffer, vertex_usse, fragment_usse, vertices, indices;
     SceGxmShaderPatcher *patcher;
     SceGxmShaderPatcherId vertex_id, ids[EFFECT_SHADERS];
     const SceGxmProgram *source[EFFECT_SHADERS];
     int optional_status[EFFECT_SHADERS];
-    SceGxmVertexProgram *vertex, *compact_vertex, *constant_vertex;
+    SceGxmVertexProgram *vertex, *compact_vertex, *constant_vertex, *rim_vertex;
     SceGxmFragmentProgram *fragment[EFFECT_SHADERS][EFFECT_BLENDS][OUTPUT_MODES];
     /* Uniform handles are resolved once per patched program: a per-draw string
        lookup cost more than the draw itself on hardware. */
     const SceGxmProgramParameter *uniforms[EFFECT_SHADERS][EFFECT_BLENDS][OUTPUT_MODES][7];
+    uint16_t chain_admitted; /* Per material pair; never shifted into capability bits. */
     uint32_t used;
     /* Index cursor for the open scene: the vertex stream is bound once per scene and
        each draw only advances this, as the reference Vita renderer does. */
     uint32_t index_used;
     uint32_t index_base;
 };
+static int effect_chain_variant(uint32_t shader) { return shader >= 32 && shader < 48; }
 static int effect_fetch_shader(uint32_t shader) {
-    return (shader >= 17 && shader <= 21) || shader == 23 || shader == 25;
+    return (shader >= 17 && shader <= 21) || shader == 23 || shader == 25 || shader == 27 || effect_chain_variant(shader)
+        || (shader >= 88 && shader < 112);
 }
 static int effect_ps_shader(uint32_t shader) { return shader == 14 || effect_fetch_shader(shader); }
 static const SceGxmProgram *legacy_effect_source(uint32_t shader) {
@@ -37,6 +46,9 @@ static const SceGxmProgram *legacy_effect_source(uint32_t shader) {
     return shader < EFFECT_SHADERS ? programs[shader] : NULL;
 }
 static const SceGxmProgram *effect_source(uint32_t shader) {
+#ifdef KV_VITA_TSUKIHIME
+    if (shader >= 48) return (const SceGxmProgram *)knife_offline_effect(shader);
+#endif
     const SceGxmProgram *runtime = kv_runtime_shader_program(shader);
     return runtime ? runtime : legacy_effect_source(shader);
 }
@@ -46,14 +58,32 @@ static const SceGxmProgram *bound_effect_source(const KvEffects *e, uint32_t sha
 static const char *const effect_uniform_names[7] = {
     "uTex0Size", "uTex1Size", "uSoftLutSize", "uQuadHx", "uQuadHy", "tu.params", "tu.params2" };
 static const uint32_t effect_uniform_counts[7] = { 2, 2, 2, 4, 4, 4, 4 };
-enum { EFFECT_STREAM_FULL, EFFECT_STREAM_ZERO, EFFECT_STREAM_CONSTANT,
+enum { EFFECT_STREAM_FULL, EFFECT_STREAM_ZERO, EFFECT_STREAM_CONSTANT, EFFECT_STREAM_RIM64,
     EFFECT_CONSTANT_BYTES = 80 };
+typedef struct KvRimVertex { Vertex base; float hx[4], hy[4]; } KvRimVertex;
+_Static_assert(sizeof(KvRimVertex) == 64, "RimText vertex stream ABI");
+_Static_assert(offsetof(KvRimVertex,hx) == offsetof(KvEffectVertex,haze), "RimText hx prefix ABI");
+_Static_assert(offsetof(KvRimVertex,hy) == offsetof(KvEffectVertex,haze)+16, "RimText hy prefix ABI");
 _Static_assert(offsetof(KvEffectVertex, haze) == sizeof(Vertex), "compact attributes ABI");
 _Static_assert(sizeof(KvEffectVertex) - sizeof(Vertex) == EFFECT_CONSTANT_BYTES, "constant stream ABI");
 static void effect_compact_attributes(SceGxmVertexAttribute attributes[8], int constants) {
     for (uint32_t i = 3; i < 8; ++i) {
         attributes[i].streamIndex = 1;
         attributes[i].offset = constants ? (i - 3) * 16 : 0;
+    }
+}
+/* Keep every generated-VS attribute bound. hx and hy.xyz retain each glyph's
+ * exact F32 bounds/steps/strength. Only soft reads the shared zero float4.
+ * Packed RGB24 remains a fragment uniform from the original CPU hy.w; the
+ * shader never decodes its interpolated vertex copy. */
+static void effect_rim_attributes(SceGxmVertexAttribute attributes[8]) {
+    attributes[3].streamIndex = 0;
+    attributes[3].offset = offsetof(KvRimVertex,hx);
+    attributes[4].streamIndex = 0;
+    attributes[4].offset = offsetof(KvRimVertex,hy);
+    for (uint32_t i = 5; i < 8; ++i) {
+        attributes[i].streamIndex = 1;
+        attributes[i].offset = 0;
     }
 }
 /* effect_inputs has already rejected nonfinite data. Compare representations so
@@ -70,13 +100,32 @@ static uint32_t effect_stream_layout(const KvEffectVertex *vertices, uint32_t co
         if (first[i]) return EFFECT_STREAM_CONSTANT;
     return EFFECT_STREAM_ZERO;
 }
+static uint32_t effect_draw_stream_layout(const KvEffectVertex *vertices, uint32_t count,
+    uint32_t shader, uint32_t options, int zero_ready, int constant_ready, int rim_ready) {
+    if (!(options & KV_OPT_BATCH_ARENA)) return EFFECT_STREAM_FULL;
+    if (shader == 28) return (options & KV_OPT_COMPACT_STREAM) && rim_ready
+        ? EFFECT_STREAM_RIM64 : EFFECT_STREAM_FULL;
+    // Preserve the existing full/constant/zero selection for every other entry.
+    if (!zero_ready && !constant_ready) return EFFECT_STREAM_FULL;
+    uint32_t layout=effect_stream_layout(vertices,count);
+    if (layout == EFFECT_STREAM_ZERO && !zero_ready)
+        layout=constant_ready ? EFFECT_STREAM_CONSTANT : EFFECT_STREAM_FULL;
+    if (layout == EFFECT_STREAM_CONSTANT && !constant_ready) layout=EFFECT_STREAM_FULL;
+    return layout;
+}
 static uint32_t effect_stream_bytes(uint32_t count, uint32_t layout) {
+    if (layout == EFFECT_STREAM_RIM64) return count * sizeof(KvRimVertex);
     return count * (layout ? sizeof(Vertex) : sizeof(KvEffectVertex))
         + (layout == EFFECT_STREAM_CONSTANT ? EFFECT_CONSTANT_BYTES : 0);
 }
 static void effect_stream_write(void *destination, const KvEffectVertex *vertices,
     uint32_t count, uint32_t layout) {
     if (!layout) { memcpy(destination, vertices, count * sizeof(*vertices)); return; }
+    if (layout == EFFECT_STREAM_RIM64) {
+        for (uint32_t i = 0; i < count; ++i)
+            memcpy((uint8_t *)destination+i*sizeof(KvRimVertex),&vertices[i],sizeof(KvRimVertex));
+        return;
+    }
     for (uint32_t i = 0; i < count; ++i)
         memcpy((uint8_t *)destination + i * sizeof(Vertex), &vertices[i], sizeof(Vertex));
     if (layout == EFFECT_STREAM_CONSTANT)
@@ -146,11 +195,23 @@ static int effects_initialize(KvGxm *g) {
             CHECK(g, sceGxmShaderPatcherReleaseVertexProgram(e->patcher, e->constant_vertex));
             e->constant_vertex = NULL;
         }
-        char line[192];
+        effect_rim_attributes(attributes);
+        const SceGxmVertexStream rim_stream[2] = {
+            { .stride = sizeof(KvRimVertex), .indexSource = SCE_GXM_INDEX_SOURCE_INDEX_16BIT },
+            { .stride = 0, .indexSource = SCE_GXM_INDEX_SOURCE_INDEX_16BIT } };
+        const int rim_status = sceGxmShaderPatcherCreateVertexProgram(e->patcher,e->vertex_id,
+            attributes,8,rim_stream,2,&e->rim_vertex);
+        if (rim_status < 0 && e->rim_vertex) {
+            CHECK(g,sceGxmShaderPatcherReleaseVertexProgram(e->patcher,e->rim_vertex));
+            e->rim_vertex=NULL;
+        }
+        char line[288];
         const int length = snprintf(line, sizeof(line),
             "{\"kind\":\"compact_stream\",\"enabled\":%u,\"patch_status\":%d,"
-            "\"constant_enabled\":%u,\"constant_patch_status\":%d}\n",
-            e->compact_vertex != NULL, compact_status, e->constant_vertex != NULL, constant_status);
+            "\"constant_enabled\":%u,\"constant_patch_status\":%d,"
+            "\"rim64_enabled\":%u,\"rim64_patch_status\":%d}\n",
+            e->compact_vertex != NULL, compact_status, e->constant_vertex != NULL, constant_status,
+            e->rim_vertex != NULL,rim_status);
         if (length > 0 && (size_t)length < sizeof(line)) (void)kv_perf_console(line, (uint32_t)length);
     }
     for (uint32_t i = 0; i < EFFECT_SHADERS; ++i) {
@@ -158,7 +219,7 @@ static int effects_initialize(KvGxm *g) {
         if (!fs) continue; /* Optional PsFetch has no unsafe legacy equivalent. */
         int status = sceGxmProgramCheck(fs); ++g->stats.program_checks;
         if (status >= 0) status = sceGxmShaderPatcherRegisterProgram(e->patcher, fs, &e->ids[i]);
-        const int optional = fs != legacy_effect_source(i);
+        const int optional = fs != legacy_effect_source(i) || kv_runtime_shader_available(i);
         if (status < 0 && optional) {
             e->optional_status[i] = status;
             if (e->ids[i]) {
@@ -171,7 +232,7 @@ static int effects_initialize(KvGxm *g) {
             if (!fs) continue;
             status = sceGxmProgramCheck(fs); ++g->stats.program_checks;
             if (status >= 0) status = sceGxmShaderPatcherRegisterProgram(e->patcher, fs, &e->ids[i]);
-        } else if (status >= 0 && optional) g->shader_capabilities |= 1U << i;
+        } else if (status >= 0 && optional && i < 32) g->shader_capabilities |= 1U << i;
         if (status < 0) return fail(g, "effects program registration", status);
         e->source[i] = fs;
         const char *samplers[] = { "tex0", "tex1", "tex2", "soft_lut" };
@@ -249,7 +310,7 @@ static int disable_optional_shader(KvGxm *g, uint32_t shader) {
         CHECK(g, sceGxmShaderPatcherUnregisterProgram(e->patcher, e->ids[shader]));
         e->ids[shader] = NULL;
     }
-    g->shader_capabilities &= ~(1U << shader);
+    if (shader < 32) g->shader_capabilities &= ~(1U << shader);
     e->source[shader] = legacy_effect_source(shader);
     if (e->source[shader]) CHECK(g, sceGxmShaderPatcherRegisterProgram(e->patcher, e->source[shader], &e->ids[shader]));
     return 0;
@@ -262,7 +323,7 @@ static int effects_text_cache_initialize_program(KvGxm *g, const SceGxmProgram *
     /* Shader capability bits describe optional fast paths. A mandatory entry
        need not have bit 11 set; require the actual registered runtime program
        instead. The bundled legacy Alter has a different colour contract. */
-    if (!g->effects || !runtime || runtime == legacy_effect_source(11)
+    if (!g->effects || !runtime || (runtime == legacy_effect_source(11) && runtime != kv_runtime_shader_program(11))
         || !g->effects->ids[11] || bound_effect_source(g->effects, 11) != runtime)
         return KV_STATE;
     const uint32_t shader[] = {4, 5, 11}, blend[] = {9, 9, 0};
@@ -276,14 +337,61 @@ static int effects_text_cache_initialize_program(KvGxm *g, const SceGxmProgram *
 static int effects_text_cache_initialize(KvGxm *g) {
     return effects_text_cache_initialize_program(g, kv_runtime_shader_program(11));
 }
+static int chain_op_index(uint32_t op) {
+    switch (op) { case 2: return 0; case 11: return 1; case 13: return 2; case 19: return 3; default: return -1; }
+}
+static int chain_pair_index(uint32_t a, uint32_t b) {
+    const int first=chain_op_index(a), second=chain_op_index(b);
+    return first < 0 || second < 0 ? -1 : first * 4 + second;
+}
+static uint32_t effect_primary_count(const SceGxmProgram *program) {
+    uint32_t count=0;
+    /* Registered programs already passed complete GXP validation. This is the
+       same header field recorded by runtime_shaders.c for cache/compile logs. */
+    if (program) memcpy(&count,(const uint8_t *)program+60,sizeof(count));
+    return count;
+}
+static int chain_cost_admitted(uint32_t chain, uint32_t a, uint32_t b) {
+    return chain && a && b && (uint64_t)chain <= (uint64_t)a+b;
+}
+static int effects_chain_initialize(KvGxm *g) {
+    g->shader_capabilities &= ~(1U << 27);
+    KvEffects *e=g->effects;
+    if (!e) return 0;
+    e->chain_admitted=0;
+    const uint32_t ops[4]={2,11,13,19}, single[4]={25,20,21,23};
+    for (uint32_t pair=0;pair<16;++pair) {
+        const uint32_t shader=32+pair, a=single[pair/4], b=single[pair%4];
+        const uint32_t cost=effect_primary_count(e->source[shader]);
+        const uint32_t ca=effect_primary_count(e->source[a]), cb=effect_primary_count(e->source[b]);
+        const int base_ready=e->fragment[a][5][0] && e->fragment[b][5][0];
+        const int cost_ok=base_ready && chain_cost_admitted(cost,ca,cb);
+        int status=e->ids[shader] && cost_ok ? effects_program_mode(g,shader,5,0) : KV_STATE;
+        if (status >= 0) e->chain_admitted |= (uint16_t)(1U << pair);
+        else if (e->ids[shader]) CHECK(g,disable_optional_shader(g,shader));
+        char line[320];
+        const int length=snprintf(line,sizeof(line),
+            "{\"kind\":\"shader_chain_variant\",\"shader\":%u,\"op_a\":%u,\"op_b\":%u,"
+            "\"primary\":%u,\"single_primary_sum\":%u,\"cost_admitted\":%u,\"patch_status\":%d,\"admitted\":%u}\n",
+            shader,ops[pair/4],ops[pair%4],cost,ca+cb,cost_ok,status,status>=0);
+        if (length>0 && (size_t)length<sizeof(line)) (void)kv_perf_console(line,(uint32_t)length);
+    }
+    if (e->chain_admitted) g->shader_capabilities |= 1U << 27;
+    return 0;
+}
+int32_t kv_gxm_chain_pair_available(KvGxm *g, uint32_t first, uint32_t second) {
+    if (!active(g)) return KV_STATE;
+    const int pair=chain_pair_index(first,second);
+    return g->effects && pair>=0 && (g->effects->chain_admitted & (1U << pair)) ? 1 : 0;
+}
 static int effects_optional_initialize(KvGxm *g) {
-    int status_by_shader[9] = {0};
-    const uint32_t optional[9] = {15, 17, 18, 19, 20, 21, 22, 23, 25};
+    int status_by_shader[11] = {0};
+    const uint32_t optional[11] = {15, 17, 18, 19, 20, 21, 22, 23, 25, 26, 28};
     int available = kv_runtime_shader_available(11);
-    for (uint32_t i = 0; i < 9; ++i) available |= kv_runtime_shader_available(optional[i]);
+    for (uint32_t i = 0; i < 11; ++i) available |= kv_runtime_shader_available(optional[i]);
     if (available) {
         CHECK(g, effects_ensure(g));
-        for (uint32_t i = 0; i < 9; ++i) {
+        for (uint32_t i = 0; i < 11; ++i) {
             const uint32_t shader = optional[i];
             status_by_shader[i] = g->effects->optional_status[shader];
             if (!(g->shader_capabilities & (1U << shader))) continue;
@@ -296,23 +404,56 @@ static int effects_optional_initialize(KvGxm *g) {
             if (status < 0) CHECK(g, disable_optional_shader(g, shader));
         }
     }
+    CHECK(g, effects_chain_initialize(g));
     const int text_cache_status = effects_text_cache_initialize(g);
-    char line[980];
+#ifdef KV_VITA_TSUKIHIME
+    /* Reserve required fallback programs first. Optional specialization must
+       never consume the fixed patcher arena needed by a later ordinary draw. */
+    for (uint32_t shader = 0; shader <= 16; ++shader)
+        for (uint32_t blend = 0; blend < EFFECT_BLENDS; ++blend)
+            CHECK(g, effects_program_mode(g, shader, blend, 0));
+    /* All private variants are admitted before recording. A rejected program
+       retains the generic path, including its required backdrop snapshot. */
+    unsigned specialized = 0;
+    for (uint32_t shader = 48; shader < EFFECT_SHADERS; ++shader) {
+        if (!(kv_render_options() & KV_OPT_SHADER_SPECIALIZATION)) break;
+        if (!g->effects || !g->effects->ids[shader]) continue;
+        int status = 0;
+        for (uint32_t blend = 0; status >= 0 && blend < EFFECT_BLENDS; ++blend) {
+            if (shader >= 64 && blend != 5) continue;
+            status = effects_program_mode(g, shader, blend, 0);
+        }
+        if (status < 0) CHECK(g, disable_optional_shader(g, shader));
+        else ++specialized;
+    }
+    char specialization_log[160];
+    const int specialization_length = snprintf(specialization_log, sizeof(specialization_log),
+        "{\"kind\":\"offline_shader_specialization\",\"admitted\":%u,\"total\":63,\"runtime_compile\":false}\n", specialized);
+    if (specialization_length > 0 && (size_t)specialization_length < sizeof(specialization_log))
+        (void)kv_perf_console(specialization_log, (uint32_t)specialization_length);
+#endif
+    char line[1280];
     const int length = snprintf(line, sizeof(line),
         "{\"kind\":\"shader_capabilities\",\"color_contract\":\"encoded-unorm8-uchar4\",\"group15\":%u,\"ps_fetch17\":%u,\"ps_fetch19\":%u,"
         "\"ps_group19\":%u,\"ps_fetch11\":%u,\"ps_fetch13\":%u,\"plain_sprite22\":%u,\"plain_ps19_23\":%u,\"ps_fetch2_25\":%u,"
         "\"group_patch_status\":%d,\"fetch_patch_status\":%d,\"fetch19_patch_status\":%d,"
         "\"group19_patch_status\":%d,\"fetch11_patch_status\":%d,\"fetch13_patch_status\":%d,"
+        "\"plain_forcealpha26\":%u,\"plain_forcealpha_patch_status\":%d,"
         "\"plain_sprite_patch_status\":%d,\"plain_ps19_patch_status\":%d,\"fetch2_patch_status\":%d,"
+        "\"blend_chain27\":%u,\"blend_chain_patch_status\":%d,"
+        "\"rim_text28\":%u,\"rim_text_patch_status\":%d,"
         "\"text_cache24\":%u,\"text_cache_patch_status\":%d,"
-        "\"fallback_routes\":\"group19:19/18/17/14;op2:25/17/14;op11:20/17/14;op13:21/17/14;sprite:22/0;op19:23/18/17/14\"}\n",
+        "\"fallback_routes\":\"group19:19/18/17/14;op2:25/17/14;op11:20/17/14;op13:21/17/14;sprite:22/0;forcealpha:26/2;op19:23/18/17/14\"}\n",
         (g->shader_capabilities >> 15) & 1U, (g->shader_capabilities >> 17) & 1U,
         (g->shader_capabilities >> 18) & 1U, (g->shader_capabilities >> 19) & 1U,
         (g->shader_capabilities >> 20) & 1U, (g->shader_capabilities >> 21) & 1U,
         (g->shader_capabilities >> 22) & 1U, (g->shader_capabilities >> 23) & 1U,
         (g->shader_capabilities >> 25) & 1U,
         status_by_shader[0], status_by_shader[1], status_by_shader[2], status_by_shader[3],
-        status_by_shader[4], status_by_shader[5], status_by_shader[6], status_by_shader[7], status_by_shader[8],
+        status_by_shader[4], status_by_shader[5],
+        (g->shader_capabilities >> 26) & 1U, status_by_shader[9], status_by_shader[6], status_by_shader[7], status_by_shader[8],
+        (g->shader_capabilities >> 27) & 1U, g->effects && g->effects->chain_admitted ? 0 : KV_STATE,
+        (g->shader_capabilities >> 28) & 1U, status_by_shader[10],
         (g->shader_capabilities >> 24) & 1U, text_cache_status);
     if (length > 0 && (size_t)length < sizeof(line)) (void)kv_perf_console(line, (uint32_t)length);
     return 0;
@@ -331,6 +472,7 @@ static int effects_destroy(KvGxm *g) {
         }
         if (e->ids[s]) { CHECK(g, sceGxmShaderPatcherUnregisterProgram(e->patcher, e->ids[s])); e->ids[s] = NULL; }
     }
+    if (e->rim_vertex) { CHECK(g,sceGxmShaderPatcherReleaseVertexProgram(e->patcher,e->rim_vertex)); e->rim_vertex=NULL; }
     if (e->constant_vertex) { CHECK(g, sceGxmShaderPatcherReleaseVertexProgram(e->patcher, e->constant_vertex)); e->constant_vertex = NULL; }
     if (e->compact_vertex) { CHECK(g, sceGxmShaderPatcherReleaseVertexProgram(e->patcher, e->compact_vertex)); e->compact_vertex = NULL; }
     if (e->vertex) { CHECK(g, sceGxmShaderPatcherReleaseVertexProgram(e->patcher, e->vertex)); e->vertex = NULL; }
@@ -388,33 +530,71 @@ int32_t kv_gxm_texture_seal(KvGxm *g, KvGxmTexture *t) {
     if (result < 0) { g->closing = 1; return fail(g, "sealing baked texture retained owner", result); }
     return 0;
 }
+/* Exact RGBA keys; alpha (and RGB below alpha zero) are never quantized.
+   At most half full, so every lookup terminates in a fixed 512-slot table. */
+static uint32_t palette_slot(const uint32_t *colors, const uint16_t *slots, uint32_t color) {
+    uint32_t slot=(color*2654435761U)>>23;
+    while (slots[slot]!=UINT16_MAX && colors[slots[slot]]!=color) slot=(slot+1)&511;
+    return slot;
+}
 int32_t kv_gxm_texture_create_ex(KvGxm *g, const uint8_t *data, uint32_t width,
     uint32_t height, uint32_t stride, uint32_t format, uint32_t srgb,
     uint32_t linear, uint32_t render_target, KvGxmTexture **out) {
     if (!active(g) || !out || g->scene_open || !width || !height || width > 2048 || height > 2048
-        || format > 1 || srgb != 0 || linear > 1 || render_target > 1
-        || (format == 1 && (srgb || render_target))) return KV_BAD_ARGUMENT;
+        || format > 3 || srgb != 0 || linear > 1 || render_target > 1
+        || (format != 0 && (srgb || render_target))
+        || (format >= 2 && !data)) return KV_BAD_ARGUMENT;
     *out = NULL;
-    const uint32_t bpp = format ? 1 : 4;
-    if (data && (stride < width * bpp || stride > 2048 * 4)) return KV_BAD_ARGUMENT;
+    const uint32_t indexed=format==3;
+    const uint32_t bpp = format == 1 || indexed ? 1 : format == 2 ? 3 : 4;
+    const uint32_t source_bpp = bpp == 3 || indexed ? 4 : bpp;
+    if (data && (stride < width * source_bpp || stride > 2048 * 4)) return KV_BAD_ARGUMENT;
+    if (bpp == 3) for (uint32_t y=0;y<height;++y) for (uint32_t x=0;x<width;++x)
+        if (data[y*stride+x*4+3] != 255) return KV_BAD_ARGUMENT;
+    uint32_t colors[256]={0}, count=0;
+    uint16_t slots[512];
+    if (indexed) {
+        memset(slots,0xff,sizeof(slots));
+        for (uint32_t y=0;y<height;++y) for (uint32_t x=0;x<width;++x) {
+            uint32_t color; memcpy(&color,data+y*stride+x*4,4);
+            const uint32_t slot=palette_slot(colors,slots,color);
+            if (slots[slot]==UINT16_MAX) {
+                if (count==256) return KV_BAD_ARGUMENT;
+                colors[count]=color; slots[slot]=(uint16_t)count++;
+            }
+        }
+    }
     KvGxmTexture *t = calloc(1, sizeof(*t));
     if (!t) return fail(g, "effects texture owner", KV_ALLOC);
     t->width = width; t->height = height; t->pitch = (width + 7) & ~7U;
     t->bpp = bpp; t->srgb = srgb; t->owner = g;
+    t->palette_offset=indexed ? (t->pitch*height+SCE_GXM_PALETTE_ALIGNMENT-1)&~(SCE_GXM_PALETTE_ALIGNMENT-1) : 0;
     t->next = g->textures; g->textures = t;
     const char *stage = "effects texture CDRAM allocation";
-    int result = texture_pixels_alloc(g, &t->pixels, t->pitch * height * bpp);
+    int result = texture_pixels_alloc(g, &t->pixels,
+        indexed ? t->palette_offset+sizeof(colors) : t->pitch * height * bpp);
 #define EFFECT_TEXTURE_STEP(label, expression) do { if (result >= 0) { stage = label; result = (expression); } } while (0)
     if (result >= 0) {
         texture_initialize_padding(t, render_target ? KV_PERF_ZERO_TARGET : KV_PERF_ZERO_LINEAR, data != NULL);
         const uint64_t copy_started = kv_perf_begin();
-        if (data) for (uint32_t y = 0; y < height; ++y)
-            memcpy((uint8_t *)t->pixels.base + y * t->pitch * bpp, data + y * stride, width * bpp);
+        if (data) for (uint32_t y = 0; y < height; ++y) {
+            uint8_t *row=(uint8_t *)t->pixels.base+y*t->pitch*bpp;
+            if (indexed) for (uint32_t x=0;x<width;++x) {
+                uint32_t color; memcpy(&color,data+y*stride+x*4,4);
+                row[x]=(uint8_t)slots[palette_slot(colors,slots,color)];
+            }
+            else if (bpp==3) for (uint32_t x=0;x<width;++x) memcpy(row+x*3,data+y*stride+x*4,3);
+            else memcpy(row,data+y*stride,width*bpp);
+        }
+        if (indexed) memcpy((uint8_t *)t->pixels.base+t->palette_offset,colors,sizeof(colors));
         if (data) kv_perf_end(bpp == 1 ? KV_PERF_UPLOAD_R8 : KV_PERF_UPLOAD_RGBA,
             copy_started, (uint64_t)width * height * bpp, t->pixels.size);
     }
     EFFECT_TEXTURE_STEP("effects texture init", sceGxmTextureInitLinear(&t->descriptor, t->pixels.base,
-        format ? SCE_GXM_TEXTURE_FORMAT_U8_RRRR : SCE_GXM_TEXTURE_FORMAT_A8B8G8R8, width, height, 0));
+        indexed ? SCE_GXM_TEXTURE_FORMAT_P8_ABGR : format == 1 ? SCE_GXM_TEXTURE_FORMAT_U8_RRRR : format == 2 ? SCE_GXM_TEXTURE_FORMAT_U8U8U8_BGR
+            : SCE_GXM_TEXTURE_FORMAT_A8B8G8R8, width, height, 0));
+    if (indexed) EFFECT_TEXTURE_STEP("effects texture palette",sceGxmTextureSetPalette(&t->descriptor,
+        (uint8_t *)t->pixels.base+t->palette_offset));
     const SceGxmTextureFilter filter = linear ? SCE_GXM_TEXTURE_FILTER_LINEAR : SCE_GXM_TEXTURE_FILTER_POINT;
     EFFECT_TEXTURE_STEP("effects min filter", sceGxmTextureSetMinFilter(&t->descriptor, filter));
     EFFECT_TEXTURE_STEP("effects mag filter", sceGxmTextureSetMagFilter(&t->descriptor, filter));
@@ -495,7 +675,7 @@ int32_t kv_gxm_texture_create_compressed(KvGxm *g, const uint8_t *data,
 int32_t kv_gxm_texture_update(KvGxm *g, KvGxmTexture *t, uint32_t x, uint32_t y,
     uint32_t width, uint32_t height, const uint8_t *data, uint32_t stride) {
     if (!active(g) || g->scene_open || !texture_owned(g, t) || !data
-        || t->storage != KV_TEXTURE_LINEAR || (t->bpp != 1 && t->bpp != 4)
+        || t->storage != KV_TEXTURE_LINEAR || t->palette_offset || (t->bpp != 1 && t->bpp != 4)
         || !width || !height || x > t->width || y > t->height
         || width > t->width - x || height > t->height - y
         || stride < width * t->bpp || stride > 2048 * 4) return KV_BAD_ARGUMENT;
@@ -588,22 +768,25 @@ int32_t kv_gxm_end_target(KvGxm *g) {
 static int packed_integer(float value, float low, float high) {
     return value >= low && value <= high && truncf(value) == value;
 }
+static int chain_ps_op(float op) { return op == 2 || op == 11 || op == 13 || op == 19; }
 static int effect_inputs(const KvEffectVertex *v, uint32_t count, uint32_t shader, uint32_t blend,
     const float params[8]) {
     if (!v || !params || !count || count % 3 || count > EFFECT_VERTICES
-        || shader >= EFFECT_SHADERS || blend >= EFFECT_BLENDS || shader == 24
+        || shader >= EFFECT_PUBLIC_SHADERS || blend >= EFFECT_BLENDS || shader == 24
         || (effect_fetch_shader(shader) && blend != 5)
         || ((shader == 18 || shader == 19 || shader == 23) && params[0] != 19.0f)
         || (shader == 20 && params[0] != 11.0f)
         || (shader == 21 && params[0] != 13.0f)
         || (shader == 25 && params[0] != 2.0f)) return KV_BAD_ARGUMENT;
     for (uint32_t i = 0; i < 8; ++i)
-        if (!isfinite(params[i]) || (shader == 22 && params[i] != 0)) return KV_BAD_ARGUMENT;
+        if (!isfinite(params[i]) || ((shader == 22 || shader == 26 || shader == 28) && params[i] != 0)) return KV_BAD_ARGUMENT;
     if (((shader >= 19 && shader <= 21) || shader == 25) && (params[1] != 0 || params[4] >= 0 || params[6] != 0
         || params[7] != (shader == 19 ? 1.0f : 0.0f)))
         return KV_BAD_ARGUMENT;
     if (shader == 23 && (!packed_integer(params[1],0,1) || !packed_integer(params[6],0,1)
         || params[4] >= 0 || params[5] != 0 || params[7] != 0)) return KV_BAD_ARGUMENT;
+    if (shader == 27 && (!chain_ps_op(params[0]) || !chain_ps_op(params[1])
+        || params[4] != -1 || params[5] != 0 || params[6] != 0 || params[7] != 0)) return KV_BAD_ARGUMENT;
     for (uint32_t i = 0; i < count; ++i) {
         /* The struct has only floats and its ABI is asserted, but pointer
            arithmetic may not legally walk across distinct struct members. */
@@ -612,8 +795,9 @@ static int effect_inputs(const KvEffectVertex *v, uint32_t count, uint32_t shade
         for (uint32_t j = 0; j < 28; ++j) if (!isfinite(floats[j])) return KV_BAD_ARGUMENT;
         for (uint32_t row = 0; row < 2; ++row)
             for (uint32_t j = 0; j < 4; ++j)
-                if (v[i].haze[row][j] != v[0].haze[row][j]) return KV_BAD_ARGUMENT;
-        if (shader >= 19) {
+                if (!((shader == 27 && row == 0 && j < 2) || (shader == 28 && (row == 0 || j < 3)))
+                    && v[i].haze[row][j] != v[0].haze[row][j]) return KV_BAD_ARGUMENT;
+        if (shader >= 19 && shader != 27 && shader != 28) {
             // Specialised entries have an exact no-haze/no-soft ABI.
             // Refuse a direct FFI caller which would silently lose haze/soft.
             for (uint32_t row = 0; row < 2; ++row)
@@ -623,11 +807,23 @@ static int effect_inputs(const KvEffectVertex *v, uint32_t count, uint32_t shade
                 for (uint32_t j = 0; j < 4; ++j)
                     if (v[i].soft[row][j] != 0) return KV_BAD_ARGUMENT;
         }
+        if (shader == 27) {
+            if (v[i].haze[0][2] != 0 || v[i].haze[0][3] != 0) return KV_BAD_ARGUMENT;
+            for (uint32_t row = 0; row < 3; ++row)
+                for (uint32_t j = 0; j < 4; ++j) if (v[i].soft[row][j] != 0) return KV_BAD_ARGUMENT;
+        }
+        if (shader == 28) {
+            for (uint32_t j = 0; j < 4; ++j)
+                if (v[i].haze[0][j] != v[i - i % 3].haze[0][j]) return KV_BAD_ARGUMENT;
+            for (uint32_t j = 0; j < 3; ++j)
+                if (v[i].haze[1][j] != v[i - i % 3].haze[1][j]) return KV_BAD_ARGUMENT;
+            if (v[i].haze[1][2] < 0 || v[i].haze[1][2] > 1) return KV_BAD_ARGUMENT;
+        }
         if (v[i].soft[2][0] < 0) return KV_BAD_ARGUMENT;
         if (v[i].soft[2][0] > 0 && (!packed_integer(v[i].soft[2][1],0,17)
             || !packed_integer(v[i].soft[2][2],1,256))) return KV_BAD_ARGUMENT;
     }
-    if (shader == 5 && (!packed_integer(v[0].haze[1][3],0,16777215)
+    if ((shader == 5 || shader == 28) && (!packed_integer(v[0].haze[1][3],0,16777215)
         || v[0].haze[1][2] < 0 || v[0].haze[1][2] > 1)) return KV_BAD_ARGUMENT;
     if ((shader == 9 || (shader == 8 && params[2] > 0.5f))
         && !packed_integer(params[1],8,2047)) return KV_BAD_ARGUMENT;
@@ -641,6 +837,38 @@ static int effect_inputs(const KvEffectVertex *v, uint32_t count, uint32_t shade
         || !packed_integer(params[4],0,2))) return KV_BAD_ARGUMENT;
     return 0;
 }
+/* Called only after effect_inputs has validated finite values/operation ranges.
+ * Check every vertex: a batch may contain differing haze or text flags. */
+static uint32_t effect_material_variant(const KvEffectVertex *v, uint32_t count,
+    uint32_t shader, const float params[8]) {
+    if (shader == 14) return 63U + (uint32_t)params[0];
+    if (shader == 17) return 87U + (uint32_t)params[0];
+    if (shader == 10) return 60U + (uint32_t)params[4];
+    if (!count) return shader;
+    if (shader == 4) {
+        const uint32_t flags = (v[0].haze[1][3] > .5f ? 2U : 0U)
+            | (v[0].haze[1][2] > .5f ? 1U : 0U);
+        for (uint32_t i = 1; i < count; ++i)
+            if (((v[i].haze[1][3] > .5f ? 2U : 0U)
+                | (v[i].haze[1][2] > .5f ? 1U : 0U)) != flags) return shader;
+        return 56U + flags;
+    }
+    const uint32_t plain[] = {0, 1, 2, 3, 6, 7, 9, 16};
+    for (uint32_t p = 0; p < 8; ++p) if (shader == plain[p]) {
+        for (uint32_t i = 0; i < count; ++i)
+            if (v[i].haze[0][0] != 0 || v[i].haze[1][0] != 0 || v[i].soft[2][0] > 0)
+                return shader;
+        return 48U + p;
+    }
+    return shader;
+}
+static uint32_t effect_admitted_variant(const KvEffects *e, const KvEffectVertex *v,
+    uint32_t count, uint32_t shader, uint32_t blend, const float params[8]) {
+    if (!(kv_render_options() & KV_OPT_SHADER_SPECIALIZATION)) return shader;
+    const uint32_t candidate = effect_material_variant(v, count, shader, params);
+    return e && candidate < EFFECT_SHADERS && blend < EFFECT_BLENDS
+        && e->fragment[candidate][blend][0] ? candidate : shader;
+}
 static int32_t draw_effect_inner(KvGxm *g, const KvEffectVertex *vertices, uint32_t count,
     uint32_t shader, uint32_t blend, const KvGxmTexture *const input[4], const float params[8]) {
     if (!active(g) || !g->scene_open || !input) return KV_STATE;
@@ -648,6 +876,11 @@ static int32_t draw_effect_inner(KvGxm *g, const KvEffectVertex *vertices, uint3
     const int inputs = effect_inputs(vertices,count,shader,blend,params);
     kv_perf_end(KV_PERF_DRAW_VALIDATE, phase, (uint64_t)count * sizeof(*vertices), inputs < 0);
     if (inputs < 0) return KV_BAD_ARGUMENT;
+    if (shader == 27) {
+        const int pair = chain_pair_index((uint32_t)params[0], (uint32_t)params[1]);
+        if (!g->effects || pair < 0 || !(g->effects->chain_admitted & (1U << pair))) return KV_STATE;
+        shader = 32U + (uint32_t)pair;
+    }
     const KvGxmTexture *textures[4];
     for (uint32_t i = 0; i < 4; ++i) {
         textures[i] = input[i] ? input[i] : g->white;
@@ -656,15 +889,11 @@ static int32_t draw_effect_inner(KvGxm *g, const KvEffectVertex *vertices, uint3
     for (uint32_t i = 0; i < 4; ++i) CHECK(g, require_scene_read(g, textures[i]));
     CHECK(g, effects_ensure(g));
     KvEffects *e = g->effects;
+    shader = effect_admitted_variant(e, vertices, count, shader, blend, params);
     if (!(kv_render_options() & KV_OPT_BATCH_ARENA) && count > EFFECT_VERTICES - e->used)
         return fail(g, "effects scene vertex budget", KV_BUDGET);
-    uint32_t layout = EFFECT_STREAM_FULL;
-    if ((kv_render_options() & KV_OPT_BATCH_ARENA) && (e->compact_vertex || e->constant_vertex)) {
-        layout = effect_stream_layout(vertices, count);
-        if (layout == EFFECT_STREAM_ZERO && !e->compact_vertex)
-            layout = e->constant_vertex ? EFFECT_STREAM_CONSTANT : EFFECT_STREAM_FULL;
-        if (layout == EFFECT_STREAM_CONSTANT && !e->constant_vertex) layout = EFFECT_STREAM_FULL;
-    }
+    const uint32_t layout = effect_draw_stream_layout(vertices,count,shader,kv_render_options(),
+        e->compact_vertex != NULL,e->constant_vertex != NULL,e->rim_vertex != NULL);
     const uint32_t stream_bytes = effect_stream_bytes(count, layout);
     void *stream_vertices = NULL;
     CHECK(g, batch_vertices(g, stream_bytes, &stream_vertices));
@@ -674,7 +903,8 @@ static int32_t draw_effect_inner(KvGxm *g, const KvEffectVertex *vertices, uint3
     CHECK(g, program);
     phase = kv_perf_begin();
     const SceGxmProgram *fs = bound_effect_source(e, shader);
-    sceGxmSetVertexProgram(g->context, layout == EFFECT_STREAM_CONSTANT ? e->constant_vertex
+    sceGxmSetVertexProgram(g->context, layout == EFFECT_STREAM_RIM64 ? e->rim_vertex
+        : layout == EFFECT_STREAM_CONSTANT ? e->constant_vertex
         : layout == EFFECT_STREAM_ZERO ? e->compact_vertex : e->vertex);
     sceGxmSetFragmentProgram(g->context, e->fragment[shader][blend][output_mode(g)]);
     for (uint32_t i = 0; i < 4; ++i)
@@ -716,7 +946,8 @@ static int32_t draw_effect_inner(KvGxm *g, const KvEffectVertex *vertices, uint3
     const int draw_result = sceGxmDraw(g->context, SCE_GXM_PRIMITIVE_TRIANGLES, SCE_GXM_INDEX_FORMAT_U16, e->indices.base, count);
     kv_perf_end(KV_PERF_DRAW_SUBMIT, phase, 0, draw_result < 0);
     CHECK(g, draw_result);
-    if (effect_ps_shader(shader)) scene_ps_use(g, (uint32_t)params[0]);
+    if (effect_ps_shader(shader) || (shader >= 64 && shader < 88)) scene_ps_use(g, (uint32_t)params[0]);
+    if (effect_chain_variant(shader)) scene_ps_use(g, (uint32_t)params[1]);
     kv_gxm_timing_counters.draw_gxm_us += kv_probe_now() - gxm_start;
     ++kv_gxm_timing_counters.draw_calls;
     e->used += count; ++g->stats.draws;
@@ -736,6 +967,10 @@ int32_t kv_gxm_draw_effect(KvGxm *g, const KvEffectVertex *vertices, uint32_t co
         if (shader == 22) kv_perf_end_at(KV_PERF_DRAW_PLAIN_SPRITE, started, finished, 0, 0);
         if (shader == 23) kv_perf_end_at(KV_PERF_DRAW_PS19_PLAIN, started, finished, 0, 0);
         if (shader == 25) kv_perf_end_at(KV_PERF_DRAW_PS2, started, finished, 0, 0);
+        if (shader == 2) kv_perf_end_at(KV_PERF_DRAW_FORCEALPHA, started, finished, 0, 0);
+        if (shader == 26) kv_perf_end_at(KV_PERF_DRAW_PLAIN_FORCEALPHA, started, finished, 0, 0);
+        if (shader == 27) kv_perf_end_at(KV_PERF_DRAW_BLEND_CHAIN, started, finished, 0, 0);
+        if (shader == 28) kv_perf_end_at(KV_PERF_DRAW_RIM_BATCHED, started, finished, 0, 0);
     }
     if (blend == 8) kv_perf_end_at(KV_PERF_DRAW_MASK_ALPHA, started, finished, 0, result < 0);
     if (shader == 15 || shader == 16) kv_perf_end_at(KV_PERF_DRAW_GROUP, started, finished, 0, result < 0);
@@ -747,6 +982,7 @@ int32_t kv_gxm_copy_texture(KvGxm *g, const KvGxmTexture *source, KvGxmTexture *
     if (!active(g) || g->scene_open || source == destination
         || !texture_owned(g,source) || !texture_owned(g,destination)
         || source->storage != KV_TEXTURE_LINEAR || destination->storage != KV_TEXTURE_LINEAR
+        || source->palette_offset || destination->palette_offset
         || source->width != destination->width || source->height != destination->height
         || (source->bpp != 1 && source->bpp != 4)
         || source->bpp != destination->bpp || source->srgb != destination->srgb) return KV_BAD_ARGUMENT;
@@ -812,16 +1048,21 @@ int32_t kv_gxm_present_canvas(KvGxm *g, const KvGxmTexture *canvas) {
 }
 int32_t kv_gxm_texture_read(KvGxm *g, const KvGxmTexture *texture, uint8_t *data, uint32_t capacity) {
     if (!active(g) || g->scene_open || !texture_owned(g,texture) || !data
-        || texture->storage != KV_TEXTURE_LINEAR || (texture->bpp != 1 && texture->bpp != 4)
-        || capacity < texture->width * texture->height * texture->bpp) return KV_BAD_ARGUMENT;
+        || texture->storage != KV_TEXTURE_LINEAR || (texture->bpp != 1 && texture->bpp != 3 && texture->bpp != 4)
+        || capacity < texture->width * texture->height * (texture->palette_offset ? 4 : texture->bpp)) return KV_BAD_ARGUMENT;
     if (async_submission(g)) CHECK(g, wait_submitted(g, KV_PERF_FINISH_READBACK));
     else perf_finish(g->context, KV_PERF_FINISH_READBACK);
     CHECK(g, perf_transfer_finish(KV_PERF_TRANSFER_READBACK));
     const uint64_t copy_started = kv_perf_begin();
-    for (uint32_t y = 0; y < texture->height; ++y)
+    if (texture->palette_offset) {
+        const uint8_t *palette=(uint8_t *)texture->pixels.base+texture->palette_offset;
+        for (uint32_t y=0;y<texture->height;++y) for (uint32_t x=0;x<texture->width;++x)
+            memcpy(data+(y*texture->width+x)*4,palette+((uint8_t *)texture->pixels.base)[y*texture->pitch+x]*4,4);
+    } else for (uint32_t y = 0; y < texture->height; ++y)
         memcpy(data + y * texture->width * texture->bpp,
             (uint8_t *)texture->pixels.base + y * texture->pitch * texture->bpp,
             texture->width * texture->bpp);
-    kv_perf_end(KV_PERF_READBACK, copy_started, (uint64_t)texture->width * texture->height * texture->bpp, 0);
+    kv_perf_end(KV_PERF_READBACK, copy_started, (uint64_t)texture->width * texture->height
+        * (texture->palette_offset ? 4 : texture->bpp), 0);
     return 0;
 }

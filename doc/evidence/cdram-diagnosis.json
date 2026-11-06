@@ -1,0 +1,68 @@
+{
+  "date": "2026-11-02",
+  "device_log": {
+    "path": "C:\\Users\\26241\\Desktop\\log.txt",
+    "bytes": 1110242,
+    "sha256": "c599a162a9d658423043bfececbc9011daa512a8ef514bfb87f549fe1880e3f2",
+    "observed_build_tag": "tsukihime540-ui-log-20261102",
+    "excerpt": [
+      "02:52:50 : {\"kind\":\"resource_event\",\"schema\":1,\"scene\":1,\"pc\":5309,\"status\":\"pending\",\"detail\":\"rebake cohort; old complete stage retained\"}",
+      "02:52:51 : [TSUKIHIME] WARN knife::assets: image GPU upload AOK_A_21_00_N01_03_03: uploading baked AOK_A_21_00_N01_03_03: GXM: effects texture CDRAM allocation: 0x80024309 (0x80024309)",
+      "02:52:51 : {\"kind\":\"resource_event\",\"schema\":1,\"scene\":1,\"pc\":5309,\"status\":\"failed\",\"detail\":\"AOK_A_21_00_N01_03_03: image registration/upload failed\"}"
+    ],
+    "nearby_reported_kernel_cdram_free": 15728640,
+    "nearby_gxm_cdram_mapped": 84672512,
+    "nearby_parameter_reserved": 16777216,
+    "timing_scope": "nearby sampling windows, not an atomic allocation snapshot"
+  },
+  "screenshot": {
+    "path": "D:\\AI-PSVITA\\PSV-ARTEMIS\\VitaDeck\\screenshots\\2026-11-02-015319.jpg",
+    "local_file_available": false,
+    "sha256": null,
+    "visual_source": "user supplied conversation image"
+  },
+  "failure": {
+    "scene": 1,
+    "pc": 5309,
+    "image": "AOK_A_21_00_N01_03_03",
+    "code": "0x80024309",
+    "vita_sdk_name": "SCE_KERNEL_ERROR_NO_FREE_PHYSICAL_PAGE_CDRAM",
+    "stage": "effects texture CDRAM allocation",
+    "is_dimension_rejection": false,
+    "corrupt_file_observed": false,
+    "exact_fragmentation_layout_observed": false
+  },
+  "asset": {
+    "archive": "w_allpac",
+    "index": 2685,
+    "entry": "AOK_A_21_00_N01_03_03.NXGZ",
+    "logical": [
+      2591,
+      2582
+    ],
+    "selected_physical": [
+      1020,
+      1016
+    ],
+    "rgba_bytes": 4145280,
+    "rgba_pitch_bytes": 4161536,
+    "rgba_pool_slice_bytes": 4161536,
+    "rgba_new_page_bytes": 4194304,
+    "native_new_page_bytes": 1048576
+  },
+  "fix": [
+    "Reserve actual native pixels before texture creation, pooled and non-pooled.",
+    "Transfer the same reservation to the matching upload; at most one reservation.",
+    "Clean physical-page or policy pressure uses bounded LRU reclamation.",
+    "Complete submitted-frame pins are preserved; non-memory/unsafe SDK failures stop.",
+    "Route parts codec9 through native deferred GXT instead of PNG/JPEG decode."
+  ],
+  "regression_red": {
+    "expected_failing_tests": 2,
+    "evidence": "current-test-results.txt"
+  },
+  "new_build_tag": "tsukihime540-cdram-20261102",
+  "new_vpk_sha256": "f0d66b01409ebc4fb04bf0e7ec44e8bfbed293a95e1247ec44f108340b04db6e",
+  "hardware_retest_of_new_build": false,
+  "runtime_verified": false
+}

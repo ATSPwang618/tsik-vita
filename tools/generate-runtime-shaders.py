@@ -29,5 +29,5 @@ if args.check:
     if not output.exists() or output.read_text() != generated:
         raise SystemExit("runtime_source.h is stale; run python3 tools/generate-runtime-shaders.py")
 else:
-    output.write_text(generated)
+    output.write_bytes(generated.encode('utf-8'))
 print(output.relative_to(ROOT), hashlib.sha256(data).hexdigest())

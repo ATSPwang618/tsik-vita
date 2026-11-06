@@ -1,6 +1,7 @@
 Repository: https://github.com/AuroraWright/knife
 Version: 0.9.4
 Base commit: 8de7f3b147e1c430fdfdc66af0ced7e79f8ab642
-Local branch: work/woh-540p-chengkong
-Local modifications: KIMG / KATL texture conversion and loading; alpha-aware PNG / baseline JPEG profile and editable image exports; Ogg Opus streams; 960x540 GPU canvas; logical UI atlas coordinates; native 540p MP4 playback; local Windows build and QA support.
+Vita reference: ATSPwang618/mofa-vita, perf/render at 46fc68859918c5107eeee534c8c00a05654301be.
+Current project: ATSPwang618/tsik-vita (Tsukihime overseas, KNIF00541).
+Local modifications: Tsukihime JA/ZC assets and fonts; KIMG/KATL/GXT loading; paged CG thumbnails; 960x540 native GXM canvas; Vita audio/movie workers and bounded caches; Circle confirm/Cross cancel; unified TSUKIHIME-RE data directory; SDK 64-bit file offsets in the 32-bit ARMv7 build.
 This source snapshot contains the local modifications. It is not an unchanged upstream checkout.

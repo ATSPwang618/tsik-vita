@@ -1,0 +1,198 @@
+
+/mnt/d/AI-CODEX/tsik-vita/.work/vita/game-release-tsukihime-540p/knife.elf:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+8112a4ac <<knife_core::file_io::native::NativeFile as std::io::Seek>::seek>:
+8112a4ac:	b5b0      	push	{r4, r5, r7, lr}
+8112a4ae:	b086      	sub	sp, #24
+8112a4b0:	9b0b      	ldr	r3, [sp, #44]	@ 0x2c
+8112a4b2:	4605      	mov	r5, r0
+8112a4b4:	b11a      	cbz	r2, 8112a4be <<knife_core::file_io::native::NativeFile as std::io::Seek>::seek+0x12>
+8112a4b6:	2a01      	cmp	r2, #1
+8112a4b8:	d105      	bne.n	8112a4c6 <<knife_core::file_io::native::NativeFile as std::io::Seek>::seek+0x1a>
+8112a4ba:	2402      	movs	r4, #2
+8112a4bc:	e004      	b.n	8112a4c8 <<knife_core::file_io::native::NativeFile as std::io::Seek>::seek+0x1c>
+8112a4be:	2b00      	cmp	r3, #0
+8112a4c0:	d418      	bmi.n	8112a4f4 <<knife_core::file_io::native::NativeFile as std::io::Seek>::seek+0x48>
+8112a4c2:	2400      	movs	r4, #0
+8112a4c4:	e000      	b.n	8112a4c8 <<knife_core::file_io::native::NativeFile as std::io::Seek>::seek+0x1c>
+8112a4c6:	2401      	movs	r4, #1
+8112a4c8:	9a0a      	ldr	r2, [sp, #40]	@ 0x28
+8112a4ca:	6808      	ldr	r0, [r1, #0]
+8112a4cc:	9400      	str	r4, [sp, #0]
+8112a4ce:	f127 e9b8 	blx	81251840 <sceIoLseek>
+8112a4d2:	2900      	cmp	r1, #0
+8112a4d4:	d403      	bmi.n	8112a4de <<knife_core::file_io::native::NativeFile as std::io::Seek>::seek+0x32>
+8112a4d6:	e9c5 0102 	strd	r0, r1, [r5, #8]
+8112a4da:	2000      	movs	r0, #0
+8112a4dc:	e019      	b.n	8112a512 <<knife_core::file_io::native::NativeFile as std::io::Seek>::seek+0x66>
+8112a4de:	e9cd 0100 	strd	r0, r1, [sp]
+8112a4e2:	f647 51f4 	movw	r1, #32244	@ 0x7df4
+8112a4e6:	1d28      	adds	r0, r5, #4
+8112a4e8:	f2c8 115d 	movt	r1, #33117	@ 0x815d
+8112a4ec:	220a      	movs	r2, #10
+8112a4ee:	f7ff fbcc 	bl	81129c8a <knife_core::file_io::native::sdk_error>
+8112a4f2:	e00d      	b.n	8112a510 <<knife_core::file_io::native::NativeFile as std::io::Seek>::seek+0x64>
+8112a4f4:	a802      	add	r0, sp, #8
+8112a4f6:	f247 22eb 	movw	r2, #29419	@ 0x72eb
+8112a4fa:	3004      	adds	r0, #4
+8112a4fc:	f2c8 125d 	movt	r2, #33117	@ 0x815d
+8112a500:	2114      	movs	r1, #20
+8112a502:	231a      	movs	r3, #26
+8112a504:	f038 fe4e 	bl	811631a4 <<std::io::error::Error>::new::<&str>>
+8112a508:	e9dd 0103 	ldrd	r0, r1, [sp, #12]
+8112a50c:	e9c5 0101 	strd	r0, r1, [r5, #4]
+8112a510:	2001      	movs	r0, #1
+8112a512:	6028      	str	r0, [r5, #0]
+8112a514:	b006      	add	sp, #24
+8112a516:	bdb0      	pop	{r4, r5, r7, pc}
+
+8112a518 <<anyhow::error::ContextError<alloc::string::String, anyhow::Error> as core::fmt::Display>::fmt>:
+8112a518:	460b      	mov	r3, r1
+8112a51a:	e9d0 1201 	ldrd	r1, r2, [r0, #4]
+8112a51e:	4618      	mov	r0, r3
+8112a520:	f6eb bdbe 	b.w	810160a0 <<core::fmt::Formatter>::pad>
+
+8112a524 <<anyhow::error::ContextError<alloc::string::String, std::io::error::Error> as core::fmt::Display>::fmt>:
+8112a524:	460b      	mov	r3, r1
+8112a526:	e9d0 1201 	ldrd	r1, r2, [r0, #4]
+8112a52a:	4618      	mov	r0, r3
+8112a52c:	f6eb bdb8 	b.w	810160a0 <<core::fmt::Formatter>::pad>
+
+8112a530 <<anyhow::error::ContextError<&str, alloc::collections::TryReserveError> as core::fmt::Display>::fmt>:
+8112a530:	460b      	mov	r3, r1
+8112a532:	e9d0 1200 	ldrd	r1, r2, [r0]
+8112a536:	4618      	mov	r0, r3
+8112a538:	f6eb bdb2 	b.w	810160a0 <<core::fmt::Formatter>::pad>
+
+8112a53c <<anyhow::error::ContextError<&str, core::num::error::TryFromIntError> as core::fmt::Display>::fmt>:
+8112a53c:	460b      	mov	r3, r1
+8112a53e:	e9d0 1200 	ldrd	r1, r2, [r0]
+8112a542:	4618      	mov	r0, r3
+8112a544:	f6eb bdac 	b.w	810160a0 <<core::fmt::Formatter>::pad>
+
+8112a548 <<anyhow::wrapper::DisplayError<alloc::string::String> as core::fmt::Debug>::fmt>:
+8112a548:	460b      	mov	r3, r1
+8112a54a:	e9d0 1201 	ldrd	r1, r2, [r0, #4]
+8112a54e:	4618      	mov	r0, r3
+8112a550:	f6eb bda6 	b.w	810160a0 <<core::fmt::Formatter>::pad>
+
+8112a554 <<anyhow::wrapper::DisplayError<&str> as core::fmt::Debug>::fmt>:
+8112a554:	460b      	mov	r3, r1
+8112a556:	e9d0 1200 	ldrd	r1, r2, [r0]
+8112a55a:	4618      	mov	r0, r3
+8112a55c:	f6eb bda0 	b.w	810160a0 <<core::fmt::Formatter>::pad>
+
+8112a560 <<flate2::crc::CrcReader<flate2::deflate::bufread::DeflateDecoder<core::io::cursor::Cursor<&[u8]>>> as std::io::Read>::read>:
+8112a560:	e92d 41f0 	stmdb	sp!, {r4, r5, r6, r7, r8, lr}
+8112a564:	b084      	sub	sp, #16
+8112a566:	4615      	mov	r5, r2
+8112a568:	4680      	mov	r8, r0
+8112a56a:	461e      	mov	r6, r3
+8112a56c:	9300      	str	r3, [sp, #0]
+8112a56e:	f101 0210 	add.w	r2, r1, #16
+8112a572:	a802      	add	r0, sp, #8
+8112a574:	462b      	mov	r3, r5
+8112a576:	460f      	mov	r7, r1
+8112a578:	f7f5 fce9 	bl	8111ff4e <flate2::zio::read::<core::io::cursor::Cursor<&[u8]>, flate2::mem::Decompress>>
+8112a57c:	f89d 0008 	ldrb.w	r0, [sp, #8]
+8112a580:	28ff      	cmp	r0, #255	@ 0xff
+8112a582:	d007      	beq.n	8112a594 <<flate2::crc::CrcReader<flate2::deflate::bufread::DeflateDecoder<core::io::cursor::Cursor<&[u8]>>> as std::io::Read>::read+0x34>
+8112a584:	e9dd 0402 	ldrd	r0, r4, [sp, #8]
+8112a588:	43c1      	mvns	r1, r0
+8112a58a:	0609      	lsls	r1, r1, #24
+8112a58c:	d003      	beq.n	8112a596 <<flate2::crc::CrcReader<flate2::deflate::bufread::DeflateDecoder<core::io::cursor::Cursor<&[u8]>>> as std::io::Read>::read+0x36>
+8112a58e:	e9c8 0400 	strd	r0, r4, [r8]
+8112a592:	e010      	b.n	8112a5b6 <<flate2::crc::CrcReader<flate2::deflate::bufread::DeflateDecoder<core::io::cursor::Cursor<&[u8]>>> as std::io::Read>::read+0x56>
+8112a594:	9c03      	ldr	r4, [sp, #12]
+8112a596:	42b4      	cmp	r4, r6
+8112a598:	d810      	bhi.n	8112a5bc <<flate2::crc::CrcReader<flate2::deflate::bufread::DeflateDecoder<core::io::cursor::Cursor<&[u8]>>> as std::io::Read>::read+0x5c>
+8112a59a:	6bb8      	ldr	r0, [r7, #56]	@ 0x38
+8112a59c:	4629      	mov	r1, r5
+8112a59e:	4622      	mov	r2, r4
+8112a5a0:	4420      	add	r0, r4
+8112a5a2:	63b8      	str	r0, [r7, #56]	@ 0x38
+8112a5a4:	f107 0028 	add.w	r0, r7, #40	@ 0x28
+8112a5a8:	f6f0 fcd3 	bl	8101af52 <<crc32fast::Hasher>::update>
+8112a5ac:	20ff      	movs	r0, #255	@ 0xff
+8112a5ae:	f8c8 4004 	str.w	r4, [r8, #4]
+8112a5b2:	f888 0000 	strb.w	r0, [r8]
+8112a5b6:	b004      	add	sp, #16
+8112a5b8:	e8bd 81f0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, pc}
+8112a5bc:	f647 6310 	movw	r3, #32272	@ 0x7e10
+8112a5c0:	2000      	movs	r0, #0
+8112a5c2:	f2c8 135d 	movt	r3, #33117	@ 0x815d
+8112a5c6:	4621      	mov	r1, r4
+8112a5c8:	4632      	mov	r2, r6
+8112a5ca:	f6d6 f86d 	bl	810006a8 <core::slice::index::slice_index_fail>
+
+8112a5ce <<&mut core::iter::traits::iterator::Iterator::position::check<&knife_core::format::archive::archive_cache::Tiny, <knife_core::format::archive::archive_cache::Cache>::invalidate::{closure#1}>::{closure#0} as core::ops::function::FnMut<((), &knife_core::format::archive::archive_cache::Tiny)>>::call_mut>:
+8112a5ce:	b510      	push	{r4, lr}
+8112a5d0:	f8d0 c000 	ldr.w	ip, [r0]
+8112a5d4:	e9d1 3002 	ldrd	r3, r0, [r1, #8]
+8112a5d8:	f8dc e000 	ldr.w	lr, [ip]
+8112a5dc:	e9de 2400 	ldrd	r2, r4, [lr]
+8112a5e0:	4060      	eors	r0, r4
+8112a5e2:	ea82 0203 	eor.w	r2, r2, r3
+8112a5e6:	4310      	orrs	r0, r2
+8112a5e8:	d117      	bne.n	8112a61a <<&mut core::iter::traits::iterator::Iterator::position::check<&knife_core::format::archive::archive_cache::Tiny, <knife_core::format::archive::archive_cache::Cache>::invalidate::{closure#1}>::{closure#0} as core::ops::function::FnMut<((), &knife_core::format::archive::archive_cache::Tiny)>>::call_mut+0x4c>
+8112a5ea:	e9de 0202 	ldrd	r0, r2, [lr, #8]
+8112a5ee:	e9d1 3404 	ldrd	r3, r4, [r1, #16]
+8112a5f2:	4062      	eors	r2, r4
+8112a5f4:	ea80 0003 	eor.w	r0, r0, r3
+8112a5f8:	4310      	orrs	r0, r2
+8112a5fa:	d10e      	bne.n	8112a61a <<&mut core::iter::traits::iterator::Iterator::position::check<&knife_core::format::archive::archive_cache::Tiny, <knife_core::format::archive::archive_cache::Cache>::invalidate::{closure#1}>::{closure#0} as core::ops::function::FnMut<((), &knife_core::format::archive::archive_cache::Tiny)>>::call_mut+0x4c>
+8112a5fc:	f8be 0010 	ldrh.w	r0, [lr, #16]
+8112a600:	8b0a      	ldrh	r2, [r1, #24]
+8112a602:	4282      	cmp	r2, r0
+8112a604:	d109      	bne.n	8112a61a <<&mut core::iter::traits::iterator::Iterator::position::check<&knife_core::format::archive::archive_cache::Tiny, <knife_core::format::archive::archive_cache::Cache>::invalidate::{closure#1}>::{closure#0} as core::ops::function::FnMut<((), &knife_core::format::archive::archive_cache::Tiny)>>::call_mut+0x4c>
+8112a606:	f8be 0012 	ldrh.w	r0, [lr, #18]
+8112a60a:	8b49      	ldrh	r1, [r1, #26]
+8112a60c:	4281      	cmp	r1, r0
+8112a60e:	d104      	bne.n	8112a61a <<&mut core::iter::traits::iterator::Iterator::position::check<&knife_core::format::archive::archive_cache::Tiny, <knife_core::format::archive::archive_cache::Cache>::invalidate::{closure#1}>::{closure#0} as core::ops::function::FnMut<((), &knife_core::format::archive::archive_cache::Tiny)>>::call_mut+0x4c>
+8112a610:	f8dc 0004 	ldr.w	r0, [ip, #4]
+8112a614:	6801      	ldr	r1, [r0, #0]
+8112a616:	2001      	movs	r0, #1
+8112a618:	bd10      	pop	{r4, pc}
+8112a61a:	f8dc 0004 	ldr.w	r0, [ip, #4]
+8112a61e:	6801      	ldr	r1, [r0, #0]
+8112a620:	3101      	adds	r1, #1
+8112a622:	6001      	str	r1, [r0, #0]
+8112a624:	2000      	movs	r0, #0
+8112a626:	bd10      	pop	{r4, pc}
+
+8112a628 <<&mut core::iter::traits::iterator::Iterator::position::check<&(knife_core::format::archive::archive_cache::Key, knife_core::format::archive::archive_cache::Plan), <knife_core::format::archive::archive_cache::Cache>::store_header::{closure#0}>::{closure#0} as core::ops::function::FnMut<((), &(knife_core::format::archive::archive_cache::Key, knife_core::format::archive::archive_cache::Plan))>>::call_mut>:
+8112a628:	b510      	push	{r4, lr}
+8112a62a:	f8d0 c000 	ldr.w	ip, [r0]
+8112a62e:	e9d1 3000 	ldrd	r3, r0, [r1]
+8112a632:	f8dc e000 	ldr.w	lr, [ip]
+8112a636:	e9de 2400 	ldrd	r2, r4, [lr]
+8112a63a:	4060      	eors	r0, r4
+8112a63c:	ea82 0203 	eor.w	r2, r2, r3
+8112a640:	4310      	orrs	r0, r2
+8112a642:	d117      	bne.n	8112a674 <<&mut core::iter::traits::iterator::Iterator::position::check<&(knife_core::format::archive::archive_cache::Key, knife_core::format::archive::archive_cache::Plan), <knife_core::format::archive::archive_cache::Cache>::store_header::{closure#0}>::{closure#0} as core::ops::function::FnMut<((), &(knife_core::format::archive::archive_cache::Key, knife_core::format::archive::archive_cache::Plan))>>::call_mut+0x4c>
+8112a644:	e9de 0202 	ldrd	r0, r2, [lr, #8]
+8112a648:	e9d1 3402 	ldrd	r3, r4, [r1, #8]
+8112a64c:	4062      	eors	r2, r4
+8112a64e:	ea80 0003 	eor.w	r0, r0, r3
+8112a652:	4310      	orrs	r0, r2
+8112a654:	d10e      	bne.n	8112a674 <<&mut core::iter::traits::iterator::Iterator::position::check<&(knife_core::format::archive::archive_cache::Key, knife_core::format::archive::archive_cache::Plan), <knife_core::format::archive::archive_cache::Cache>::store_header::{closure#0}>::{closure#0} as core::ops::function::FnMut<((), &(knife_core::format::archive::archive_cache::Key, knife_core::format::archive::archive_cache::Plan))>>::call_mut+0x4c>
+8112a656:	f8be 0010 	ldrh.w	r0, [lr, #16]
+8112a65a:	8a0a      	ldrh	r2, [r1, #16]
+8112a65c:	4282      	cmp	r2, r0
+8112a65e:	d109      	bne.n	8112a674 <<&mut core::iter::traits::iterator::Iterator::position::check<&(knife_core::format::archive::archive_cache::Key, knife_core::format::archive::archive_cache::Plan), <knife_core::format::archive::archive_cache::Cache>::store_header::{closure#0}>::{closure#0} as core::ops::function::FnMut<((), &(knife_core::format::archive::archive_cache::Key, knife_core::format::archive::archive_cache::Plan))>>::call_mut+0x4c>
+8112a660:	f8be 0012 	ldrh.w	r0, [lr, #18]
+8112a664:	8a49      	ldrh	r1, [r1, #18]
+8112a666:	4281      	cmp	r1, r0
+8112a668:	d104      	bne.n	8112a674 <<&mut core::iter::traits::iterator::Iterator::position::check<&(knife_core::format::archive::archive_cache::Key, knife_core::format::archive::archive_cache::Plan), <knife_core::format::archive::archive_cache::Cache>::store_header::{closure#0}>::{closure#0} as core::ops::function::FnMut<((), &(knife_core::format::archive::archive_cache::Key, knife_core::format::archive::archive_cache::Plan))>>::call_mut+0x4c>
+8112a66a:	f8dc 0004 	ldr.w	r0, [ip, #4]
+8112a66e:	6801      	ldr	r1, [r0, #0]
+8112a670:	2001      	movs	r0, #1
+8112a672:	bd10      	pop	{r4, pc}
+8112a674:	f8dc 0004 	ldr.w	r0, [ip, #4]
+8112a678:	6801      	ldr	r1, [r0, #0]
+8112a67a:	3101      	adds	r1, #1
+8112a67c:	6001      	str	r1, [r0, #0]
+8112a67e:	2000      	movs	r0, #0

@@ -1,0 +1,5375 @@
+{
+  "schema": 1,
+  "inputs": {
+    "knife/vita/shaders/effects.cg": "a67370f222f6c21657c14dd917cf4a42ab6af9544e4063ffe8fb7d62f7ed966d",
+    "tools/compile-vita-offline-shaders.py": "f9402a53225caff1aeff00a26eb01f4c6cf8fbb440cdc9342573d8b983e89f5d",
+    "knife/knife-render/src/shader.wgsl": "56d2d1048a80d0762714f52b629b6f55eb6479b355a54439ffd0c6d56853836f",
+    "knife/vita/shaders/quad_v.cg": "5e1ef53d8a5270ed69599c3587d8b58ece8ee0f6fd4df306d8b574ef52b0c3c7",
+    "knife/vita/shaders/quad_f.cg": "fdb7711305a759d179e9ca1ca7a67b77180dcb0f6c609ba4eeb0dbaf524f92b5"
+  },
+  "inventory": [
+    {
+      "name": "vs_main",
+      "entry": "vs_main",
+      "shader": null,
+      "defines": [
+        "KNIFE_VERTEX_SHADER=1"
+      ]
+    },
+    {
+      "name": "fs_sprite",
+      "entry": "fs_sprite",
+      "shader": 0,
+      "defines": []
+    },
+    {
+      "name": "fs_noalpha",
+      "entry": "fs_noalpha",
+      "shader": 1,
+      "defines": []
+    },
+    {
+      "name": "fs_forcealpha",
+      "entry": "fs_forcealpha",
+      "shader": 2,
+      "defines": []
+    },
+    {
+      "name": "fs_fill",
+      "entry": "fs_fill",
+      "shader": 3,
+      "defines": []
+    },
+    {
+      "name": "fs_text",
+      "entry": "fs_text",
+      "shader": 4,
+      "defines": []
+    },
+    {
+      "name": "fs_rim_text",
+      "entry": "fs_rim_text",
+      "shader": 5,
+      "defines": []
+    },
+    {
+      "name": "fs_mono",
+      "entry": "fs_mono",
+      "shader": 6,
+      "defines": []
+    },
+    {
+      "name": "fs_nega",
+      "entry": "fs_nega",
+      "shader": 7,
+      "defines": []
+    },
+    {
+      "name": "fs_transition",
+      "entry": "fs_transition",
+      "shader": 8,
+      "defines": []
+    },
+    {
+      "name": "fs_rule",
+      "entry": "fs_rule",
+      "shader": 9,
+      "defines": []
+    },
+    {
+      "name": "fs_blur",
+      "entry": "fs_blur",
+      "shader": 10,
+      "defines": []
+    },
+    {
+      "name": "fs_alter",
+      "entry": "fs_alter",
+      "shader": 11,
+      "defines": []
+    },
+    {
+      "name": "fs_present",
+      "entry": "fs_present",
+      "shader": 12,
+      "defines": []
+    },
+    {
+      "name": "fs_present_srgb",
+      "entry": "fs_present_srgb",
+      "shader": 13,
+      "defines": []
+    },
+    {
+      "name": "fs_ps",
+      "entry": "fs_ps",
+      "shader": 14,
+      "defines": []
+    },
+    {
+      "name": "fs_group_composite",
+      "entry": "fs_group_composite",
+      "shader": 15,
+      "defines": []
+    },
+    {
+      "name": "fs_sprite_mask",
+      "entry": "fs_sprite_mask",
+      "shader": 16,
+      "defines": []
+    },
+    {
+      "name": "fs_ps_fetch",
+      "entry": "fs_ps_fetch",
+      "shader": 17,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1"
+      ]
+    },
+    {
+      "name": "fs_ps19_fetch",
+      "entry": "fs_ps19_fetch",
+      "shader": 18,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1"
+      ]
+    },
+    {
+      "name": "fs_ps19_group_fetch",
+      "entry": "fs_ps19_group_fetch",
+      "shader": 19,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1"
+      ]
+    },
+    {
+      "name": "fs_ps11_fetch",
+      "entry": "fs_ps11_fetch",
+      "shader": 20,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1"
+      ]
+    },
+    {
+      "name": "fs_ps13_fetch",
+      "entry": "fs_ps13_fetch",
+      "shader": 21,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1"
+      ]
+    },
+    {
+      "name": "fs_sprite_plain",
+      "entry": "fs_sprite_plain",
+      "shader": 22,
+      "defines": []
+    },
+    {
+      "name": "fs_ps19_plain_fetch",
+      "entry": "fs_ps19_plain_fetch",
+      "shader": 23,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1"
+      ]
+    },
+    {
+      "name": "fs_ps2_fetch",
+      "entry": "fs_ps2_fetch",
+      "shader": 25,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1"
+      ]
+    },
+    {
+      "name": "fs_forcealpha_plain",
+      "entry": "fs_forcealpha_plain",
+      "shader": 26,
+      "defines": []
+    },
+    {
+      "name": "fs_rim_text_batched",
+      "entry": "fs_rim_text_batched",
+      "shader": 28,
+      "defines": []
+    },
+    {
+      "name": "chain_2_2",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 32,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=2",
+        "KNIFE_CHAIN_OP_B=2"
+      ]
+    },
+    {
+      "name": "chain_2_11",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 33,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=2",
+        "KNIFE_CHAIN_OP_B=11"
+      ]
+    },
+    {
+      "name": "chain_2_13",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 34,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=2",
+        "KNIFE_CHAIN_OP_B=13"
+      ]
+    },
+    {
+      "name": "chain_2_19",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 35,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=2",
+        "KNIFE_CHAIN_OP_B=19"
+      ]
+    },
+    {
+      "name": "chain_11_2",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 36,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=11",
+        "KNIFE_CHAIN_OP_B=2"
+      ]
+    },
+    {
+      "name": "chain_11_11",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 37,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=11",
+        "KNIFE_CHAIN_OP_B=11"
+      ]
+    },
+    {
+      "name": "chain_11_13",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 38,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=11",
+        "KNIFE_CHAIN_OP_B=13"
+      ]
+    },
+    {
+      "name": "chain_11_19",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 39,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=11",
+        "KNIFE_CHAIN_OP_B=19"
+      ]
+    },
+    {
+      "name": "chain_13_2",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 40,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=13",
+        "KNIFE_CHAIN_OP_B=2"
+      ]
+    },
+    {
+      "name": "chain_13_11",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 41,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=13",
+        "KNIFE_CHAIN_OP_B=11"
+      ]
+    },
+    {
+      "name": "chain_13_13",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 42,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=13",
+        "KNIFE_CHAIN_OP_B=13"
+      ]
+    },
+    {
+      "name": "chain_13_19",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 43,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=13",
+        "KNIFE_CHAIN_OP_B=19"
+      ]
+    },
+    {
+      "name": "chain_19_2",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 44,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=19",
+        "KNIFE_CHAIN_OP_B=2"
+      ]
+    },
+    {
+      "name": "chain_19_11",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 45,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=19",
+        "KNIFE_CHAIN_OP_B=11"
+      ]
+    },
+    {
+      "name": "chain_19_13",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 46,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=19",
+        "KNIFE_CHAIN_OP_B=13"
+      ]
+    },
+    {
+      "name": "chain_19_19",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 47,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=19",
+        "KNIFE_CHAIN_OP_B=19"
+      ]
+    },
+    {
+      "name": "plain_sprite",
+      "entry": "fs_sprite",
+      "shader": 48,
+      "defines": [
+        "KNIFE_PLAIN_IMAGE=1"
+      ],
+      "fallback": 0
+    },
+    {
+      "name": "plain_noalpha",
+      "entry": "fs_noalpha",
+      "shader": 49,
+      "defines": [
+        "KNIFE_PLAIN_IMAGE=1"
+      ],
+      "fallback": 1
+    },
+    {
+      "name": "plain_forcealpha",
+      "entry": "fs_forcealpha",
+      "shader": 50,
+      "defines": [
+        "KNIFE_PLAIN_IMAGE=1"
+      ],
+      "fallback": 2
+    },
+    {
+      "name": "plain_fill",
+      "entry": "fs_fill",
+      "shader": 51,
+      "defines": [
+        "KNIFE_PLAIN_IMAGE=1"
+      ],
+      "fallback": 3
+    },
+    {
+      "name": "plain_mono",
+      "entry": "fs_mono",
+      "shader": 52,
+      "defines": [
+        "KNIFE_PLAIN_IMAGE=1"
+      ],
+      "fallback": 6
+    },
+    {
+      "name": "plain_nega",
+      "entry": "fs_nega",
+      "shader": 53,
+      "defines": [
+        "KNIFE_PLAIN_IMAGE=1"
+      ],
+      "fallback": 7
+    },
+    {
+      "name": "plain_rule",
+      "entry": "fs_rule",
+      "shader": 54,
+      "defines": [
+        "KNIFE_PLAIN_IMAGE=1"
+      ],
+      "fallback": 9
+    },
+    {
+      "name": "plain_sprite_mask",
+      "entry": "fs_sprite_mask",
+      "shader": 55,
+      "defines": [
+        "KNIFE_PLAIN_IMAGE=1"
+      ],
+      "fallback": 16
+    },
+    {
+      "name": "text_0",
+      "entry": "fs_text",
+      "shader": 56,
+      "defines": [
+        "KNIFE_TEXT_FILTER=0",
+        "KNIFE_TEXT_BORDER=0"
+      ],
+      "fallback": 4
+    },
+    {
+      "name": "text_1",
+      "entry": "fs_text",
+      "shader": 57,
+      "defines": [
+        "KNIFE_TEXT_FILTER=0",
+        "KNIFE_TEXT_BORDER=1"
+      ],
+      "fallback": 4
+    },
+    {
+      "name": "text_2",
+      "entry": "fs_text",
+      "shader": 58,
+      "defines": [
+        "KNIFE_TEXT_FILTER=1",
+        "KNIFE_TEXT_BORDER=0"
+      ],
+      "fallback": 4
+    },
+    {
+      "name": "text_3",
+      "entry": "fs_text",
+      "shader": 59,
+      "defines": [
+        "KNIFE_TEXT_FILTER=1",
+        "KNIFE_TEXT_BORDER=1"
+      ],
+      "fallback": 4
+    },
+    {
+      "name": "blur_0",
+      "entry": "fs_blur",
+      "shader": 60,
+      "defines": [
+        "KNIFE_BLUR_MODE=0"
+      ],
+      "fallback": 10
+    },
+    {
+      "name": "blur_1",
+      "entry": "fs_blur",
+      "shader": 61,
+      "defines": [
+        "KNIFE_BLUR_MODE=1"
+      ],
+      "fallback": 10
+    },
+    {
+      "name": "blur_2",
+      "entry": "fs_blur",
+      "shader": 62,
+      "defines": [
+        "KNIFE_BLUR_MODE=2"
+      ],
+      "fallback": 10
+    },
+    {
+      "name": "ps_1",
+      "entry": "fs_ps",
+      "shader": 64,
+      "defines": [
+        "KNIFE_PS_OP=1"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_1",
+      "entry": "fs_ps_fetch",
+      "shader": 88,
+      "defines": [
+        "KNIFE_PS_OP=1",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_2",
+      "entry": "fs_ps",
+      "shader": 65,
+      "defines": [
+        "KNIFE_PS_OP=2"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_2",
+      "entry": "fs_ps_fetch",
+      "shader": 89,
+      "defines": [
+        "KNIFE_PS_OP=2",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_3",
+      "entry": "fs_ps",
+      "shader": 66,
+      "defines": [
+        "KNIFE_PS_OP=3"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_3",
+      "entry": "fs_ps_fetch",
+      "shader": 90,
+      "defines": [
+        "KNIFE_PS_OP=3",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_4",
+      "entry": "fs_ps",
+      "shader": 67,
+      "defines": [
+        "KNIFE_PS_OP=4"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_4",
+      "entry": "fs_ps_fetch",
+      "shader": 91,
+      "defines": [
+        "KNIFE_PS_OP=4",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_5",
+      "entry": "fs_ps",
+      "shader": 68,
+      "defines": [
+        "KNIFE_PS_OP=5"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_5",
+      "entry": "fs_ps_fetch",
+      "shader": 92,
+      "defines": [
+        "KNIFE_PS_OP=5",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_6",
+      "entry": "fs_ps",
+      "shader": 69,
+      "defines": [
+        "KNIFE_PS_OP=6"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_6",
+      "entry": "fs_ps_fetch",
+      "shader": 93,
+      "defines": [
+        "KNIFE_PS_OP=6",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_7",
+      "entry": "fs_ps",
+      "shader": 70,
+      "defines": [
+        "KNIFE_PS_OP=7"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_7",
+      "entry": "fs_ps_fetch",
+      "shader": 94,
+      "defines": [
+        "KNIFE_PS_OP=7",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_8",
+      "entry": "fs_ps",
+      "shader": 71,
+      "defines": [
+        "KNIFE_PS_OP=8"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_8",
+      "entry": "fs_ps_fetch",
+      "shader": 95,
+      "defines": [
+        "KNIFE_PS_OP=8",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_9",
+      "entry": "fs_ps",
+      "shader": 72,
+      "defines": [
+        "KNIFE_PS_OP=9"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_9",
+      "entry": "fs_ps_fetch",
+      "shader": 96,
+      "defines": [
+        "KNIFE_PS_OP=9",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_10",
+      "entry": "fs_ps",
+      "shader": 73,
+      "defines": [
+        "KNIFE_PS_OP=10"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_10",
+      "entry": "fs_ps_fetch",
+      "shader": 97,
+      "defines": [
+        "KNIFE_PS_OP=10",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_11",
+      "entry": "fs_ps",
+      "shader": 74,
+      "defines": [
+        "KNIFE_PS_OP=11"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_11",
+      "entry": "fs_ps_fetch",
+      "shader": 98,
+      "defines": [
+        "KNIFE_PS_OP=11",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_12",
+      "entry": "fs_ps",
+      "shader": 75,
+      "defines": [
+        "KNIFE_PS_OP=12"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_12",
+      "entry": "fs_ps_fetch",
+      "shader": 99,
+      "defines": [
+        "KNIFE_PS_OP=12",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_13",
+      "entry": "fs_ps",
+      "shader": 76,
+      "defines": [
+        "KNIFE_PS_OP=13"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_13",
+      "entry": "fs_ps_fetch",
+      "shader": 100,
+      "defines": [
+        "KNIFE_PS_OP=13",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_14",
+      "entry": "fs_ps",
+      "shader": 77,
+      "defines": [
+        "KNIFE_PS_OP=14"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_14",
+      "entry": "fs_ps_fetch",
+      "shader": 101,
+      "defines": [
+        "KNIFE_PS_OP=14",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_15",
+      "entry": "fs_ps",
+      "shader": 78,
+      "defines": [
+        "KNIFE_PS_OP=15"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_15",
+      "entry": "fs_ps_fetch",
+      "shader": 102,
+      "defines": [
+        "KNIFE_PS_OP=15",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_16",
+      "entry": "fs_ps",
+      "shader": 79,
+      "defines": [
+        "KNIFE_PS_OP=16"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_16",
+      "entry": "fs_ps_fetch",
+      "shader": 103,
+      "defines": [
+        "KNIFE_PS_OP=16",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_17",
+      "entry": "fs_ps",
+      "shader": 80,
+      "defines": [
+        "KNIFE_PS_OP=17"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_17",
+      "entry": "fs_ps_fetch",
+      "shader": 104,
+      "defines": [
+        "KNIFE_PS_OP=17",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_18",
+      "entry": "fs_ps",
+      "shader": 81,
+      "defines": [
+        "KNIFE_PS_OP=18"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_18",
+      "entry": "fs_ps_fetch",
+      "shader": 105,
+      "defines": [
+        "KNIFE_PS_OP=18",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_19",
+      "entry": "fs_ps",
+      "shader": 82,
+      "defines": [
+        "KNIFE_PS_OP=19"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_19",
+      "entry": "fs_ps_fetch",
+      "shader": 106,
+      "defines": [
+        "KNIFE_PS_OP=19",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_20",
+      "entry": "fs_ps",
+      "shader": 83,
+      "defines": [
+        "KNIFE_PS_OP=20"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_20",
+      "entry": "fs_ps_fetch",
+      "shader": 107,
+      "defines": [
+        "KNIFE_PS_OP=20",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_21",
+      "entry": "fs_ps",
+      "shader": 84,
+      "defines": [
+        "KNIFE_PS_OP=21"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_21",
+      "entry": "fs_ps_fetch",
+      "shader": 108,
+      "defines": [
+        "KNIFE_PS_OP=21",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_22",
+      "entry": "fs_ps",
+      "shader": 85,
+      "defines": [
+        "KNIFE_PS_OP=22"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_22",
+      "entry": "fs_ps_fetch",
+      "shader": 109,
+      "defines": [
+        "KNIFE_PS_OP=22",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_23",
+      "entry": "fs_ps",
+      "shader": 86,
+      "defines": [
+        "KNIFE_PS_OP=23"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_23",
+      "entry": "fs_ps_fetch",
+      "shader": 110,
+      "defines": [
+        "KNIFE_PS_OP=23",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "ps_24",
+      "entry": "fs_ps",
+      "shader": 87,
+      "defines": [
+        "KNIFE_PS_OP=24"
+      ],
+      "fallback": 14
+    },
+    {
+      "name": "fetch_24",
+      "entry": "fs_ps_fetch",
+      "shader": 111,
+      "defines": [
+        "KNIFE_PS_OP=24",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17
+    },
+    {
+      "name": "quad_v",
+      "entry": "main",
+      "shader": null,
+      "defines": [],
+      "source": "knife/vita/shaders/quad_v.cg"
+    },
+    {
+      "name": "quad_f",
+      "entry": "main",
+      "shader": null,
+      "defines": [],
+      "source": "knife/vita/shaders/quad_f.cg"
+    }
+  ],
+  "baseline_source_sha256": "1c8c0e8e273e9d2a06d740d11ed752f61420471d09c109ddeb10b635a466294a",
+  "compiler_sha256": "dae6c92bb97b2b8adfa26a3f85589e80eacf4ba88d2d6189bff4eaa6c87a4e27",
+  "flags": [
+    "-O3",
+    "-bestprecision",
+    "-nofastmath",
+    "-nofastint",
+    "-W3",
+    "-Werror",
+    "-Wperf",
+    "-Wsuppress=7302",
+    "-nofx",
+    "-nocolor",
+    "-lang",
+    "en"
+  ],
+  "compiler_version": "psp2cgc: SDK 3.5.0 build 13276 (Feb 27 2015)",
+  "headers": {
+    "knife/vita/shaders/generated/effects.h": "34ee0d38a402537303f1e80a3e87144f88fc8658d5001bcc6426aa768874cd6b",
+    "knife/vita/shaders/generated/shaders.h": "aeef6725fa96a3f3a01a30a08c0037573b7b131f4b02fc3454583033aeb35d65"
+  },
+  "shaders": [
+    {
+      "name": "vs_main",
+      "entry": "vs_main",
+      "shader": null,
+      "defines": [
+        "KNIFE_VERTEX_SHADER=1"
+      ],
+      "sha256": "84b98324a2eac2d7afec0c5842f9293434bf8ab9de2dd95a573b90af1f61a264",
+      "repeated_identical": true,
+      "primary_instructions": 9,
+      "bytes": 436,
+      "flags": 1638400,
+      "parameters": [
+        {
+          "name": "v.pos",
+          "category": 0,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "v.uv",
+          "category": 0,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "v.color",
+          "category": 0,
+          "components": 4,
+          "resource": 8
+        },
+        {
+          "name": "v.hx",
+          "category": 0,
+          "components": 4,
+          "resource": 12
+        },
+        {
+          "name": "v.hy",
+          "category": 0,
+          "components": 4,
+          "resource": 16
+        },
+        {
+          "name": "v.s0",
+          "category": 0,
+          "components": 4,
+          "resource": 20
+        },
+        {
+          "name": "v.s1",
+          "category": 0,
+          "components": 4,
+          "resource": 24
+        },
+        {
+          "name": "v.s2",
+          "category": 0,
+          "components": 4,
+          "resource": 28
+        }
+      ],
+      "before_primary_instructions": 9
+    },
+    {
+      "name": "fs_sprite",
+      "entry": "fs_sprite",
+      "shader": 0,
+      "defines": [],
+      "sha256": "f03852f5fe3493ac254fcb272da992301d68f6b9f35b1468a54610796c885b64",
+      "repeated_identical": true,
+      "primary_instructions": 149,
+      "bytes": 1876,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 149
+    },
+    {
+      "name": "fs_noalpha",
+      "entry": "fs_noalpha",
+      "shader": 1,
+      "defines": [],
+      "sha256": "9ff280f5c7a134ba831d292c12a8af6b69e2ffbf0067a8044c36554773c30454",
+      "repeated_identical": true,
+      "primary_instructions": 146,
+      "bytes": 1852,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 146
+    },
+    {
+      "name": "fs_forcealpha",
+      "entry": "fs_forcealpha",
+      "shader": 2,
+      "defines": [],
+      "sha256": "36c431a1b6cc975dbaf6470571a14ca4b38b4d34a0b6b6dcbb77ae3613d5791e",
+      "repeated_identical": true,
+      "primary_instructions": 147,
+      "bytes": 1860,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 147
+    },
+    {
+      "name": "fs_fill",
+      "entry": "fs_fill",
+      "shader": 3,
+      "defines": [],
+      "sha256": "1b3f322d0ea4ae10b9afd9f1fc60b4a40b654434cae36f720fdb15a8d3e25d7c",
+      "repeated_identical": true,
+      "primary_instructions": 147,
+      "bytes": 1860,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 147
+    },
+    {
+      "name": "fs_text",
+      "entry": "fs_text",
+      "shader": 4,
+      "defines": [],
+      "sha256": "21e0e332a60727d3ff272cf05be45c2b036b81f200cb390c9256b25116b4857d",
+      "repeated_identical": true,
+      "primary_instructions": 61,
+      "bytes": 964,
+      "flags": 1579015,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 61
+    },
+    {
+      "name": "fs_rim_text",
+      "entry": "fs_rim_text",
+      "shader": 5,
+      "defines": [],
+      "sha256": "199955c95aaf106ce6bf9e72391adf3c941e4e6123676a3ae7f4fe2fd122014a",
+      "repeated_identical": true,
+      "primary_instructions": 207,
+      "bytes": 2308,
+      "flags": 1576967,
+      "parameters": [
+        {
+          "name": "uQuadHx",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "uQuadHy",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 207
+    },
+    {
+      "name": "fs_mono",
+      "entry": "fs_mono",
+      "shader": 6,
+      "defines": [],
+      "sha256": "ec30d21f94b09e2f7ed637eceb6a761a37b5e84d872b9443b38db24d85395505",
+      "repeated_identical": true,
+      "primary_instructions": 149,
+      "bytes": 1900,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 149
+    },
+    {
+      "name": "fs_nega",
+      "entry": "fs_nega",
+      "shader": 7,
+      "defines": [],
+      "sha256": "d5307c61fdc655ea959667c6699dd021ee25e130f48763eb7e027725f0d729b1",
+      "repeated_identical": true,
+      "primary_instructions": 148,
+      "bytes": 1868,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 148
+    },
+    {
+      "name": "fs_transition",
+      "entry": "fs_transition",
+      "shader": 8,
+      "defines": [],
+      "sha256": "f66940430ff1ee1800c1ab53824af7bcb19ff5c94ef63d05fb9f295ccaa4ff7b",
+      "repeated_identical": true,
+      "primary_instructions": 28,
+      "bytes": 800,
+      "flags": 1579009,
+      "parameters": [
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        }
+      ],
+      "before_primary_instructions": 28
+    },
+    {
+      "name": "fs_rule",
+      "entry": "fs_rule",
+      "shader": 9,
+      "defines": [],
+      "sha256": "b12fbce85d52efa746d8d6da7fd2e77660401a1e5686099adf1b3210f7e443d4",
+      "repeated_identical": true,
+      "primary_instructions": 166,
+      "bytes": 2292,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 166
+    },
+    {
+      "name": "fs_blur",
+      "entry": "fs_blur",
+      "shader": 10,
+      "defines": [],
+      "sha256": "65ab36c4906a7d7d62cb8ded2734d923dc9fa729d3023b381d7b7759127469f5",
+      "repeated_identical": true,
+      "primary_instructions": 63,
+      "bytes": 1264,
+      "flags": 1576967,
+      "parameters": [
+        {
+          "name": "uTex0Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 63
+    },
+    {
+      "name": "fs_alter",
+      "entry": "fs_alter",
+      "shader": 11,
+      "defines": [],
+      "sha256": "426633e95af9d5cb06db038f9b8a321afab4d9844e2077da665447f54b409eb1",
+      "repeated_identical": true,
+      "primary_instructions": 1,
+      "bytes": 260,
+      "flags": 1574913,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 1
+    },
+    {
+      "name": "fs_present",
+      "entry": "fs_present",
+      "shader": 12,
+      "defines": [],
+      "sha256": "96b659228520d41606e4a3cce4df87eafd5016364f4cfda9ccf841802bbc02c0",
+      "repeated_identical": true,
+      "primary_instructions": 2,
+      "bytes": 268,
+      "flags": 1574913,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 2
+    },
+    {
+      "name": "fs_present_srgb",
+      "entry": "fs_present_srgb",
+      "shader": 13,
+      "defines": [],
+      "sha256": "e5534ce80735eb99e3e56545c758b70e331a83472caa0cd975d1ee99bdf4d425",
+      "repeated_identical": true,
+      "primary_instructions": 2,
+      "bytes": 268,
+      "flags": 1574913,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 2
+    },
+    {
+      "name": "fs_ps",
+      "entry": "fs_ps",
+      "shader": 14,
+      "defines": [],
+      "sha256": "5ebea2fc82afb52bc2fcb7dd3d7388ff41cf16d42dc7288e042f026ac6edc26e",
+      "repeated_identical": true,
+      "primary_instructions": 614,
+      "bytes": 6076,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fs_group_composite",
+      "entry": "fs_group_composite",
+      "shader": 15,
+      "defines": [],
+      "sha256": "e8b63fa5384d8fe9706610932e9b47c4e8868c02fd0b67261f656bcc7d475d57",
+      "repeated_identical": true,
+      "primary_instructions": 24,
+      "bytes": 544,
+      "flags": 1579009,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        }
+      ],
+      "before_primary_instructions": 24
+    },
+    {
+      "name": "fs_sprite_mask",
+      "entry": "fs_sprite_mask",
+      "shader": 16,
+      "defines": [],
+      "sha256": "f6144499564b14cb65c4904893c073a9681db8e8481a8346ec1b705c2044c18f",
+      "repeated_identical": true,
+      "primary_instructions": 150,
+      "bytes": 1972,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 150
+    },
+    {
+      "name": "fs_ps_fetch",
+      "entry": "fs_ps_fetch",
+      "shader": 17,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1"
+      ],
+      "sha256": "66525ca796371f5751cce89dae6adc544ce6aee1d9c1a94ceef97bd6c60a2a33",
+      "repeated_identical": true,
+      "primary_instructions": 577,
+      "bytes": 5780,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "fs_ps19_fetch",
+      "entry": "fs_ps19_fetch",
+      "shader": 18,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1"
+      ],
+      "sha256": "00d58f15287cf482445cb488ac0f985a998a6ff360d51c6ac1ecbb4ceaba5efe",
+      "repeated_identical": true,
+      "primary_instructions": 227,
+      "bytes": 2844,
+      "flags": 1585351,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 227
+    },
+    {
+      "name": "fs_ps19_group_fetch",
+      "entry": "fs_ps19_group_fetch",
+      "shader": 19,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1"
+      ],
+      "sha256": "c416af8425d737f62d4bcfc8ffa51f7c30596e53445b00606985c71bfb6abbef",
+      "repeated_identical": true,
+      "primary_instructions": 35,
+      "bytes": 632,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        }
+      ],
+      "before_primary_instructions": 35
+    },
+    {
+      "name": "fs_ps11_fetch",
+      "entry": "fs_ps11_fetch",
+      "shader": 20,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1"
+      ],
+      "sha256": "ab4db3bdaa21f660f79e59976bf4d82e2ea5fe33c04dc0770f0d6f781d441d6b",
+      "repeated_identical": true,
+      "primary_instructions": 35,
+      "bytes": 556,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 35
+    },
+    {
+      "name": "fs_ps13_fetch",
+      "entry": "fs_ps13_fetch",
+      "shader": 21,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1"
+      ],
+      "sha256": "a49b144b6f7b70eaf02005df69d9f54c07834a4aaea909b468f59de27eaf9e0d",
+      "repeated_identical": true,
+      "primary_instructions": 37,
+      "bytes": 572,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 37
+    },
+    {
+      "name": "fs_sprite_plain",
+      "entry": "fs_sprite_plain",
+      "shader": 22,
+      "defines": [],
+      "sha256": "10a8fe9fc13f3b611380dd5f34bb9598833e96d44373d026ecd0b0d4dabf35d8",
+      "repeated_identical": true,
+      "primary_instructions": 9,
+      "bytes": 324,
+      "flags": 1579009,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 9
+    },
+    {
+      "name": "fs_ps19_plain_fetch",
+      "entry": "fs_ps19_plain_fetch",
+      "shader": 23,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1"
+      ],
+      "sha256": "64b67011ea546298f343b2fa29781b69a1696fb96455288b4539b6146a60e636",
+      "repeated_identical": true,
+      "primary_instructions": 26,
+      "bytes": 576,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 26
+    },
+    {
+      "name": "fs_ps2_fetch",
+      "entry": "fs_ps2_fetch",
+      "shader": 25,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1"
+      ],
+      "sha256": "59bc177f48f716fee1fcc6ca12f809efeb99e685f9adc68abde5051c03f6d688",
+      "repeated_identical": true,
+      "primary_instructions": 19,
+      "bytes": 420,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 19
+    },
+    {
+      "name": "fs_forcealpha_plain",
+      "entry": "fs_forcealpha_plain",
+      "shader": 26,
+      "defines": [],
+      "sha256": "1a67d3a7dba2fa599298b1aca5b9cde283e6eeaa3e22dce1deff25ef16aab1a2",
+      "repeated_identical": true,
+      "primary_instructions": 5,
+      "bytes": 292,
+      "flags": 1579013,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 5
+    },
+    {
+      "name": "fs_rim_text_batched",
+      "entry": "fs_rim_text_batched",
+      "shader": 28,
+      "defines": [],
+      "sha256": "916ddc504dba1ca5d7db4c5a3643d8945a089334eac13e9a109760d9d2688589",
+      "repeated_identical": true,
+      "primary_instructions": 226,
+      "bytes": 2420,
+      "flags": 1576967,
+      "parameters": [
+        {
+          "name": "uQuadHy",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 226
+    },
+    {
+      "name": "chain_2_2",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 32,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=2",
+        "KNIFE_CHAIN_OP_B=2"
+      ],
+      "sha256": "030f7f390908433f143390ff08f424d10c1495677bb64dc3ad5331bd0d0fecde",
+      "repeated_identical": true,
+      "primary_instructions": 37,
+      "bytes": 600,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        }
+      ],
+      "before_primary_instructions": 37
+    },
+    {
+      "name": "chain_2_11",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 33,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=2",
+        "KNIFE_CHAIN_OP_B=11"
+      ],
+      "sha256": "f6e07c683d24b199b51a5abf92fd6a88eb86077a61e1ea701bf675abfdf0c783",
+      "repeated_identical": true,
+      "primary_instructions": 53,
+      "bytes": 736,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        }
+      ],
+      "before_primary_instructions": 53
+    },
+    {
+      "name": "chain_2_13",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 34,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=2",
+        "KNIFE_CHAIN_OP_B=13"
+      ],
+      "sha256": "ecae6892313ac8df3d416736ddbb735523d08bb0cef6a9b4497c114def9afcf5",
+      "repeated_identical": true,
+      "primary_instructions": 54,
+      "bytes": 744,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        }
+      ],
+      "before_primary_instructions": 54
+    },
+    {
+      "name": "chain_2_19",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 35,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=2",
+        "KNIFE_CHAIN_OP_B=19"
+      ],
+      "sha256": "4cea30274ad9eb5e5385d1819f83bf6319a710656f3487fe583ad5a88b2d8648",
+      "repeated_identical": true,
+      "primary_instructions": 35,
+      "bytes": 584,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        }
+      ],
+      "before_primary_instructions": 35
+    },
+    {
+      "name": "chain_11_2",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 36,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=11",
+        "KNIFE_CHAIN_OP_B=2"
+      ],
+      "sha256": "a1290c4507b3fadac8d7703aee18cff46c4ec10dc886db3511c57f2684f83029",
+      "repeated_identical": true,
+      "primary_instructions": 53,
+      "bytes": 736,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        }
+      ],
+      "before_primary_instructions": 53
+    },
+    {
+      "name": "chain_11_11",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 37,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=11",
+        "KNIFE_CHAIN_OP_B=11"
+      ],
+      "sha256": "867d562f7b5491caa5059f1bde46599ff1905f2f84a16a8bc7e2096f3893ff58",
+      "repeated_identical": true,
+      "primary_instructions": 69,
+      "bytes": 864,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        }
+      ],
+      "before_primary_instructions": 69
+    },
+    {
+      "name": "chain_11_13",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 38,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=11",
+        "KNIFE_CHAIN_OP_B=13"
+      ],
+      "sha256": "d1755e6b4ca96a07ca4cfb88c96a025255c9ed5d68fbb651bd6ea7fd14e7bff8",
+      "repeated_identical": true,
+      "primary_instructions": 70,
+      "bytes": 872,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        }
+      ],
+      "before_primary_instructions": 70
+    },
+    {
+      "name": "chain_11_19",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 39,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=11",
+        "KNIFE_CHAIN_OP_B=19"
+      ],
+      "sha256": "da18d4b06b5a7d2b4a4c8aa1cfb41e2a69195caf48da2217b55de864ca362727",
+      "repeated_identical": true,
+      "primary_instructions": 51,
+      "bytes": 720,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        }
+      ],
+      "before_primary_instructions": 51
+    },
+    {
+      "name": "chain_13_2",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 40,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=13",
+        "KNIFE_CHAIN_OP_B=2"
+      ],
+      "sha256": "2f3f2b916b1ce84bf06ba17c949d6c4e6358be9fd0ec72951f04dd90dc08a2a1",
+      "repeated_identical": true,
+      "primary_instructions": 55,
+      "bytes": 752,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        }
+      ],
+      "before_primary_instructions": 55
+    },
+    {
+      "name": "chain_13_11",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 41,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=13",
+        "KNIFE_CHAIN_OP_B=11"
+      ],
+      "sha256": "ce330d9da20f607ddc5e2f459d28634cc77960e0d84d3642ba9e4be3b5882965",
+      "repeated_identical": true,
+      "primary_instructions": 71,
+      "bytes": 880,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        }
+      ],
+      "before_primary_instructions": 71
+    },
+    {
+      "name": "chain_13_13",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 42,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=13",
+        "KNIFE_CHAIN_OP_B=13"
+      ],
+      "sha256": "ddcb71709b5be6bc137968dfe1343f7406b64b67aea96f160f5703580fcb401d",
+      "repeated_identical": true,
+      "primary_instructions": 72,
+      "bytes": 888,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        }
+      ],
+      "before_primary_instructions": 72
+    },
+    {
+      "name": "chain_13_19",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 43,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=13",
+        "KNIFE_CHAIN_OP_B=19"
+      ],
+      "sha256": "5b770c1434412e75efd3939981cfadda3db3a5ac03d2822ebdcd0533e79bc39c",
+      "repeated_identical": true,
+      "primary_instructions": 53,
+      "bytes": 736,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        }
+      ],
+      "before_primary_instructions": 53
+    },
+    {
+      "name": "chain_19_2",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 44,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=19",
+        "KNIFE_CHAIN_OP_B=2"
+      ],
+      "sha256": "c1541bac2b8309cb83684ba45aa0ebb5c3b4122a9be17706c52dae68021ea5b2",
+      "repeated_identical": true,
+      "primary_instructions": 35,
+      "bytes": 584,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        }
+      ],
+      "before_primary_instructions": 35
+    },
+    {
+      "name": "chain_19_11",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 45,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=19",
+        "KNIFE_CHAIN_OP_B=11"
+      ],
+      "sha256": "792faafd52c7b914e09ba6c1724a6e833060a451cc52695c5ae85df7f92ab81d",
+      "repeated_identical": true,
+      "primary_instructions": 51,
+      "bytes": 720,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        }
+      ],
+      "before_primary_instructions": 51
+    },
+    {
+      "name": "chain_19_13",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 46,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=19",
+        "KNIFE_CHAIN_OP_B=13"
+      ],
+      "sha256": "cdb3308b33d6e956793c9c3409057aee4a707045dddf15c3eaf4582fbedc1e79",
+      "repeated_identical": true,
+      "primary_instructions": 52,
+      "bytes": 728,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        }
+      ],
+      "before_primary_instructions": 52
+    },
+    {
+      "name": "chain_19_19",
+      "entry": "fs_ps_chain2_fetch",
+      "shader": 47,
+      "defines": [
+        "KNIFE_RUNTIME_NATIVE_FETCH=1",
+        "KNIFE_RUNTIME_PS_SPECIALIZED=1",
+        "KNIFE_CHAIN_OP_A=19",
+        "KNIFE_CHAIN_OP_B=19"
+      ],
+      "sha256": "35084aabe52d276a96491ddc52e879f4d62be7a19638be130c308c56f8e3cf5f",
+      "repeated_identical": true,
+      "primary_instructions": 33,
+      "bytes": 568,
+      "flags": 1587399,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        }
+      ],
+      "before_primary_instructions": 33
+    },
+    {
+      "name": "plain_sprite",
+      "entry": "fs_sprite",
+      "shader": 48,
+      "defines": [
+        "KNIFE_PLAIN_IMAGE=1"
+      ],
+      "fallback": 0,
+      "sha256": "5f9162aecb008d6457a30e043a76fe63c06e5d975eb13cb160e57ead0999d083",
+      "repeated_identical": true,
+      "primary_instructions": 11,
+      "bytes": 356,
+      "flags": 1579011,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 149
+    },
+    {
+      "name": "plain_noalpha",
+      "entry": "fs_noalpha",
+      "shader": 49,
+      "defines": [
+        "KNIFE_PLAIN_IMAGE=1"
+      ],
+      "fallback": 1,
+      "sha256": "69a95a301051483e15370a278f4b4acad57a3ab02e6ff855252524bd88071c53",
+      "repeated_identical": true,
+      "primary_instructions": 8,
+      "bytes": 332,
+      "flags": 1579009,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 146
+    },
+    {
+      "name": "plain_forcealpha",
+      "entry": "fs_forcealpha",
+      "shader": 50,
+      "defines": [
+        "KNIFE_PLAIN_IMAGE=1"
+      ],
+      "fallback": 2,
+      "sha256": "ff42a263c64c952b6bab4da0a445584435ec5b0000d0071c2dbefa132f9c2cd1",
+      "repeated_identical": true,
+      "primary_instructions": 9,
+      "bytes": 340,
+      "flags": 1579013,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 147
+    },
+    {
+      "name": "plain_fill",
+      "entry": "fs_fill",
+      "shader": 51,
+      "defines": [
+        "KNIFE_PLAIN_IMAGE=1"
+      ],
+      "fallback": 3,
+      "sha256": "6cb869c80434aad367a7ca7e3ee7d2c74083c9162052dce4f9ed4cf1c7daaaf2",
+      "repeated_identical": true,
+      "primary_instructions": 9,
+      "bytes": 364,
+      "flags": 1579009,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 147
+    },
+    {
+      "name": "plain_mono",
+      "entry": "fs_mono",
+      "shader": 52,
+      "defines": [
+        "KNIFE_PLAIN_IMAGE=1"
+      ],
+      "fallback": 6,
+      "sha256": "ce55d2f578b3924f85ee76ffa9910f11b28d3b2c6a58f0cf65f59825c7ed5ede",
+      "repeated_identical": true,
+      "primary_instructions": 12,
+      "bytes": 396,
+      "flags": 1579011,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 149
+    },
+    {
+      "name": "plain_nega",
+      "entry": "fs_nega",
+      "shader": 53,
+      "defines": [
+        "KNIFE_PLAIN_IMAGE=1"
+      ],
+      "fallback": 7,
+      "sha256": "6f3d48b5853d9788c61a38beb0edd81aa6a9af4c3eefa76dd0db676b44661b7b",
+      "repeated_identical": true,
+      "primary_instructions": 12,
+      "bytes": 364,
+      "flags": 1579011,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 148
+    },
+    {
+      "name": "plain_rule",
+      "entry": "fs_rule",
+      "shader": 54,
+      "defines": [
+        "KNIFE_PLAIN_IMAGE=1"
+      ],
+      "fallback": 9,
+      "sha256": "a155a9811a80d4784ee054c8d362ed1568025e2d113be83c13e9540379b91d55",
+      "repeated_identical": true,
+      "primary_instructions": 29,
+      "bytes": 816,
+      "flags": 1579011,
+      "parameters": [
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        }
+      ],
+      "before_primary_instructions": 166
+    },
+    {
+      "name": "plain_sprite_mask",
+      "entry": "fs_sprite_mask",
+      "shader": 55,
+      "defines": [
+        "KNIFE_PLAIN_IMAGE=1"
+      ],
+      "fallback": 16,
+      "sha256": "d63e27be89b203c3d282ed34ddf7b2ad10d9bce67895023d79aceee3974377b2",
+      "repeated_identical": true,
+      "primary_instructions": 13,
+      "bytes": 480,
+      "flags": 1579011,
+      "parameters": [
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        }
+      ],
+      "before_primary_instructions": 150
+    },
+    {
+      "name": "text_0",
+      "entry": "fs_text",
+      "shader": 56,
+      "defines": [
+        "KNIFE_TEXT_FILTER=0",
+        "KNIFE_TEXT_BORDER=0"
+      ],
+      "fallback": 4,
+      "sha256": "50fc8a419bdf66ce082b4843b59a51641309c22bffb782e0ead09d6707d4283c",
+      "repeated_identical": true,
+      "primary_instructions": 7,
+      "bytes": 324,
+      "flags": 1579013,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 61
+    },
+    {
+      "name": "text_1",
+      "entry": "fs_text",
+      "shader": 57,
+      "defines": [
+        "KNIFE_TEXT_FILTER=0",
+        "KNIFE_TEXT_BORDER=1"
+      ],
+      "fallback": 4,
+      "sha256": "6f4d1b06428e8a1ab4734ffb6b11780380e5bb4c58e8701483da3791ba72fbfc",
+      "repeated_identical": true,
+      "primary_instructions": 9,
+      "bytes": 348,
+      "flags": 1579013,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 61
+    },
+    {
+      "name": "text_2",
+      "entry": "fs_text",
+      "shader": 58,
+      "defines": [
+        "KNIFE_TEXT_FILTER=1",
+        "KNIFE_TEXT_BORDER=0"
+      ],
+      "fallback": 4,
+      "sha256": "16cef022dbb46dbce937b3d50bca0e28152a4823c50b50ef2430e8deea22ce7f",
+      "repeated_identical": true,
+      "primary_instructions": 47,
+      "bytes": 828,
+      "flags": 1576965,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 61
+    },
+    {
+      "name": "text_3",
+      "entry": "fs_text",
+      "shader": 59,
+      "defines": [
+        "KNIFE_TEXT_FILTER=1",
+        "KNIFE_TEXT_BORDER=1"
+      ],
+      "fallback": 4,
+      "sha256": "676ac0bfa7dd9fd9ef7c60b166518bf37debb800f00f58d54bf430060f9582ab",
+      "repeated_identical": true,
+      "primary_instructions": 49,
+      "bytes": 836,
+      "flags": 1576965,
+      "parameters": [
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 61
+    },
+    {
+      "name": "blur_0",
+      "entry": "fs_blur",
+      "shader": 60,
+      "defines": [
+        "KNIFE_BLUR_MODE=0"
+      ],
+      "fallback": 10,
+      "sha256": "b52f87546fcefd10958787f98a0df9000649c2e678bf6005e58f53c8fe746e94",
+      "repeated_identical": true,
+      "primary_instructions": 31,
+      "bytes": 872,
+      "flags": 1576961,
+      "parameters": [
+        {
+          "name": "uTex0Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 63
+    },
+    {
+      "name": "blur_1",
+      "entry": "fs_blur",
+      "shader": 61,
+      "defines": [
+        "KNIFE_BLUR_MODE=1"
+      ],
+      "fallback": 10,
+      "sha256": "ad6b57e8149ba3a86ec0866507969e723daede5ea565a25650b754de0edbdd3d",
+      "repeated_identical": true,
+      "primary_instructions": 38,
+      "bytes": 920,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex0Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 63
+    },
+    {
+      "name": "blur_2",
+      "entry": "fs_blur",
+      "shader": 62,
+      "defines": [
+        "KNIFE_BLUR_MODE=2"
+      ],
+      "fallback": 10,
+      "sha256": "cb0f26e1888aba190a03fcc553d742d234aa2a7316e4d6232297f17c21cf04cd",
+      "repeated_identical": true,
+      "primary_instructions": 37,
+      "bytes": 912,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex0Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ],
+      "before_primary_instructions": 63
+    },
+    {
+      "name": "ps_1",
+      "entry": "fs_ps",
+      "shader": 64,
+      "defines": [
+        "KNIFE_PS_OP=1"
+      ],
+      "fallback": 14,
+      "sha256": "b056cafe8580c447ba69de0e78e2ed2806c008b30581f28ef77d381314dcce33",
+      "repeated_identical": true,
+      "primary_instructions": 280,
+      "bytes": 3284,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_1",
+      "entry": "fs_ps_fetch",
+      "shader": 88,
+      "defines": [
+        "KNIFE_PS_OP=1",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "56cbe37e8ab17f622312861023618db71f10fb2fbd06d12a26d7b2ed1a592e96",
+      "repeated_identical": true,
+      "primary_instructions": 234,
+      "bytes": 2900,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_2",
+      "entry": "fs_ps",
+      "shader": 65,
+      "defines": [
+        "KNIFE_PS_OP=2"
+      ],
+      "fallback": 14,
+      "sha256": "aa66a17141d3847d228743f0c80f4f4334a0f8e5946ecf3c4c76aa4c834950e0",
+      "repeated_identical": true,
+      "primary_instructions": 279,
+      "bytes": 3276,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_2",
+      "entry": "fs_ps_fetch",
+      "shader": 89,
+      "defines": [
+        "KNIFE_PS_OP=2",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "8d1073c36d3621b0714abac7cf2a6962389da42cb9e62f3b65e18ad5885dacf9",
+      "repeated_identical": true,
+      "primary_instructions": 233,
+      "bytes": 2892,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_3",
+      "entry": "fs_ps",
+      "shader": 66,
+      "defines": [
+        "KNIFE_PS_OP=3"
+      ],
+      "fallback": 14,
+      "sha256": "6b8662a3f11397a69eb746f0d83ee82349b5b7b3e7e09ef91238c5957956725d",
+      "repeated_identical": true,
+      "primary_instructions": 279,
+      "bytes": 3276,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_3",
+      "entry": "fs_ps_fetch",
+      "shader": 90,
+      "defines": [
+        "KNIFE_PS_OP=3",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "8a06068ff6c87233fe549565caeaa931aa16bc52e3e91ac8d6e5484f4a189371",
+      "repeated_identical": true,
+      "primary_instructions": 233,
+      "bytes": 2892,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_4",
+      "entry": "fs_ps",
+      "shader": 67,
+      "defines": [
+        "KNIFE_PS_OP=4"
+      ],
+      "fallback": 14,
+      "sha256": "fea801298d1700d03f228dc35cc9bba168fb2d50f6107f76ff3672d22cba13d6",
+      "repeated_identical": true,
+      "primary_instructions": 281,
+      "bytes": 3292,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_4",
+      "entry": "fs_ps_fetch",
+      "shader": 91,
+      "defines": [
+        "KNIFE_PS_OP=4",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "59cbc27ec3fe436466d0e49949c7e97e98bfbf75d587d918b942d42ac047d67c",
+      "repeated_identical": true,
+      "primary_instructions": 235,
+      "bytes": 2908,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_5",
+      "entry": "fs_ps",
+      "shader": 68,
+      "defines": [
+        "KNIFE_PS_OP=5"
+      ],
+      "fallback": 14,
+      "sha256": "79b0bdedbb20617781e5e2e7ed748bdf0c30f4fd1fb97be80cf99fadca19b927",
+      "repeated_identical": true,
+      "primary_instructions": 289,
+      "bytes": 3356,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_5",
+      "entry": "fs_ps_fetch",
+      "shader": 92,
+      "defines": [
+        "KNIFE_PS_OP=5",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "68cf9f6b66dff0651b539831d653b5785f507eb585af11c4d2345f26a36d4831",
+      "repeated_identical": true,
+      "primary_instructions": 243,
+      "bytes": 2972,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_6",
+      "entry": "fs_ps",
+      "shader": 69,
+      "defines": [
+        "KNIFE_PS_OP=6"
+      ],
+      "fallback": 14,
+      "sha256": "87e2638ca15a99cdd5f68c072f174bd33aeca0918918c85bea68344d509c9b4b",
+      "repeated_identical": true,
+      "primary_instructions": 289,
+      "bytes": 3380,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_6",
+      "entry": "fs_ps_fetch",
+      "shader": 93,
+      "defines": [
+        "KNIFE_PS_OP=6",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "973d1b1f4e45a6699069c9c72e498babb4e198b2c2bb624d21217144edd122e5",
+      "repeated_identical": true,
+      "primary_instructions": 251,
+      "bytes": 3060,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_7",
+      "entry": "fs_ps",
+      "shader": 70,
+      "defines": [
+        "KNIFE_PS_OP=7"
+      ],
+      "fallback": 14,
+      "sha256": "0bf2a29b40acb8258921b2634c850cdec2e191d1c6951a42b3314f1ba24f146d",
+      "repeated_identical": true,
+      "primary_instructions": 286,
+      "bytes": 3332,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_7",
+      "entry": "fs_ps_fetch",
+      "shader": 94,
+      "defines": [
+        "KNIFE_PS_OP=7",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "ef40dc8cc64bd9a3eb0b3293bdf76b8e8cb0961baf5108a025591017ecb6714d",
+      "repeated_identical": true,
+      "primary_instructions": 240,
+      "bytes": 2948,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_8",
+      "entry": "fs_ps",
+      "shader": 71,
+      "defines": [
+        "KNIFE_PS_OP=8"
+      ],
+      "fallback": 14,
+      "sha256": "62ecbd157cff4e49ef8a00fe785f3cceddda4761ec125156a75fb21bc23a2d85",
+      "repeated_identical": true,
+      "primary_instructions": 279,
+      "bytes": 3276,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_8",
+      "entry": "fs_ps_fetch",
+      "shader": 95,
+      "defines": [
+        "KNIFE_PS_OP=8",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "b172c81040a7be7d093632dbe2bc94766b04453b48fefa98266fb04ddad5b06e",
+      "repeated_identical": true,
+      "primary_instructions": 233,
+      "bytes": 2892,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_9",
+      "entry": "fs_ps",
+      "shader": 72,
+      "defines": [
+        "KNIFE_PS_OP=9"
+      ],
+      "fallback": 14,
+      "sha256": "e1613458fe116e6b0f7d0e69ac64cd1bf8c5ed701230cd02946b4bc976477130",
+      "repeated_identical": true,
+      "primary_instructions": 277,
+      "bytes": 3260,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_9",
+      "entry": "fs_ps_fetch",
+      "shader": 96,
+      "defines": [
+        "KNIFE_PS_OP=9",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "d6b373a81ebdd1c937de245d558bfb06fbcc028933596da603a13b5846995899",
+      "repeated_identical": true,
+      "primary_instructions": 231,
+      "bytes": 2876,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_10",
+      "entry": "fs_ps",
+      "shader": 73,
+      "defines": [
+        "KNIFE_PS_OP=10"
+      ],
+      "fallback": 14,
+      "sha256": "9921f4b35a6064df03609977e06ffcb3d133e6ba9f018349bba06bc430f3e684",
+      "repeated_identical": true,
+      "primary_instructions": 280,
+      "bytes": 3284,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_10",
+      "entry": "fs_ps_fetch",
+      "shader": 97,
+      "defines": [
+        "KNIFE_PS_OP=10",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "b11382c1ce60d0b50ea171153102f9747ec70e6b1efcc8b06e7697b23234c0d9",
+      "repeated_identical": true,
+      "primary_instructions": 234,
+      "bytes": 2900,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_11",
+      "entry": "fs_ps",
+      "shader": 74,
+      "defines": [
+        "KNIFE_PS_OP=11"
+      ],
+      "fallback": 14,
+      "sha256": "4b7753dae89c87617f89840e805abfb290eaf0c87f0da40237923dd006b6f244",
+      "repeated_identical": true,
+      "primary_instructions": 295,
+      "bytes": 3404,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_11",
+      "entry": "fs_ps_fetch",
+      "shader": 98,
+      "defines": [
+        "KNIFE_PS_OP=11",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "069051e59a61307479e1c26f999773f1f29a303bb44b116a18c497dc04ae4709",
+      "repeated_identical": true,
+      "primary_instructions": 249,
+      "bytes": 3020,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_12",
+      "entry": "fs_ps",
+      "shader": 75,
+      "defines": [
+        "KNIFE_PS_OP=12"
+      ],
+      "fallback": 14,
+      "sha256": "ba4d5a01d04b40232129e421e8965573ce2610c4951c90430559f121b886aac2",
+      "repeated_identical": true,
+      "primary_instructions": 297,
+      "bytes": 3420,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_12",
+      "entry": "fs_ps_fetch",
+      "shader": 99,
+      "defines": [
+        "KNIFE_PS_OP=12",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "d36d6584312f3f40e563810d8cdd3a30a63d08bb16cfbc9c5c5757b9c024394b",
+      "repeated_identical": true,
+      "primary_instructions": 251,
+      "bytes": 3036,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_13",
+      "entry": "fs_ps",
+      "shader": 76,
+      "defines": [
+        "KNIFE_PS_OP=13"
+      ],
+      "fallback": 14,
+      "sha256": "b80771a3b4c262194487c8c1085d448513b0677dac694ae78ac8a861f7e8d18f",
+      "repeated_identical": true,
+      "primary_instructions": 293,
+      "bytes": 3388,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_13",
+      "entry": "fs_ps_fetch",
+      "shader": 100,
+      "defines": [
+        "KNIFE_PS_OP=13",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "1c12e2b08960731710aa056b86a2b76939f0ce8b8f4126590db62b11f96a1cdc",
+      "repeated_identical": true,
+      "primary_instructions": 247,
+      "bytes": 3004,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_14",
+      "entry": "fs_ps",
+      "shader": 77,
+      "defines": [
+        "KNIFE_PS_OP=14"
+      ],
+      "fallback": 14,
+      "sha256": "c2b3eca51eab523eb254f940e0c897333d23ddd4d15ba9a32fc964148826aabe",
+      "repeated_identical": true,
+      "primary_instructions": 297,
+      "bytes": 3420,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_14",
+      "entry": "fs_ps_fetch",
+      "shader": 101,
+      "defines": [
+        "KNIFE_PS_OP=14",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "98c5ed39e07a5d0d75e9010a2c35e2c7bff57f2f3981af2e0b0a9ae4add1e510",
+      "repeated_identical": true,
+      "primary_instructions": 251,
+      "bytes": 3036,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_15",
+      "entry": "fs_ps",
+      "shader": 78,
+      "defines": [
+        "KNIFE_PS_OP=15"
+      ],
+      "fallback": 14,
+      "sha256": "7656f81b57faa120819660fa796cfa2d36684c6d63169e8b394efd328e245efb",
+      "repeated_identical": true,
+      "primary_instructions": 279,
+      "bytes": 3276,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_15",
+      "entry": "fs_ps_fetch",
+      "shader": 102,
+      "defines": [
+        "KNIFE_PS_OP=15",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "b7f8f45ec182f3fdff12edabecf5ab0930e5ca2ea0039d12127aed1def096b0a",
+      "repeated_identical": true,
+      "primary_instructions": 233,
+      "bytes": 2892,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_16",
+      "entry": "fs_ps",
+      "shader": 79,
+      "defines": [
+        "KNIFE_PS_OP=16"
+      ],
+      "fallback": 14,
+      "sha256": "c8a73232da65773091e1382de36027c76d4fab2cac3b68a987fa06e3f5db848b",
+      "repeated_identical": true,
+      "primary_instructions": 231,
+      "bytes": 2868,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_16",
+      "entry": "fs_ps_fetch",
+      "shader": 103,
+      "defines": [
+        "KNIFE_PS_OP=16",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "210963a986474d090f2575aed11e8f32902dc7b6c3d68b0d7f67cbabea0d56c3",
+      "repeated_identical": true,
+      "primary_instructions": 192,
+      "bytes": 2548,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_17",
+      "entry": "fs_ps",
+      "shader": 80,
+      "defines": [
+        "KNIFE_PS_OP=17"
+      ],
+      "fallback": 14,
+      "sha256": "badb853078f9d694682b0a47bc5e19e9182140faad1d52e9cd2b8804c577eacf",
+      "repeated_identical": true,
+      "primary_instructions": 232,
+      "bytes": 2876,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_17",
+      "entry": "fs_ps_fetch",
+      "shader": 104,
+      "defines": [
+        "KNIFE_PS_OP=17",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "b165180df99be75ad5133eb0c87c225663791724fec09b10bace9cda36ab0e3d",
+      "repeated_identical": true,
+      "primary_instructions": 193,
+      "bytes": 2556,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_18",
+      "entry": "fs_ps",
+      "shader": 81,
+      "defines": [
+        "KNIFE_PS_OP=18"
+      ],
+      "fallback": 14,
+      "sha256": "f1d6976451255fe3a4b68b68c6627d689737ff8609b008735aa780b9757db6c2",
+      "repeated_identical": true,
+      "primary_instructions": 158,
+      "bytes": 2080,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_18",
+      "entry": "fs_ps_fetch",
+      "shader": 105,
+      "defines": [
+        "KNIFE_PS_OP=18",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "529c57ea39d02743dea0194f065be853b1b1f4f4aaf2aa06ae9ff36ad579fad1",
+      "repeated_identical": true,
+      "primary_instructions": 163,
+      "bytes": 2120,
+      "flags": 1585219,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_19",
+      "entry": "fs_ps",
+      "shader": 82,
+      "defines": [
+        "KNIFE_PS_OP=19"
+      ],
+      "fallback": 14,
+      "sha256": "a45c46813ad7f4a9ba6122a6f970f6ae4eabe611a50b8057311f219b9289b41d",
+      "repeated_identical": true,
+      "primary_instructions": 279,
+      "bytes": 3276,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_19",
+      "entry": "fs_ps_fetch",
+      "shader": 106,
+      "defines": [
+        "KNIFE_PS_OP=19",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "ebfd2d566ce1a4919661544f0f1baea4a1df69a7eadffc902c1f6cf2d6b12f7d",
+      "repeated_identical": true,
+      "primary_instructions": 233,
+      "bytes": 2892,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_20",
+      "entry": "fs_ps",
+      "shader": 83,
+      "defines": [
+        "KNIFE_PS_OP=20"
+      ],
+      "fallback": 14,
+      "sha256": "8c26b0a38b80314abea317390c4062250fab6e1b94e52be7a592a41aa3b12963",
+      "repeated_identical": true,
+      "primary_instructions": 279,
+      "bytes": 3276,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_20",
+      "entry": "fs_ps_fetch",
+      "shader": 107,
+      "defines": [
+        "KNIFE_PS_OP=20",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "abb3a4a1d156198ae25f34c681d5b5f4eb49aeea9a42586238b10bea920b4da3",
+      "repeated_identical": true,
+      "primary_instructions": 233,
+      "bytes": 2892,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_21",
+      "entry": "fs_ps",
+      "shader": 84,
+      "defines": [
+        "KNIFE_PS_OP=21"
+      ],
+      "fallback": 14,
+      "sha256": "09cfe008aa5e69ad2af5d5f941f1216089485414335ce464f1b8dc17a71aa920",
+      "repeated_identical": true,
+      "primary_instructions": 235,
+      "bytes": 2884,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_21",
+      "entry": "fs_ps_fetch",
+      "shader": 108,
+      "defines": [
+        "KNIFE_PS_OP=21",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "5a9cecdbe461ef9b8f05e7293b17be859e6c501caec54bb50667fcb426870e74",
+      "repeated_identical": true,
+      "primary_instructions": 201,
+      "bytes": 2604,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_22",
+      "entry": "fs_ps",
+      "shader": 85,
+      "defines": [
+        "KNIFE_PS_OP=22"
+      ],
+      "fallback": 14,
+      "sha256": "2293ffdbffd9899ac88ad59176b7047d74abcfbde20ec6559d1d92f850f788bd",
+      "repeated_identical": true,
+      "primary_instructions": 234,
+      "bytes": 2892,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_22",
+      "entry": "fs_ps_fetch",
+      "shader": 109,
+      "defines": [
+        "KNIFE_PS_OP=22",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "382258218e1ec0768eb28bc533e75597e08f8fb09c07ea4b6d9b74c161a66af5",
+      "repeated_identical": true,
+      "primary_instructions": 195,
+      "bytes": 2572,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_23",
+      "entry": "fs_ps",
+      "shader": 86,
+      "defines": [
+        "KNIFE_PS_OP=23"
+      ],
+      "fallback": 14,
+      "sha256": "6e57a751ad9add8878b604da13743347fb604d6a5ba1934c004605a2dcc1831c",
+      "repeated_identical": true,
+      "primary_instructions": 280,
+      "bytes": 3284,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_23",
+      "entry": "fs_ps_fetch",
+      "shader": 110,
+      "defines": [
+        "KNIFE_PS_OP=23",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "cc1cb4a447fde75aea62a2d265c2f527f93d32e76b39bd711e476cdb96322b69",
+      "repeated_identical": true,
+      "primary_instructions": 234,
+      "bytes": 2900,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "ps_24",
+      "entry": "fs_ps",
+      "shader": 87,
+      "defines": [
+        "KNIFE_PS_OP=24"
+      ],
+      "fallback": 14,
+      "sha256": "83e5503fc5b233ec7b769cd736f0551c84478c377e25172f3bab8e1f27f0ab20",
+      "repeated_identical": true,
+      "primary_instructions": 276,
+      "bytes": 3252,
+      "flags": 1576963,
+      "parameters": [
+        {
+          "name": "uTex1Size",
+          "category": 1,
+          "components": 2,
+          "resource": 0
+        },
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 6
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex1",
+          "category": 2,
+          "components": 4,
+          "resource": 1
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 614
+    },
+    {
+      "name": "fetch_24",
+      "entry": "fs_ps_fetch",
+      "shader": 111,
+      "defines": [
+        "KNIFE_PS_OP=24",
+        "KNIFE_RUNTIME_NATIVE_FETCH=1"
+      ],
+      "fallback": 17,
+      "sha256": "3a7d60cea310f85ac6d9d820141571f6140535a20c5958458515b6800de4a877",
+      "repeated_identical": true,
+      "primary_instructions": 230,
+      "bytes": 2868,
+      "flags": 1585347,
+      "parameters": [
+        {
+          "name": "tu.params2",
+          "category": 1,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tu.params",
+          "category": 1,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "tex0",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "tex2",
+          "category": 2,
+          "components": 4,
+          "resource": 2
+        },
+        {
+          "name": "soft_lut",
+          "category": 2,
+          "components": 4,
+          "resource": 3
+        }
+      ],
+      "before_primary_instructions": 577
+    },
+    {
+      "name": "quad_v",
+      "entry": "main",
+      "shader": null,
+      "defines": [],
+      "source": "knife/vita/shaders/quad_v.cg",
+      "sha256": "78b723037c2ed6ef6fa0678e8c6fd8641e07c5081b7a894cb5de8041a5a323ae",
+      "repeated_identical": true,
+      "primary_instructions": 7,
+      "bytes": 324,
+      "flags": 1638400,
+      "parameters": [
+        {
+          "name": "aPosition",
+          "category": 0,
+          "components": 4,
+          "resource": 0
+        },
+        {
+          "name": "aTexcoord",
+          "category": 0,
+          "components": 4,
+          "resource": 4
+        },
+        {
+          "name": "aColor",
+          "category": 0,
+          "components": 4,
+          "resource": 8
+        }
+      ]
+    },
+    {
+      "name": "quad_f",
+      "entry": "main",
+      "shader": null,
+      "defines": [],
+      "source": "knife/vita/shaders/quad_f.cg",
+      "sha256": "19bf17174580f8ba3e0c10c3e755007a0efff737760c212b018a29911c7e6c4d",
+      "repeated_identical": true,
+      "primary_instructions": 5,
+      "bytes": 296,
+      "flags": 1579013,
+      "parameters": [
+        {
+          "name": "uTexture",
+          "category": 2,
+          "components": 4,
+          "resource": 0
+        }
+      ]
+    }
+  ],
+  "total_gxp_bytes": 208696,
+  "hardware_verified": false,
+  "pixel_equivalence_verified": false,
+  "note": "Instruction counts are static program size, not GPU timing; drivers still validate and patch GXP."
+}

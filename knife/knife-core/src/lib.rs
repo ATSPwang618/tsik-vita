@@ -3,5 +3,6 @@
 pub mod exe;
 pub mod format;
 pub mod io_metrics;
+pub mod file_io;
 pub mod linebreak;
 pub mod vm;

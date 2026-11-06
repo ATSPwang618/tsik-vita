@@ -16,6 +16,7 @@ static void kv_runtime_shader_shutdown(void) { }
 static const SceGxmProgram *kv_runtime_shader_program(uint32_t shader) { (void)shader; return 0; }
 #endif
 #include <psp2/kernel/processmgr.h>
+#include <psp2/kernel/error.h>
 #include <psp2/kernel/sysmem.h>
 #include <psp2/kernel/threadmgr.h>
 #include <math.h>
@@ -131,6 +132,7 @@ typedef struct BatchSlot { Block vertices; uint32_t used, first_sequence, last_s
 enum { KV_OPT_BATCH_ARENA = 1U << 2, KV_OPT_ASYNC_SUBMIT = 1U << 5,
     KV_OPT_COMPACT_STREAM = 1U << 6, KV_OPT_TEXTURE_POOL = 1U << 8,
     KV_OPT_DEPENDENCY_GRAPH = 1U << 12, KV_OPT_SOURCE_RENAME = 1U << 13,
+    KV_OPT_SHADER_SPECIALIZATION = 1U << 28,
     BATCH_SLOTS = 2, BATCH_MAX_BYTES = 4 * 1024 * 1024 };
 #ifdef KV_GXM_DEV_DIAGNOSTICS
 static void native_trace(const char *stage, const Block *block) {
@@ -165,6 +167,7 @@ struct KvGxmTexture {
     SceGxmSyncObject *sync;
     SceGxmColorSurface surface;
     uint32_t width, height, pitch, bpp, srgb, storage;
+    uint32_t palette_offset;
     int ready, rendered, retiring;
     uint32_t last_use, last_read, last_write;
     uint64_t rename_identity;
@@ -205,6 +208,10 @@ struct KvGxm {
     uint64_t next_rename_identity;
     volatile unsigned int *completion;
     TexturePage *texture_pages;
+    /* One admitted allocation, transferred to the next matching texture.
+       Holding actual storage closes the gap between free-byte queries and
+       the kernel's physical-page allocator, in pooled and non-pooled modes. */
+    Block texture_reservation;
     KvGxmStats stats;
 };
 
@@ -806,6 +813,7 @@ int32_t kv_gxm_destroy(KvGxm *g) {
         CHECK(g, texture_target_destroy(g, t));
         CHECK(g, block_free(g, &t->pixels)); g->textures = t->next; free(t);
     }
+    CHECK(g, block_free(g, &g->texture_reservation));
     CHECK(g, pool_destroy(g));
     TRACE("destroy: textures released");
     CHECK(g, effects_destroy(g));

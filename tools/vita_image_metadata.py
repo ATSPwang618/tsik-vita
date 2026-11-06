@@ -80,3 +80,28 @@ def images_in(data):
         p += il
     require(p == len(data), "KATL trailing bytes")
     return out
+
+
+def runtime_layout(info, strips=1):
+    """Both GPU-native and CPU fallback contracts, after language selection.
+
+    Slice charge differs from a new physical page. Neither is an assertion
+    that a fragmented Vita CDRAM allocator can currently satisfy the request.
+    """
+    w, h = info['physical']
+    require(strips in (1, 2, 4) and h >= strips, 'language strip count/height')
+    rows = h // strips  # Matches the production row decoder's integer division.
+    codec = info['codec']
+    if codec == 9:
+        require(w <= 2048 and h <= 2048, 'native GXT axis limit')
+    else:
+        require(codec in (1, 2, 7), 'unsupported runtime image codec')
+        require(w <= 960 and rows <= 1080, 'PNG/JPEG selected axis limit')
+    rgba = w * rows * 4
+    require(rgba <= 4 * 960 * 1080, 'selected RGBA budget')
+    pitched = align(w, 8) * rows * 4
+    return dict(selected_physical=[w, rows], rgba_bytes=rgba,
+                rgba_pitch_bytes=pitched, rgba_pool_slice_bytes=align(pitched, 64),
+                rgba_new_page_bytes=align(pitched, GRANULE),
+                native_new_page_bytes=(info['cdram_allocation_bytes'] if codec == 9 and strips == 1
+                                       else align(pitched, GRANULE)))

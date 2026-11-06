@@ -23,7 +23,7 @@ class Image(ctypes.Structure):
     _fields_ = [('width', ctypes.c_uint32), ('height', ctypes.c_uint32),
                 ('stride', ctypes.c_uint32), ('length', ctypes.c_uint32), ('pixels', ctypes.c_void_p)]
 
-def verify(assets, decoder):
+def verify(assets, decoder, layouts_path=None):
     lib = ctypes.CDLL(str(decoder.resolve()))
     args = [ctypes.c_void_p, ctypes.c_uint32, ctypes.POINTER(Image)]
     lib.kv_image_decode_bounded.argtypes = args + [ctypes.c_uint32]
@@ -33,6 +33,11 @@ def verify(assets, decoder):
     marker = (assets/'vita-540p-assets.json').read_bytes()
     manifest = json.loads(marker)
     language_count = len(manifest['languages'])
+    stable = manifest.get('stability_preprocessing')
+    story_archives = ('w_allpac','w_allpaccg','w_allpacml','allpachd')
+    if stable and (stable.get('policy') != 'story-rgba512k-axis960-v1'
+                   or stable.get('rgba_pitch_limit') != 512*1024):
+        raise ValueError('unknown stability preprocessing policy')
     if language_count not in (2,4): raise ValueError('unsupported language count')
     if language_count == 2:
         if manifest.get('language_ids') != [0,2]: raise ValueError('expected original JA/ZC IDs')
@@ -46,6 +51,9 @@ def verify(assets, decoder):
         total_bytes += row['bytes']
     counts = collections.Counter()
     archives = {}
+    maxima = {}
+    largest = []
+    layouts = set()
     for archive in repair.ARCHIVES:
         hed = (assets/f'{archive}.hed').read_bytes()
         nam_path = assets/f'{archive}.nam'
@@ -77,10 +85,33 @@ def verify(assets, decoder):
                     try:
                         info = metadata.image_info(data)
                         w, h = info['physical']
-                        if w > 960 or h//n > 1080: raise ValueError('runtime dimension bound')
                         codec = info['codec']
+                        layout = metadata.runtime_layout(info, n)
+                        if stable and archive in story_archives:
+                            if layout['rgba_new_page_bytes'] > 512*1024 or max(layout['selected_physical']) > 960:
+                                raise ValueError('story exceeds preprocessed stable RGBA bound')
+                            if codec == 9 and info['gpu_payload_bytes'] > 512*1024:
+                                raise ValueError('story exceeds preprocessed native bound')
+                            counts['stable_story_images'] += 1
+                            counts['stable_story_max_rgba_page_bytes'] = max(
+                                counts['stable_story_max_rgba_page_bytes'],layout['rgba_new_page_bytes'])
+                        layouts.add((w, h//n, codec, n))
+                        for field in ('rgba_bytes', 'rgba_pitch_bytes', 'rgba_new_page_bytes', 'native_new_page_bytes'):
+                            if layout[field] > maxima.get(field, {}).get('bytes', 0):
+                                maxima[field] = dict(bytes=layout[field], archive=archive, index=index,
+                                    entry=entry, member=name, physical=info['physical'], strips=n)
+                        if codec == 9 and n == 1 and layout['rgba_new_page_bytes'] > info['cdram_allocation_bytes']:
+                            counts['grade_expands_native_storage'] += 1
+                        if archive == 'w_allpac' and entry.upper().startswith('AOK_A_21_00_N01_03_03.'):
+                            largest.append(dict(archive=archive,index=index,entry=entry,logical=info['logical'], **layout))
                         counts[f'codec_{codec}'] += 1
-                        if codec == 9: continue
+                        if codec == 9:
+                            # GXT uses the direct GPU path or gxt_decode::rgba8_rows,
+                            # not the PNG/JPEG decoder's 960x1080 shape restriction.
+                            if w > 2048 or h > 2048 or w*(h//n) > 960*1080:
+                                raise ValueError('GXT GPU / CPU fallback budget')
+                            continue
+                        if w > 960 or h//n > 1080: raise ValueError('runtime dimension bound')
                         if codec not in (1, 2, 7): raise ValueError('unsupported production codec')
                         payload = data[32:info['envelope_bytes']]
                         buffer = ctypes.create_string_buffer(payload)
@@ -100,9 +131,12 @@ def verify(assets, decoder):
                         raise ValueError(f'{archive}[{index}] {entry}/{name}: {error}') from error
         archives[archive] = entries
         print(archive, entries, dict(counts), flush=True)
+    if layouts_path:
+        layouts_path.write_text(''.join('\t'.join(map(str,row))+'\n' for row in sorted(layouts)), encoding='utf-8')
     return dict(status='PASS', scope='offline hashes + production PNG/JPEG decode + bounded GXT metadata',
                 hardware_verified=False, asset_manifest_sha256=hashlib.sha256(marker).hexdigest(),
                 files=len(manifest['files']), bytes=total_bytes, archives=archives, counts=dict(counts),
+                runtime_layout_maxima=maxima, device_failure_images=largest, unique_selected_layouts=len(layouts),
                 decoder_sha256=repair.file_sha(decoder))
 
 if __name__ == '__main__':
@@ -110,8 +144,9 @@ if __name__ == '__main__':
     parser.add_argument('assets', type=Path)
     parser.add_argument('--decoder', type=Path, required=True)
     parser.add_argument('--report', type=Path, required=True)
+    parser.add_argument('--layouts', type=Path, help='temporary TSV of unique selected physical layouts for renderer probes')
     args = parser.parse_args()
-    report = verify(args.assets, args.decoder)
+    report = verify(args.assets, args.decoder, args.layouts)
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(json.dumps(report, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
     print(json.dumps(report), flush=True)

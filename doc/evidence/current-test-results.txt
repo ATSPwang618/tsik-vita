@@ -1,0 +1,157 @@
+core-tests:
+test result: ok. 41 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+platform-tests:
+test result: ok. 68 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.19s
+
+bilingual-tests:
+test result: ok. 66 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.98s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+render-tests:
+test result: ok. 112 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+real-asset-check:
+PASS files=107 read_bytes=13228647 elapsed_ms=563.198
+
+32-bit seek negative control (expected failures):
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+UI / VitaDeck regression, 2026-11-02 (fresh):
+Before fix: test result: FAILED. 112 passed; 2 failed (expected regression).
+UI atlas registration failures:
+CONF_PARTS_JA.NXGZ / voice_bg [716, 1436]: deferred atlas dimensions exceed compact bounds
+CONF_PARTS_ZC.NXGZ / voice_bg_zc [716, 1436]: deferred atlas dimensions exceed compact bounds
+DISP_PARTS_JA.NXGZ / lineBreak_a [2047, 19]: deferred atlas dimensions exceed compact bounds
+DISP_PARTS_JA.NXGZ / pageBreak_a [2047, 19]: deferred atlas dimensions exceed compact bounds
+DISP_PARTS_JA.NXGZ / pageBreak_ciel_a-1920x1080 [1268, 23]: deferred atlas dimensions exceed compact bounds
+DISP_PARTS_ZC.NXGZ / lineBreak_a [2047, 19]: deferred atlas dimensions exceed compact bounds
+DISP_PARTS_ZC.NXGZ / pageBreak_a [2047, 19]: deferred atlas dimensions exceed compact bounds
+DISP_PARTS_ZC.NXGZ / pageBreak_ciel_a-1920x1080 [1268, 23]: deferred atlas dimensions exceed compact bounds
+MENU_PARTS_JA.NXGZ / flow_thumb_all_nx [1040, 832]: deferred atlas dimensions exceed compact bounds
+MENU_PARTS_ZC.NXGZ / flow_thumb_all_zc [1040, 832]: deferred atlas dimensions exceed compact bounds
+TITLE_PARTS_JA.NXGZ / title_bg0 [1335, 633]: deferred atlas dimensions exceed compact bounds
+TITLE_PARTS_ZC.NXGZ / title_bg0 [1335, 633]: deferred atlas dimensions exceed compact bounds
+EFFECT_PARTS.NXGZ / FallNote0 [2047, 28]: deferred atlas dimensions exceed compact bounds
+EFFECT_PARTS.NXGZ / FallNote1 [2048, 50]: deferred atlas dimensions exceed compact bounds
+EFFECT_PARTS.NXGZ / FallNote2 [1800, 75]: deferred atlas dimensions exceed compact bounds
+
+render-green:
+test result: ok. 114 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+bilingual-logging:
+test result: ok. 69 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.22s
+
+platform:
+test result: ok. 68 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
+
+Actual UI pixels:
+OLD_REJECTION CONF_PARTS_JA.NXGZ / voice_bg: 716x1436
+OLD_REJECTION CONF_PARTS_ZC.NXGZ / voice_bg_zc: 716x1436
+OLD_REJECTION DISP_PARTS_JA.NXGZ / lineBreak_a: 2047x19
+OLD_REJECTION DISP_PARTS_JA.NXGZ / pageBreak_a: 2047x19
+OLD_REJECTION DISP_PARTS_JA.NXGZ / pageBreak_ciel_a-1920x1080: 1268x23
+OLD_REJECTION DISP_PARTS_ZC.NXGZ / lineBreak_a: 2047x19
+OLD_REJECTION DISP_PARTS_ZC.NXGZ / pageBreak_a: 2047x19
+OLD_REJECTION DISP_PARTS_ZC.NXGZ / pageBreak_ciel_a-1920x1080: 1268x23
+OLD_REJECTION MENU_PARTS_JA.NXGZ / flow_thumb_all_nx: 1040x832
+OLD_REJECTION MENU_PARTS_ZC.NXGZ / flow_thumb_all_zc: 1040x832
+OLD_REJECTION TITLE_PARTS_JA.NXGZ / title_bg0: 1335x633
+OLD_REJECTION TITLE_PARTS_ZC.NXGZ / title_bg0: 1335x633
+OLD_REJECTION EFFECT_PARTS.NXGZ / FallNote0: 2047x28
+OLD_REJECTION EFFECT_PARTS.NXGZ / FallNote1: 2048x50
+OLD_REJECTION EFFECT_PARTS.NXGZ / FallNote2: 1800x75
+PASS atlases=24 members=438 gxt_decodes=236 visible_button_cells=60 old_rejections=15; hardware_verified=false
+
+ELF32 ARM console function:
+811bd300 <kv_perf_console>:
+811bd30c:	d205      	bcs.n	811bd31a <kv_perf_console+0x1a>
+811bd316:	f098 be43 	b.w	81255fa0 <__sceClibPrintf_from_thumb>
+
+2026-11-02 CDRAM and complete pack size audit (fresh):
+Before reservation fix: both new physical-pressure regressions FAILED as expected.
+render-all-shapes.log: test result: ok. 118 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.30s
+bilingual.log: test result: ok. 69 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.40s
+platform.log: test result: ok. 68 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.19s
+image-cache.log: test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Image layout fixture: 6736 selected shapes; pool on/off; initial and reload uploads.
+RESULT PASS: 12 cases, 154 checks, 0 failures; actual allocator, SDK doubles, no hardware claim
+Python quality/dimensions: 10 passed.
+Assets: 16764 hashes matched; 813 native PNG/JPEG/strip decodes; no assets changed.
+w_allui: cumulative 237 GPU headers and CPU decodes; 50234058 pixels; max RGBA 4112704 bytes
+w_allpaccg: cumulative 1261 GPU headers and CPU decodes; 840422150 pixels; max RGBA 4147200 bytes
+w_allpac: cumulative 23108 GPU headers and CPU decodes; 10677498153 pixels; max RGBA 4147200 bytes
+w_allpacml: cumulative 23108 GPU headers and CPU decodes; 10677498153 pixels; max RGBA 4147200 bytes
+allpachd: cumulative 23108 GPU headers and CPU decodes; 10677498153 pixels; max RGBA 4147200 bytes
+parts: cumulative 23113 GPU headers and CPU decodes; 10680090153 pixels; max RGBA 4147200 bytes
+PASS; hardware_verified=false
+ELF32 ARM; linked kv_gxm_texture_reserve; 324 source hashes; 21 VPK members; 5 LiveArea source files.
+VPK: 7176553 bytes; SHA256 f0d66b01409ebc4fb04bf0e7ec44e8bfbed293a95e1247ec44f108340b04db6e
+New build hardware/runtime verification: false. Previous user-supplied log is separately scoped. No remote writes.
+
+Lossless texture storage, 2026-11-02 (fresh):
+Render: 125 passed; 6736 actual selected layouts, initial upload/reload, pool on/off (release fixture run).
+Native lossless packing/readback/admission/rollback: 39 cases / 587 checks, ASan/UBSan PASS.
+Native compressed original regression: 87 cases / 1104 checks PASS, expected RED control verified.
+Native physical reservation regression: 12 cases / 154 checks PASS.
+Platform: 68 passed. Bilingual/runtime helpers: 69 passed. Python quality: 10 passed.
+Full assets: 16764 hashes, 4305521192 bytes, 813 PNG/JPEG production decodes, 23113 actual GXT decodes PASS.
+Palette candidates: 275 entries/language slots: 51 opaque, 224 alpha, 219 semitransparent.
+ELF32 little-endian ARM; native P8 descriptor function and physical reservation linked.
+326 source inputs and 21 package members rehashed (exact count in current-validation.json); 5 LiveArea files compared.
+No assets changed. No new hardware run, no device memory/FPS claim, no commit/push/release.
+
+
+=== 2026-11-02 stable preprocessing: current delivery ===
+{
+  "delivery": {
+    "path": "release/knife-vita-tsukihime-540p.vpk",
+    "bytes": 7178475,
+    "sha256": "7d89bda329e4d0c8071ea17ce50eb7a16237c80b60fb8c16f1ee47a45ae26d91",
+    "eboot_sha256": "9335833a3948cd7cf9d1c96b4b4cbdda9e3fb0f9e2c1264c98af433075df3d9c"
+  },
+  "manifest_sha256": "0c4188c923f744870d660a384e0c55f59f1d3e3d8997e9baf6150a5eb7e0fc75",
+  "source_inputs": 328
+}
+python.log:
+Ran 23 tests in 0.985s
+OK
+cache-green.log:
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+render-final.log:
+test result: ok. 127 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.68s
+pressure.log:
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 125 filtered out; finished in 0.05s
+platform.log:
+test result: ok. 68 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.19s
+bilingual.log:
+test result: ok. 69 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.90s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+ui.log:
+PASS atlases=24 members=438 gxt_decodes=236 visible_button_cells=60 old_rejections=15; hardware_verified=false
+gxt-audit.log:
+AUDIT images=23113 opaque=3751 alpha=19362 formats={"Dxt1": 3751, "Dxt5": 19362} opaque_dxt5=0
+PALETTE_AUDIT exact_256_color_candidates=292 old_pages_sum=177733632 indexed_pages_sum=80478208
+SELECTED candidates=290 opaque=48 alpha=242 semitransparent=237
+reservation.log:
+RESULT PASS: 12 cases, 154 checks, 0 failures; actual allocator, SDK doubles, no hardware claim
+lossless.log:
+RESULT PASS: 39 cases, 587 checks, 0 failures; exact C bytes, SDK doubles, no hardware claim
+compressed.log:
+RESULT PASS: 87 cases, 1104 checks, 0 failures; real C, actual SDK headers, host stubs
+RESULT PASS: expected RED and actual production GREEN; immutable evidence is in /mnt/d/AI-CODEX/tsik-vita/.work/vita/gxm-compressed/20261102T170714Z-376
+build-final.log:
+    Finished `vita` profile [optimized] target(s) in 30.06s
+published /mnt/d/AI-CODEX/tsik-vita/release/knife-vita-tsukihime-540p.vpk (7178475 bytes)
+7d89bda329e4d0c8071ea17ce50eb7a16237c80b60fb8c16f1ee47a45ae26d91 /mnt/d/AI-CODEX/tsik-vita/release/knife-vita-tsukihime-540p.vpk
+
+stable-text-cache: 12 passed under vita-stable; no SDK/GPU execution.
+Documentation local links: 101 verified. All 328 current source input hashes match final receipt. git diff --check: PASS.
+
+stable-text-cache: 12 passed under vita-stable; no SDK/GPU execution.
+Documentation local links: 102 verified. All 328 current source input hashes match final receipt. git diff --check: PASS.
+
+Startup actual-file check: PASS files=107 read_bytes=13168938 (host filesystem only).

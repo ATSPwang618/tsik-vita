@@ -8,13 +8,13 @@
 use std::{
     borrow::Cow,
     collections::HashMap,
-    fs::File,
     io::{Cursor, Read, Seek, SeekFrom},
     path::Path,
     sync::Mutex,
 };
 
 use knife_perf::{Metric, Scope};
+use crate::file_io::{ReadFile as File, file_len};
 
 use anyhow::{Context, Result, ensure};
 use flate2::bufread::{GzDecoder, ZlibDecoder};
@@ -157,12 +157,10 @@ impl Archive {
         let hed = std::fs::read(dir.join(format!("{base}.hed")))
             .with_context(|| format!("reading {base}.hed"))?;
         let nam = std::fs::read(dir.join(format!("{base}.nam"))).ok();
-        let file = File::open(dir.join(format!("{base}.mrg")))
+        let mut file = File::open(dir.join(format!("{base}.mrg")))
             .with_context(|| format!("opening {base}.mrg"))?;
-        let mrg_len = file
-            .metadata()
-            .with_context(|| format!("stat {base}.mrg"))?
-            .len();
+        let mrg_len = file_len(&mut file)
+            .with_context(|| format!("64-bit length {base}.mrg"))?;
         #[cfg(not(target_os = "vita"))]
         let mrg = if _mapped {
             // SAFETY: the game files are read-only inputs, never modified while mapped.
@@ -471,6 +469,19 @@ mod range_tests {
             Self(dir)
         }
         fn open(&self) -> Archive { Archive::open_file_with_limits(&self.0, "ui", ArchiveLimits { max_stored_bytes: 2048, max_unpacked_bytes: 2048 }).unwrap() }
+        fn at_offset(data: &[u8], offset: u64, file_len: u64) -> Self {
+            assert_eq!(offset % SECTOR, 0);
+            let fixture = Self::new(&[]);
+            let mut hed = std::fs::read(fixture.0.join("ui.hed")).unwrap();
+            hed[..4].copy_from_slice(&u32::try_from(offset / SECTOR).unwrap().to_le_bytes());
+            std::fs::write(fixture.0.join("ui.hed"), hed).unwrap();
+            let mut output = std::fs::OpenOptions::new().write(true)
+                .open(fixture.0.join("ui.mrg")).unwrap();
+            output.set_len(file_len).unwrap();
+            output.seek(SeekFrom::Start(offset)).unwrap();
+            output.write_all(data).unwrap();
+            fixture
+        }
     }
     impl Drop for Fixture {
         fn drop(&mut self) {
@@ -622,5 +633,42 @@ mod range_tests {
         let archive = fixture.open();
         assert_eq!(archive.read_uncompressed_range(0, 120, 4).unwrap(), b"KIMG");
         assert!(archive.read_uncompressed_range(0, 2047, 2).is_err());
+    }
+
+    #[test]
+    #[cfg(unix)]
+    fn compressed_entry_beyond_two_gib_plans_and_decodes_bounded_ranges() {
+        let input: Vec<_> = (0..1000).map(|i| (i % 251) as u8).collect();
+        let offset = (1u64 << 31) + SECTOR;
+        for gzip in [false, true] {
+            let payload = wrapped(&input, gzip);
+            let fixture = Fixture::at_offset(&payload, offset, 2_475_186_176);
+            let archive = fixture.open();
+            assert_eq!(archive.entries()[0].offset, offset);
+            assert_eq!(archive.read_plan(0).unwrap(), ArchiveReadPlan {
+                stored_bytes: payload.len(), decoded_bytes: input.len(),
+            });
+            assert_eq!(archive.read_bounded(0, 1000).unwrap(), input);
+            assert_eq!(archive.read_uncompressed_range(0, 241, 59).unwrap(), input[241..300]);
+            assert!(archive.read_bounded(0, 999).is_err());
+            assert!(archive.read_uncompressed_range(0, 999, 2).is_err());
+        }
+    }
+
+    #[test]
+    #[cfg(unix)]
+    fn raw_entry_beyond_four_gib_keeps_extent_and_subrange_bounds() {
+        let offset = (1u64 << 32) + SECTOR;
+        let mut payload = vec![0; SECTOR as usize];
+        payload[120..124].copy_from_slice(b"KIMG");
+        let fixture = Fixture::at_offset(&payload, offset, offset + SECTOR);
+        let archive = fixture.open();
+        assert_eq!(archive.read(0).unwrap(), payload);
+        assert_eq!(archive.read_uncompressed_range(0, 120, 4).unwrap(), b"KIMG");
+        assert!(archive.read_uncompressed_range(0, 2047, 2).is_err());
+        drop(archive);
+        std::fs::OpenOptions::new().write(true).open(fixture.0.join("ui.mrg"))
+            .unwrap().set_len(offset + SECTOR - 1).unwrap();
+        assert!(fixture.open().read_plan(0).is_err());
     }
 }

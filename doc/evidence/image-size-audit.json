@@ -1,0 +1,99 @@
+{
+  "status": "PASS",
+  "scope": "offline hashes + production PNG/JPEG decode + bounded GXT metadata",
+  "hardware_verified": false,
+  "asset_manifest_sha256": "0c4188c923f744870d660a384e0c55f59f1d3e3d8997e9baf6150a5eb7e0fc75",
+  "files": 16764,
+  "bytes": 2427075112,
+  "archives": {
+    "w_allpac": 29267,
+    "w_allpaccg": 1521,
+    "w_allpacml": 344,
+    "w_allui": 48,
+    "allpachd": 14765,
+    "parts": 6
+  },
+  "counts": {
+    "stable_story_images": 23177,
+    "stable_story_max_rgba_page_bytes": 524288,
+    "grade_expands_native_storage": 18789,
+    "codec_9": 23113,
+    "codec_7": 189,
+    "native_decodes": 813,
+    "native_rgba_bytes": 490336592,
+    "codec_2": 321,
+    "language_images": 303
+  },
+  "runtime_layout_maxima": {
+    "rgba_bytes": {
+      "bytes": 4112704,
+      "archive": "w_allui",
+      "index": 0,
+      "entry": "CONF_PARTS_JA.NXGZ",
+      "member": "voice_bg",
+      "physical": [
+        716,
+        1436
+      ],
+      "strips": 1
+    },
+    "rgba_pitch_bytes": {
+      "bytes": 4135680,
+      "archive": "w_allui",
+      "index": 0,
+      "entry": "CONF_PARTS_JA.NXGZ",
+      "member": "voice_bg",
+      "physical": [
+        716,
+        1436
+      ],
+      "strips": 1
+    },
+    "rgba_new_page_bytes": {
+      "bytes": 4194304,
+      "archive": "w_allui",
+      "index": 0,
+      "entry": "CONF_PARTS_JA.NXGZ",
+      "member": "voice_bg",
+      "physical": [
+        716,
+        1436
+      ],
+      "strips": 1
+    },
+    "native_new_page_bytes": {
+      "bytes": 3932160,
+      "archive": "w_allui",
+      "index": 28,
+      "entry": "SELECT_PARTS_JA.NXGZ",
+      "member": "altermenu_lensflare",
+      "physical": [
+        960,
+        960
+      ],
+      "strips": 1
+    }
+  },
+  "device_failure_images": [
+    {
+      "archive": "w_allpac",
+      "index": 2685,
+      "entry": "AOK_A_21_00_N01_03_03.NXGZ",
+      "logical": [
+        2591,
+        2582
+      ],
+      "selected_physical": [
+        360,
+        359
+      ],
+      "rgba_bytes": 516960,
+      "rgba_pitch_bytes": 516960,
+      "rgba_pool_slice_bytes": 516992,
+      "rgba_new_page_bytes": 524288,
+      "native_new_page_bytes": 262144
+    }
+  ],
+  "unique_selected_layouts": 3606,
+  "decoder_sha256": "5d550eeb421ccefc98c85ed10d3a38cbcb655247f21c032263072d1c902ea55b"
+}

@@ -1,0 +1,275 @@
+{
+  "status": "PASS",
+  "scope": "all six image archives, exact source RGBA identities; no asset rewriting",
+  "build_tag": "tsukihime540-lossless-20261102",
+  "asset_manifest_sha256": "1cd41de0fc031e07cf91161932563570d593387d7c6f2ab84c7888b93f19182a",
+  "total_decoded_entries_or_language_slots": 23926,
+  "files": 16764,
+  "asset_bytes": 4305521192,
+  "gxt": {
+    "images": 23113,
+    "opaque": 3750,
+    "alpha": 19363,
+    "dxt1": 3750,
+    "dxt5": 19363,
+    "opaque_dxt5": 0,
+    "exact_256_colour_page_savers_compared_with_rgba": 258,
+    "selected_compared_with_rgb24_or_rgba": 256,
+    "selected_opaque": 47,
+    "selected_alpha": 209,
+    "selected_semitransparent": 204
+  },
+  "png_jpeg": {
+    "status": "PASS",
+    "scope": "all PNG/JPEG decoded RGBA and JA/ZC slots; exact colours, no rewriting",
+    "hardware_verified": false,
+    "counts": {
+      "decoded_slots": 813,
+      "opaque": 144,
+      "semitransparent": 669,
+      "alpha": 669,
+      "exact_palette_slots": 109,
+      "selected_palette_slots": 19,
+      "selected_palette_alpha": 15,
+      "selected_palette_semitransparent": 15,
+      "selected_palette_opaque": 4
+    },
+    "examples": [
+      {
+        "archive": "w_allpac",
+        "name": "IMG2624_11_11",
+        "language_slot": 0,
+        "physical": [
+          960,
+          94
+        ],
+        "colors": 137,
+        "opaque": false,
+        "semitransparent": true,
+        "old_page_bytes": 524288,
+        "indexed_page_bytes": 262144
+      },
+      {
+        "archive": "w_allpac",
+        "name": "IMG2624_11_11",
+        "language_slot": 1,
+        "physical": [
+          960,
+          94
+        ],
+        "colors": 135,
+        "opaque": false,
+        "semitransparent": true,
+        "old_page_bytes": 524288,
+        "indexed_page_bytes": 262144
+      },
+      {
+        "archive": "w_allpac",
+        "name": "IMG2625_11_11",
+        "language_slot": 0,
+        "physical": [
+          960,
+          97
+        ],
+        "colors": 146,
+        "opaque": false,
+        "semitransparent": true,
+        "old_page_bytes": 524288,
+        "indexed_page_bytes": 262144
+      },
+      {
+        "archive": "w_allpac",
+        "name": "IMG2625_11_11",
+        "language_slot": 1,
+        "physical": [
+          960,
+          97
+        ],
+        "colors": 146,
+        "opaque": false,
+        "semitransparent": true,
+        "old_page_bytes": 524288,
+        "indexed_page_bytes": 262144
+      },
+      {
+        "archive": "w_allpacml",
+        "name": "IMG2459",
+        "language_slot": 0,
+        "physical": [
+          960,
+          540
+        ],
+        "colors": 252,
+        "opaque": false,
+        "semitransparent": true,
+        "old_page_bytes": 2097152,
+        "indexed_page_bytes": 524288
+      },
+      {
+        "archive": "w_allpacml",
+        "name": "IMG2459",
+        "language_slot": 1,
+        "physical": [
+          960,
+          540
+        ],
+        "colors": 245,
+        "opaque": false,
+        "semitransparent": true,
+        "old_page_bytes": 2097152,
+        "indexed_page_bytes": 524288
+      },
+      {
+        "archive": "w_allpacml",
+        "name": "IMG2460",
+        "language_slot": 0,
+        "physical": [
+          960,
+          540
+        ],
+        "colors": 254,
+        "opaque": false,
+        "semitransparent": true,
+        "old_page_bytes": 2097152,
+        "indexed_page_bytes": 524288
+      },
+      {
+        "archive": "w_allpacml",
+        "name": "IMG2460",
+        "language_slot": 1,
+        "physical": [
+          960,
+          540
+        ],
+        "colors": 248,
+        "opaque": false,
+        "semitransparent": true,
+        "old_page_bytes": 2097152,
+        "indexed_page_bytes": 524288
+      },
+      {
+        "archive": "w_allpacml",
+        "name": "IMG2461",
+        "language_slot": 0,
+        "physical": [
+          960,
+          540
+        ],
+        "colors": 256,
+        "opaque": false,
+        "semitransparent": true,
+        "old_page_bytes": 2097152,
+        "indexed_page_bytes": 524288
+      },
+      {
+        "archive": "w_allpacml",
+        "name": "IMG2461",
+        "language_slot": 1,
+        "physical": [
+          960,
+          540
+        ],
+        "colors": 256,
+        "opaque": false,
+        "semitransparent": true,
+        "old_page_bytes": 2097152,
+        "indexed_page_bytes": 524288
+      },
+      {
+        "archive": "w_allui",
+        "name": "bf_no_edge68x68_2",
+        "language_slot": 0,
+        "physical": [
+          714,
+          986
+        ],
+        "colors": 253,
+        "opaque": false,
+        "semitransparent": true,
+        "old_page_bytes": 2883584,
+        "indexed_page_bytes": 786432
+      },
+      {
+        "archive": "w_allui",
+        "name": "bf_no_edge68x68_2",
+        "language_slot": 0,
+        "physical": [
+          714,
+          986
+        ],
+        "colors": 253,
+        "opaque": false,
+        "semitransparent": true,
+        "old_page_bytes": 2883584,
+        "indexed_page_bytes": 786432
+      }
+    ]
+  },
+  "combined_palette_candidates": {
+    "total": 275,
+    "opaque": 51,
+    "alpha": 224,
+    "semitransparent": 219
+  },
+  "storage_rules": [
+    "Direct GXT stays compressed without a new lossy encoding generation.",
+    "Immutable CPU-baked RGBA: P8_ABGR if <=256 complete RGBA identities and saves a CDRAM page compared with RGB24/RGBA.",
+    "Otherwise exactly opaque images use RGB24; other alpha images stay RGBA8.",
+    "Palette: 8-bit indices at eight-pixel pitch, 64-byte aligned 256*4-byte RGBA palette in the same native allocation.",
+    "No quantization, resizing, alpha threshold, removal of transparent RGB, or separate full-image index staging buffer.",
+    "First upload, physical reservation, residency accounting and reload keep the same selected format. Mutable textures/targets retain original storage."
+  ],
+  "examples": [
+    {
+      "name": "IMG2459 language slot 0",
+      "physical": [
+        960,
+        540
+      ],
+      "rgba_colours": 252,
+      "transparent": true,
+      "rgba_new_page_bytes": 2097152,
+      "p8_new_page_bytes": 524288,
+      "scope": "PNG decoded image; immutable CPU-baked route"
+    },
+    {
+      "name": "opaque 1020x1016 regression fixture",
+      "rgba_new_page_bytes": 4194304,
+      "rgb24_new_page_bytes": 3145728,
+      "scope": "test fixture; not the transparent AOK device failure image"
+    }
+  ],
+  "limits": [
+    "Candidate counts describe decoded originals; actual eligibility is recomputed from CPU-baked pixels. Not all candidates use the baked route.",
+    "P8 savings are relative to expanded RGBA/RGB24, not existing direct DXT/PVRTC storage.",
+    "No aggregate claim about simultaneous resident memory, device FPS or fragmentations. GPU sampling requires actual Vita testing."
+  ],
+  "tests": {
+    "render": 125,
+    "render_shipped_layouts": 6736,
+    "bilingual_runtime_and_console": 69,
+    "platform": 68,
+    "python_quality": 10,
+    "native_lossless_cases": 39,
+    "native_lossless_checks": 587,
+    "native_compressed_cases": 87,
+    "native_compressed_checks": 1104,
+    "native_reservation_cases": 12,
+    "native_reservation_checks": 154
+  },
+  "hardware_verified": false,
+  "audit_sources": [
+    {
+      "path": "tools/audit-lossless-png.py",
+      "sha256": "8e07aa7b81c60021a61cceba6ba14bba03d8e18620cb3557eaef43bec754eaf6"
+    },
+    {
+      "path": "tools/probes/tsukihime-bilingual/examples/audit_lossless_textures.rs",
+      "sha256": "c80338b9e9fa2b41ac6eaec08717531ee5b38912da85f1885c2f59625998f3aa"
+    },
+    {
+      "path": "tools/test-vita-lossless.sh",
+      "sha256": "5355e65464e09da824e45a5b0877533541084c4b1ea27452a42a9917205b5c47"
+    }
+  ]
+}

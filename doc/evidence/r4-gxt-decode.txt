@@ -1,0 +1,5 @@
+w_allui: cumulative 237 GPU headers and CPU decodes; 50234058 pixels; max RGBA 4112704 bytes
+w_allpaccg: cumulative 1261 GPU headers and CPU decodes; 840422150 pixels; max RGBA 4147200 bytes
+w_allpac: cumulative 23108 GPU headers and CPU decodes; 10677498153 pixels; max RGBA 4147200 bytes
+w_allpacml: cumulative 23108 GPU headers and CPU decodes; 10677498153 pixels; max RGBA 4147200 bytes
+PASS; hardware_verified=false

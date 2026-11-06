@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "scope": "offline hashes + production PNG/JPEG decode + bounded GXT metadata",
+  "hardware_verified": false,
+  "asset_manifest_sha256": "1cd41de0fc031e07cf91161932563570d593387d7c6f2ab84c7888b93f19182a",
+  "files": 16764,
+  "bytes": 4305521192,
+  "archives": {
+    "w_allpac": 29267,
+    "w_allpaccg": 1521,
+    "w_allpacml": 344,
+    "w_allui": 48,
+    "allpachd": 14765,
+    "parts": 6
+  },
+  "counts": {
+    "codec_9": 23113,
+    "codec_7": 189,
+    "native_decodes": 813,
+    "native_rgba_bytes": 1099305816,
+    "codec_2": 321,
+    "language_images": 303
+  },
+  "decoder_sha256": "f7f6c994ef0f3a45bd77abfd75829acceab940300c98824ae788ff3c2b8b5f29"
+}

@@ -53,10 +53,13 @@ def main():
                         project_path + "/knife/Cargo.toml", "--locked", "-p", "knife-render"]
     if env.get("KNIFE_VITA_OFFLINE") == "1":
         command.append("--offline")
+    # Facade route tests select a process-wide optimization profile. Keep their
+    # save/restore scopes from racing with another test's rendering commands.
+    command += ["--", "--test-threads=1"]
     result = subprocess.run(command, cwd=ROOT, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     log = run / "output.log"
     log.write_bytes(result.stdout)
-    public_log = ROOT / "doc/logs/vita/270p-render-host.log"
+    public_log = ROOT / "doc/logs/vita/540p-render-host.log"
     public_log.parent.mkdir(parents=True, exist_ok=True)
     public_log.write_bytes(result.stdout)
     output = result.stdout.decode("utf-8", errors="replace")

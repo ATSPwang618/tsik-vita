@@ -74,4 +74,4 @@ assets-540p = ["knife-platform-vita/assets-540p", "knife-render/assets-540p"]
 # atlas/stream metadata from Witch on the Holy Night to the Tsukihime overseas
 # data (`w_allpac`/`w_allui`). The engine already detects Build::Overseas from
 # that data; this feature only binds the Vita packaging identity.
-tsukihime = ["assets-540p", "knife-platform-vita/tsukihime"]
+tsukihime = ["assets-540p", "knife-platform-vita/tsukihime", "knife-perf/vita-stable"]

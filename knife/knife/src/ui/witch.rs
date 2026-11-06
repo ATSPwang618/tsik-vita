@@ -29,9 +29,16 @@ pub use modepnl::{HELP as PANEL_HELP, WBtn, WSpin};
 pub use objs::{Pen, WObjs};
 pub use title::WitchTitle;
 
-/// jp_8D1C0: the ending was reached (the title's BGM 42, else 65).
+/// jp_8D1C0: the ending was reached (the title's BGM 42, else 2).
 pub fn title_complete(game: &Game) -> bool {
     title::complete(game)
+}
+
+/// jp_8E1C0 / jp_9C470: the title's BGM. BGM 2 is the music gallery's first track,
+/// "Mahoutsukai no Yoru - Shuchoumelody" (`stream/M01s.opus`, loop 0..9,407,488 samples);
+/// the second title (ending reached) plays BGM 42 (`stream/M42.opus`).
+pub fn title_bgm(complete: bool) -> i32 {
+    if complete { 42 } else { 2 }
 }
 
 /// Game button bits (sub_F3EC4): see `pad.rs`.
@@ -372,8 +379,8 @@ pub struct WUi {
     /// fading the menu to zero before state 5 starts ws_draw, and ws_step closes
     /// the save page before state 6 draws the menu again. Each pass clears both
     /// targets. Sharing this pair saves 4 MiB of CDRAM at 960x540 on Vita.
-    /// Ui::update releases it outside the active menu/save phase, including
-    /// transitions to backlog, so its idle storage cannot crowd out that page.
+    /// Ui::update retains it for both the story menu and title state 25's load
+    /// page, then releases it when those owners leave (including to backlog).
     #[cfg(target_os = "vita")]
     pub(super) backdrop_rt: Option<[TexRef; 2]>,
     pub dlg: dialog::WDlg,

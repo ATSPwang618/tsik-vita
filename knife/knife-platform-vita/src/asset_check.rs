@@ -1,5 +1,6 @@
 //! Bounded startup checks against the asset profile embedded in the engine.
-use std::{fs::File, io::{Read, Seek, SeekFrom}, path::Path};
+use std::{io::{Read, Seek, SeekFrom}, path::Path};
+use knife_core::file_io::{ReadFile as File, file_len};
 
 pub const BUFFER_BYTES: usize = 8192;
 pub const PROBE_BYTES: usize = 4096;
@@ -90,9 +91,11 @@ fn check_files(root: &Path, specs: &[FileSpec]) -> Result<CheckReport, AssetErro
         let mut file = File::open(root.join(spec.path)).map_err(|e| error(
             if e.kind() == std::io::ErrorKind::NotFound { Failure::Missing } else { Failure::Read }
         ))?;
-        let metadata = file.metadata().map_err(|_| error(Failure::Read))?;
+        let metadata = std::fs::metadata(root.join(spec.path)).map_err(|_| error(Failure::Read))?;
         if !metadata.is_file() { return Err(error(Failure::Read)); }
-        if metadata.len() != spec.bytes { return Err(error(Failure::Size)); }
+        // Vita newlib stat/off_t truncates at 2 GiB. Query and seek through the
+        // same SDK 64-bit reader used by MRG archives; never normalize a bad size.
+        if file_len(&mut file).map_err(|_| error(Failure::Read))? != spec.bytes { return Err(error(Failure::Size)); }
         let valid = match spec.content {
             ContentCheck::Full(crc) => {
                 let actual = read_crc(&mut file, spec.bytes, &mut buffer).map_err(|_| error(Failure::Read))?;
@@ -210,6 +213,25 @@ mod tests {
         *data.last_mut().unwrap() = 1;
         f.write(spec.path, &data);
         assert_eq!(check_files(&f.0, &[spec]).unwrap_err().failure, Failure::Content);
+    }
+
+    #[test]
+    #[cfg(unix)]
+    fn r4_archive_above_two_gib_keeps_size_and_tail_checks() {
+        use std::io::Write;
+        let f = Fixture::new();
+        let spec = FileSpec { path: "w_allpac.mrg", bytes: 2_475_186_176,
+            content: ContentCheck::Edges { first: 0xc71c0011, last: 0xc71c0011 } };
+        // A sparse fixture occupies only a few blocks, never another game pack.
+        let mut output = fs::OpenOptions::new().write(true).create_new(true)
+            .open(f.0.join(spec.path)).unwrap();
+        output.set_len(spec.bytes).unwrap();
+        assert_eq!(check_files(&f.0, &[spec]).unwrap(), CheckReport { files: 1, read_bytes: 8192 });
+        output.seek(SeekFrom::End(-1)).unwrap();
+        output.write_all(&[1]).unwrap();
+        assert_eq!(check_files(&f.0, &[spec]).unwrap_err().failure, Failure::Content);
+        output.set_len(spec.bytes - 1).unwrap();
+        assert_eq!(check_files(&f.0, &[spec]).unwrap_err().failure, Failure::Size);
     }
 
     #[test]

@@ -3,6 +3,13 @@
 #[path="../../../../knife/knife/src/savedata.rs"] mod savedata;
 #[path="../../../../knife/knife/src/save_tables.rs"] mod save_tables;
 #[path="../../../../knife/knife/src/ui_images.rs"] mod ui_images;
+#[path="../../../../knife/knife/src/vita_log.rs"] mod vita_log;
+#[cfg(test)]
+#[path="../../../../knife/knife-platform-vita/src/console_worker.rs"] mod console_worker;
+#[path="../../../../knife/knife/src/controller_axis.rs"] mod controller_axis;
+#[path="../../../../knife/knife/src/game/rebake_cohort.rs"] mod rebake_cohort;
+#[path="../../../../knife/knife/src/game/sound_barrier.rs"] mod sound_barrier;
+#[path="../../../../knife/knife/src/movie/owner.rs"] mod movie_owner;
 #[path="../../../../knife/knife/src/gallery_table.rs"] mod gallery_table;
 #[cfg(feature="tsukihime")]
 #[path="../../../../knife/knife/src/ui/startup_credits.rs"] mod startup_credits;
@@ -50,18 +57,26 @@ mod gallery_resource_tests {
  }
 
  #[test]
- fn cg_thumbnails_accept_the_single_image_container_and_keep_logical_coordinates() {
+ fn cg_thumbnails_have_enough_pixels_for_the_vita_grid() {
   let Some(root)=assets() else { return };
   let archive=Archive::open_file_with_limits(&root,"w_allui",ArchiveLimits::VITA).unwrap();
   for stem in ["CG_THUMB_PARTS_JA","CG_THUMB_PARTS_ZC"] {
    let raw=archive.read(archive.find_stem(stem).unwrap()).unwrap();
    let images=ui_images::compact_images(stem,&raw).unwrap();
-   assert_eq!(images.len(),1);
-   assert_eq!(images[0].0,"cg_thumb_all");
-   let image=compact::parse(images[0].1).unwrap();
-   assert_eq!(image.logical,[36*154,55*88]);
-   assert_eq!(image.size,[619,540]);
-   assert_eq!(image.encoding,compact::Encoding::PngUnorm);
+   // A 115x65.5 screen cell needs approximately this many real pixels.
+   // Keeping only logical 5544x4840 dimensions allowed the old 17x10 cells.
+   assert_eq!(images.len(),28);
+   for id in 0..36*55 {
+    let (name,src)=ui_images::cg_thumb_source(id,true);
+    let (_,data)=images.iter().find(|(n,_)|*n==name).unwrap();
+    let image=compact::parse(data).unwrap();
+    assert!(src[0]+src[2] <= image.logical[0] as f32);
+    assert!(src[1]+src[3] <= image.logical[1] as f32);
+    assert!(image.size[0] as f32*src[2]/image.logical[0] as f32 >= 115.0);
+    assert!(image.size[1] as f32*src[3]/image.logical[1] as f32 >= 65.0);
+    assert!(image.size[0]<=960 && image.size[1]<=1080);
+    assert_eq!(image.encoding,compact::Encoding::PngUnorm);
+   }
   }
  }
 }

@@ -39,6 +39,8 @@ typedef struct KvGxmStats {
 int32_t kv_gxm_create(KvGxm **out, char *error, uint32_t error_capacity);
 /* Optional runtime program passed compiler output/metadata checks at startup. */
 int32_t kv_gxm_shader_available(KvGxm *g, uint32_t shader);
+/* Exact startup-patched, cost-admitted material pair; no compilation on draw. */
+int32_t kv_gxm_chain_pair_available(KvGxm *g, uint32_t first, uint32_t second);
 int32_t kv_gxm_texture_create(KvGxm *g, const uint8_t *rgba, uint32_t width,
     uint32_t height, uint32_t stride, KvGxmTexture **out);
 int32_t kv_gxm_texture_destroy(KvGxm *g, KvGxmTexture *texture);
@@ -49,7 +51,10 @@ int32_t kv_gxm_movie_texture_create(KvGxm *g, const void *frame, uint32_t width,
 int32_t kv_gxm_movie_texture_rebind(KvGxm *g, KvGxmTexture *texture,
     const void *frame, uint32_t width, uint32_t height);
 int32_t kv_gxm_movie_gpu_finish(KvGxm *g);
-/* format: 0=RGBA8, 1=R8. Image decoding has its own, smaller size bound.
+/* format: 0=RGBA8, 1=R8, 2=opaque RGB24 from RGBA8, 3=exact P8 from RGBA8.
+   Packed colour formats are immutable sampled images. P8 owns a 64-aligned
+   256-entry RGBA palette in the same allocation; no colour/alpha quantization.
+   Image decoding has its own, smaller size bound.
    Generic allocations admit 1..2048 per axis, subject to the native budget.
    data=NULL creates a zeroed allocation. RTs require RGBA8. */
 int32_t kv_gxm_texture_create_ex(KvGxm *g, const uint8_t *data, uint32_t width,
@@ -72,7 +77,8 @@ int32_t kv_gxm_end_target(KvGxm *g);
 /* After a completed bake, release RT/DEV-sync attachments while retaining the
    sampled texture and its pixels. No active scene or displayed DEV target. */
 int32_t kv_gxm_texture_seal(KvGxm *g, KvGxmTexture *texture);
-/* Triangle-list vertices from exactly one quad (equal haze values). IDs match
+/* Triangle-list vertices follow the selected shader ABI: ordinary uniforms are
+   equal across the draw; RimText28 has per-triangle hx/xyz and shared RGB24. IDs match
    Rust EffectShader / EffectBlend; params is two complete float4 uniforms. */
 int32_t kv_gxm_draw_effect(KvGxm *g, const KvEffectVertex *vertices, uint32_t count,
     uint32_t shader, uint32_t blend, const KvGxmTexture *const textures[4], const float params[8]);
@@ -90,6 +96,10 @@ int32_t kv_gxm_scene_plan(KvGxm *g, KvGxmTexture *target,
     const KvGxmTexture *const *reads, uint32_t count, uint32_t kind);
 /* Physical pool slack and retired owners remain included in cdram_available. */
 int32_t kv_gxm_texture_charge(uint32_t payload_bytes, uint32_t *out);
+/* Hold one real pixel allocation for the next matching texture. Returns 1 if
+   reserved, 0 for clean CDRAM pressure, negative for a non-recoverable error.
+   Request includes linear row pitch (or compressed payload), before charge. */
+int32_t kv_gxm_texture_reserve(KvGxm *g, uint32_t payload_bytes);
 /* Explicit memory-pressure reclamation; wait=0 only polls completed owners. */
 int32_t kv_gxm_reclaim(KvGxm *g, uint32_t wait);
 int32_t kv_gxm_begin(KvGxm *g, const float clear[4]);

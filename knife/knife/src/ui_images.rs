@@ -2,6 +2,16 @@
 use anyhow::{Result, ensure};
 use knife_core::format::compact;
 
+/// The compact pack repacks 72 consecutive original cells into each 6x12 page.
+/// Logical cell metrics stay 154x88; physical cells are 116x66 (115x65.5 on Vita).
+/// Retain the original single-sheet path for older packs and desktop romfs.
+pub fn cg_thumb_source(id: u32, paged: bool) -> (String, [f32; 4]) {
+    let (name, local, cols) = if paged {
+        (format!("cg_thumb_page_{}", id / 72), id % 72, 6)
+    } else { ("cg_thumb_all".to_string(), id, 36) };
+    (name, [(local % cols) as f32 * 154.0, (local / cols) as f32 * 88.0, 154.0, 87.0])
+}
+
 pub fn compact_images<'a>(stem: &str, data: &'a [u8]) -> Result<Vec<(&'a str, &'a [u8])>> {
     if compact::is_atlas(data) {
         return compact::parse_atlas(data);

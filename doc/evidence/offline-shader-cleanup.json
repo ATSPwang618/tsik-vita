@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-06",
+  "completed": true,
+  "external_logical_bytes": 922557156,
+  "scope": "Disposable outputs generated during offline shader development",
+  "project_logical_bytes_preview": 77090708,
+  "project_targets": [".work", "doc/logs", "doc/vita-effects-inputs-host-tests.json", "doc/vita-gxm-copy-host-tests.json"],
+  "external_targets": ["/root/.cache/knife-vita-tsik", "/root/.cache/knife-vita-tsik-audit-host"],
+  "retained": ["release/knife-vita-tsukihime-540p.vpk", "dist/TSUKIHIME-RE/assets", "knife/vita/shaders/generated", "doc/evidence"],
+  "regenerable": true,
+  "wsl_vhd_compacted": false,
+  "physical_disk_recovery_measured": false
+}

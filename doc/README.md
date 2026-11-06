@@ -1,38 +1,33 @@
-# 文档总览（tsik-vita）
+# 月姬 Vita 技术文档
 
-本目录有两组文档：
+本目录只维护当前 `tsik-vita` 的实现和交付状态。魔夜是移植参考，不能把参考项目的 TITLE ID、数据目录、素材版本或帧率直接套用到月姬。
 
-## A. 本次移植的文档（tsik-vita 当前交付）
+| 文档 | 用途 |
+| --- | --- |
+| [architecture.md](architecture.md) | 源码职责、线程、资源读取、渲染与存储 |
+| [build.md](build.md) | Vita 构建环境、依赖、命令和产物 |
+| [assets.md](assets.md) | 当前稳定素材上限、UI／双语言与升级 |
+| [performance.md](performance.md) | 固定上游提交、迁移范围、预算和采样 |
+| [shaders.md](shaders.md) | 全部离线特效、像素运算精简、编译与实机 A/B |
+| [validation.md](validation.md) | 当前包身份、验证摘要及实机限制 |
+| [troubleshooting.md](troubleshooting.md) | 启动检查、大文件 IO、显示与日志问题 |
+| [maintenance.md](maintenance.md) | 仓库结构、可清理数据与磁盘维护 |
 
-| 文档 | 内容 |
-|---|---|
-| [00-porting-process.md](00-porting-process.md) | 参考项目 mofa-vita 的 PS Vita 移植流程调研（目录规范、A→G 素材链、引擎适配要点）+ 迁移到月姬海外版的差异与落地顺序 |
-| [01-nsp-inventory.md](01-nsp-inventory.md) | 原始 NSP 解包事实：PFS0/NCA 清单、内容类型、exe build id、romfs 目录与归档清单、磁盘占用、命令与校验 |
-| [02-engine-port-plan.md](02-engine-port-plan.md) | 引擎与构建工具的月姬变体改动清单（文件/符号/当前值→新值）、验证结果、转正（素材包）剩余步骤 |
-| [03-build-env.md](03-build-env.md) | 构建环境实测：WSL/VitaSDK/Rust 版本、可复现命令、缓存隔离问题与修复、构建耗时与产物哈希 |
-| [04-asset-pipeline-plan.md](04-asset-pipeline-plan.md) | 月姬海外版素材 → Vita 960×540 素材包的转换链分析（kdu compact、编码/语言条带、清单/profile/索引再生成、实测与时延） |
-| [05-delivery-verification.md](05-delivery-verification.md) | 本次交付的可复核证据：产物/哈希、构建与包检查输出、NSP/版本对齐、540p 预处理状态、未验证项与复现命令 |
+[根 README](../README.md) 面向安装与游玩；[工具索引](../tools/README.md) 面向开发者。引擎格式研究保留在 [engine-writeup.md](../knife/engine-writeup.md) 和 [knife/doc](../knife/doc)，这些是机制参考，不是当前交付身份。
 
-## B. 参考文档（从 mofa-vita 复制，描述上游引擎/移植基线）
+## 验证记录
 
-这些文件对理解引擎与参考实现仍然有效，但文中的 TITLE ID、数据根、素材版本、构建变体与 `doc/03` 的
-具体数字都属于 **mofa-vita（《魔法使之夜》）**，不是本仓库月姬交付的权威值；月姬的权威值以根 `README.md`
-和 A 组文档为准。
+- [当前构建收据](evidence/current-build.json)：固定实际源码输入、参数、包成员和哈希。
+- [离线 shader](evidence/offline-shaders.json)：109 个程序的重复编译、源码身份、参数与指令数。
+- [稳定预处理](evidence/stability-preprocessing.json)：剧情图片上限、15,901 个变更条目、7 文件更新范围与缓存参数。
+- [整包尺寸审计](evidence/image-size-audit.json)：当前实际尺寸、原失败图片及 UI 例外。
+- [无损纹理审计](evidence/lossless-textures.json)：历史高清包的调色板候选与包身份；RGB24/P8 原生规则继续沿用。
+- [当前验证结果](evidence/current-validation.json)及[离线 shader 测试摘要](evidence/offline-shader-tests.txt)：本次构建与回归及未通过的配置范围。
+- [稳定素材验证](evidence/stable-assets-validation.json)及[历史测试摘要](evidence/current-test-results.txt)：2026-11-02 素材、压力与全包验证。
+- [R4 素材验证](evidence/r4-asset-verification.json)及[GXT 解码记录](evidence/r4-gxt-decode.txt)：沿用的画质阶段证据。
+- [性能迁移验证摘要](evidence/performance-baseline.json)：固定到魔夜 `46fc688` 的原验证范围。
+- [大文件诊断](evidence/large-file-diagnosis.json)及[ARM seek 反汇编](evidence/native-seek-arm.txt)：设备只读身份检查与 SDK 接口证据。
 
-| 文档 | 内容 |
-|---|---|
-| [01-架构总览.md](01-架构总览.md) | 项目定位、crate 结构、Vita 帧循环/线程模型、渲染目标与坐标系、资源格式 |
-| [02-渲染与GPU后端.md](02-渲染与GPU后端.md) | GXM C 后端、批次/依赖图/completion、纹理池、运行时 shader 编译与缓存 |
-| [03-构建与工具链.md](03-构建与工具链.md) | 上游 `build-vita.py` 用法、SDK/Rust 探测、vendor 依赖、VPK 打包（参考基线） |
-| [04-资源调度与缓存.md](04-资源调度与缓存.md) | 资源生命周期、atlas/GXT、图像 worker、音频通道、缓存预算 |
-| [05-优化记录与实测数据.md](05-优化记录与实测数据.md) | 20 个优化开关的历史实测（r2/r3/r4，480×270 捕获，不等于 960×540 终版） |
-| [06-性能采集与分析.md](06-性能采集与分析.md) | 性能日志格式、采集框架、分析工具 |
-| [07-已知限制与未验证项.md](07-已知限制与未验证项.md) | 上游基线的已知限制与未验证清单 |
-| [08-素材与安装.md](08-素材与安装.md) | WoH r7 素材包契约与从原始数据制作素材的 A→G 链路（月姬沿用方法，归档集合不同） |
+收据保留的是产生时的事实；其中旧 `.work` 路径对应的中间文件已清理，不承诺这些文件仍在。当前最终 VPK 在本地 `release/`，素材在本地 `dist/`。两者不提交到源码仓库。
 
-## 证据与约定
-
-- 标记约定：**[代码]** 当前源码/脚本可核对；**[实测]** 本机本次会话的构建/转换输出；**[未验证]** 无设备或像素证据。
-- 构建收据（`.work/vita/game-release-tsukihime-540p/vita-game-release-build.json`）固定声明
-  `runtime_verified:false`、`hardware_verified:false`：它只记录构建事实。
-- 设备表现（FPS、显存、稳定性）不得用上游历史数据代替；月姬的真机数据需另行采集。
+标记原则：源码核对、宿主测试、ARM 构建、设备观察分别陈述。`hardware_verified:false` 不得因编译成功而改成 true。

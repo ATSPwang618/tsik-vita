@@ -9,6 +9,8 @@ use std::{cell::RefCell, collections::HashMap, rc::Rc};
 pub enum TextureFormat {
     Rgba8,
     R8,
+    Rgb8FromRgba,
+    Indexed8FromRgba,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum EffectShader {
@@ -37,6 +39,9 @@ pub enum EffectShader {
     PlainSprite,
     PsPlain19,
     PsFetch2 = 25,
+    PlainForceAlpha = 26,
+    PsChain2 = 27,
+    RimTextBatched = 28,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum EffectBlend {
@@ -117,6 +122,10 @@ pub struct Trace {
     pub fail_next_retirement: bool,
     pub fail_next_compressed_create: bool,
     pub fail_next_seal: bool,
+    /// Simulate physical-page pressure despite a successful free-byte query.
+    pub reservation_blocked_by: Option<usize>,
+    pub reservation_attempts: usize,
+    pub fail_next_reservation: bool,
     /// Test a finite native render-target budget independently of pixel bytes.
     pub render_target_limit: Option<usize>,
 }
@@ -126,6 +135,7 @@ struct Texture {
     size: [u32; 2],
     bpp: u32,
     target: bool,
+    immutable: bool,
     pixels: Vec<u8>,
     allocation_bytes: usize,
 }
@@ -139,6 +149,16 @@ pub struct Gxm {
 }
 
 impl Gxm {
+    pub fn reserve_texture(&mut self, bytes: usize) -> Result<bool, String> {
+        let mut control = self.control.borrow_mut();
+        control.reservation_attempts += 1;
+        if std::mem::take(&mut control.fail_next_reservation) {
+            return Err("injected mapping error".into());
+        }
+        let blocked = control.reservation_blocked_by.is_some_and(|id| self.textures.contains_key(&id));
+        drop(control);
+        Ok(!blocked && bytes <= self.available_cdram()?)
+    }
     pub fn begin_batch(&mut self, _basic_quads: usize, _effect_vertices: usize) -> Result<(), String> { Ok(()) }
     pub fn reclaim_retired(&mut self, _wait: bool) -> Result<(), String> { Ok(()) }
     pub fn texture_charge(bytes: u32) -> Result<u32, String> {
@@ -151,6 +171,10 @@ impl Gxm {
     }
     pub fn shader_available(&self, shader: u32) -> Result<bool, String> {
         Ok(shader < 32 && self.control.borrow().shader_capabilities & (1u32 << shader) != 0)
+    }
+    pub fn chain_pair_available(&self, first: u32, second: u32) -> Result<bool, String> {
+        let ops = [2, 11, 13, 19];
+        Ok(self.shader_available(27)? && ops.contains(&first) && ops.contains(&second))
     }
     pub fn live_render_targets(&self) -> usize {
         self.textures.values().filter(|texture| texture.target).count()
@@ -185,12 +209,15 @@ impl Gxm {
         if width == 0 || width > 2048 || height == 0 || height > 2048 {
             return Err("mock texture dimensions".into());
         }
-        let bpp = if format == TextureFormat::R8 { 1 } else { 4 };
-        let row = width * bpp;
-        if stride < row || (srgb && bpp != 4) || (render_target && bpp != 4) {
+        let indexed=matches!(format,TextureFormat::Indexed8FromRgba);
+        let bpp = match format { TextureFormat::R8|TextureFormat::Indexed8FromRgba=>1,TextureFormat::Rgb8FromRgba=>3,_=>4 };
+        let source_bpp = if bpp==3 || indexed {4}else{bpp};
+        if stride < width*source_bpp || (srgb && bpp != 4) || (render_target && bpp != 4) {
             return Err("mock texture format".into());
         }
-        let charge = Self::texture_charge(((width + 7) & !7) * height * bpp)? as usize;
+        let bytes=if indexed {super::lossless_pixels::indexed_bytes(width,height).unwrap()}
+            else {((width+7)&!7)*height*bpp};
+        let charge = Self::texture_charge(bytes)? as usize;
         if charge > self.available_cdram()? {
             return Err("mock native CDRAM allocation budget exceeded".into());
         }
@@ -198,16 +225,25 @@ impl Gxm {
             self.textures.values().filter(|texture| texture.target).count() >= limit) {
             return Err("mock native render-target budget exceeded".into());
         }
+        // Store the sampled RGBA contract in this CPU recorder. Allocation
+        // accounting independently uses the actual native three-byte format.
+        let row = width * source_bpp;
         let mut pixels = vec![0; (row * height) as usize];
         if let Some(data) = data {
             if data.len() < ((height - 1) * stride + row) as usize {
                 return Err("mock source too short".into());
             }
             for y in 0..height as usize {
+                if bpp==3 && data[y*stride as usize..y*stride as usize+row as usize].chunks_exact(4).any(|p|p[3]!=255) {
+                    return Err("RGB24 source has non-opaque alpha".into());
+                }
                 pixels[y * row as usize..(y + 1) * row as usize].copy_from_slice(
                     &data[y * stride as usize..y * stride as usize + row as usize],
                 );
             }
+        }
+        if indexed && super::lossless_pixels::palette_colors(width,height,&pixels).is_none() {
+            return Err("mock palette exceeds 256 RGBA colours".into());
         }
         let id = self.next_id;
         self.next_id += 1;
@@ -216,7 +252,7 @@ impl Gxm {
             Texture {
                 size: [width, height],
                 bpp,
-                target: render_target,
+                target: render_target, immutable: indexed || bpp==3,
                 pixels,
                 allocation_bytes: charge,
             },
@@ -245,7 +281,7 @@ impl Gxm {
         self.next_id += 1;
         let size = [u32::from(gxt.width), u32::from(gxt.height)];
         self.textures.insert(id, Texture {
-            size, bpp: 0, target: false, pixels: Vec::new(), allocation_bytes,
+            size, bpp: 0, target: false, immutable: true, pixels: Vec::new(), allocation_bytes,
         });
         self.control.borrow_mut().events.push(Event::CreateCompressed {
             id, size, format: gxt.format, payload_bytes, srgb, linear,
@@ -261,7 +297,7 @@ impl Gxm {
         stride: u32,
     ) -> Result<(), String> {
         let texture = self.textures.get_mut(&id.0).ok_or("mock texture missing")?;
-        if texture.bpp == 0 { return Err("mock nonlinear texture is immutable".into()); }
+        if texture.immutable { return Err("mock packed texture is immutable".into()); }
         let [x, y] = origin;
         let [w, h] = size;
         if x + w > texture.size[0]
@@ -354,17 +390,24 @@ impl Gxm {
         if vertices.is_empty() || vertices.len() % 3 != 0 {
             return Err("mock triangle count".into());
         }
-        if vertices.iter().any(|v| v.haze != vertices[0].haze) {
+        // Match the real effect_inputs contract: rim28 reads atlas bounds and
+        // rim steps per vertex; chain27 reads its second UV per vertex. Their
+        // remaining shared fragment uniforms must still agree for the batch.
+        if vertices.iter().any(|v| match shader {
+            EffectShader::RimTextBatched => v.haze[1][3] != vertices[0].haze[1][3],
+            EffectShader::PsChain2 => v.haze[1] != vertices[0].haze[1],
+            _ => v.haze != vertices[0].haze,
+        }) {
             return Err("mock per-quad uniforms differ".into());
         }
-        if matches!(shader, EffectShader::PlainSprite | EffectShader::PsPlain19 | EffectShader::PsFetch2) {
+        if matches!(shader, EffectShader::PlainSprite | EffectShader::PsPlain19 | EffectShader::PsFetch2 | EffectShader::PlainForceAlpha) {
             if control.shader_capabilities & (1u32 << shader as u32) == 0 {
                 return Err("mock unavailable plain shader".into());
             }
             if vertices.iter().any(|v| v.haze.iter().flatten().chain(v.soft.iter().flatten()).any(|x| *x != 0.0)) {
                 return Err("mock plain shader cannot discard haze/soft".into());
             }
-            if shader == EffectShader::PlainSprite && params != [0.0; 8] {
+            if matches!(shader, EffectShader::PlainSprite | EffectShader::PlainForceAlpha) && params != [0.0; 8] {
                 return Err("mock plain sprite params".into());
             }
             if shader == EffectShader::PsPlain19 && (blend != EffectBlend::Opaque || params[0] != 19.0

@@ -338,7 +338,7 @@ static int pool_slice_free(KvGxm *g, Block *b) {
     /* Empty, already retired pages are bounded; active slices are never moved. */
     return pool_trim(g, 2U * 1024U * 1024U);
 }
-static int texture_pixels_alloc(KvGxm *g, Block *out, uint32_t requested) {
+static int texture_pixels_alloc_unreserved(KvGxm *g, Block *out, uint32_t requested) {
     if (!(kv_render_options() & KV_OPT_TEXTURE_POOL)) return block_alloc(g, out, requested, 1, 1);
     uint32_t bytes = 0;
     CHECK(g, kv_gxm_texture_charge(requested, &bytes));
@@ -375,6 +375,41 @@ static int texture_pixels_alloc(KvGxm *g, Block *out, uint32_t requested) {
     *out = (Block){ .uid = page->storage.uid, .base = (uint8_t *)page->storage.base + span->offset,
         .size = bytes, .cdram = 1, .page = page, .span = span };
     return 0;
+}
+/* A reservation owns pixels only: no descriptor, attachment or texture handle
+   exists yet. Pressure is recoverable only after a clean allocation rollback.
+   Mapping/unmapping failures and uncertain teardown remain fatal. */
+int32_t kv_gxm_texture_reserve(KvGxm *g, uint32_t requested) {
+    if (!active(g) || g->scene_open) return KV_STATE;
+    uint32_t charge = 0;
+    CHECK(g, kv_gxm_texture_charge(requested, &charge));
+    if (g->texture_reservation.uid > 0 && g->texture_reservation.size == charge) return 1;
+    int result = block_free(g, &g->texture_reservation);
+    if (result < 0) { g->closing = 1; return fail(g, "texture reservation release retained owner", result); }
+    memset(&g->texture_reservation, 0, sizeof(g->texture_reservation));
+    result = texture_pixels_alloc_unreserved(g, &g->texture_reservation, requested);
+    if (result >= 0) return 1;
+    /* No allocated block may be abandoned, even if rollback itself failed. */
+    if (g->closing || g->texture_reservation.uid > 0) return fail(g, "texture reservation retained owner", result);
+    memset(&g->texture_reservation, 0, sizeof(g->texture_reservation));
+    fail(g, "texture storage admission", result);
+    if (result == KV_BUDGET || (uint32_t)result == SCE_KERNEL_ERROR_NO_FREE_PHYSICAL_PAGE_CDRAM) return 0;
+    return result;
+}
+static int texture_pixels_alloc(KvGxm *g, Block *out, uint32_t requested) {
+    uint32_t charge = 0;
+    CHECK(g, kv_gxm_texture_charge(requested, &charge));
+    if (g->texture_reservation.uid > 0) {
+        if (g->texture_reservation.size == charge) {
+            *out = g->texture_reservation;
+            memset(&g->texture_reservation, 0, sizeof(g->texture_reservation));
+            return 0;
+        }
+        /* A different allocation intervened; never strand an old spare. */
+        const int result = block_free(g, &g->texture_reservation);
+        if (result < 0) { g->closing = 1; return result; }
+    }
+    return texture_pixels_alloc_unreserved(g, out, requested);
 }
 static void texture_initialize_padding(const KvGxmTexture *t, enum KvPerfMetric metric, int overwritten) {
     if (!(kv_render_options() & KV_OPT_TEXTURE_POOL) || !overwritten) {

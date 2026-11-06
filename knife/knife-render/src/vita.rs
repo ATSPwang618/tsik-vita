@@ -1,8 +1,8 @@
 //! Native GXM implementation of the renderer facade.
 //!
 //! Encoders retain resources and defer commands until submission, as on desktop.
-//! Each quad is a separate draw because GXM binds the WGSL flat haze fields as
-//! fragment uniforms. The native owner handles GPU fences and sRGB surfaces.
+//! Compatible draws share submissions; eligible consecutive pixel-local PS layers
+//! share a bounded blend-chain shader. The native owner retains all GPU fences.
 
 #![cfg_attr(not(target_os = "vita"), allow(dead_code))]
 
@@ -28,19 +28,11 @@ pub use knife_render_api::{
     Shade, SoftClip, Vertex,
 };
 
-// The native 960x540 variant renders the scene/effect chain at the display's
-// content size and the present pass places it inside the 960x544 scanout (2 px
-// letterbox top and bottom). The 270p variant keeps the quarter-density chain so
-// rebuilding KNIF00270 does not silently inherit native targets. Script
-// coordinates remain the 1920x1080 logical canvas in both.
-#[cfg(feature = "assets-540p")]
+// The scene/effect chain renders at the display's content size and the present
+// pass places it inside the 960x544 scanout (2 px letterbox top and bottom).
+// Script coordinates remain the 1920x1080 logical canvas.
 pub const RENDER_W: u32 = 960;
-#[cfg(feature = "assets-540p")]
 pub const RENDER_H: u32 = 540;
-#[cfg(not(feature = "assets-540p"))]
-pub const RENDER_W: u32 = 480;
-#[cfg(not(feature = "assets-540p"))]
-pub const RENDER_H: u32 = 270;
 
 // Bound recorded CPU work independently of native texture/vertex ring budgets.
 // Exceeding either limit is a reported error, never a partial frame submission.
@@ -55,6 +47,8 @@ const DEFERRED_SOURCE_BYTES: usize = knife_perf::memory_budget::GPU_SOURCE_BYTES
 const MERGED_DRAW_VERTICES: usize = 16_000;
 #[cfg(test)]
 const CDRAM_GRANULE: usize = 256 * 1024;
+#[path = "vita_pixels.rs"]
+mod lossless_pixels;
 
 // A game-owned idle image cache may participate in the same native reservation.
 // The callback is invoked for a validated cache miss, before its native upload.
@@ -99,7 +93,6 @@ mod menu_draw_diagnostic {
 
     static RECORDED: AtomicU32 = AtomicU32::new(0);
     static SUBMITTED: AtomicU32 = AtomicU32::new(0);
-    static BAKES: AtomicU32 = AtomicU32::new(0);
     static COMPRESSED_UPLOADS: AtomicU32 = AtomicU32::new(0);
     static CG_QUADS: AtomicU32 = AtomicU32::new(0);
     static CG_SUBMITTED: AtomicU32 = AtomicU32::new(0);
@@ -227,26 +220,6 @@ mod menu_draw_diagnostic {
             + 2 * usize::from(texture.device.epoch.get() >= 2100);
         let bit = 1 << (index * 4 + phase);
         seen.fetch_or(bit, Ordering::Relaxed) & bit == 0
-    }
-
-    pub(super) fn bake_begin(texture: &NativeTexture, source: &NativeTexture,
-        target: &NativeTexture, lut: &NativeTexture) -> Option<u32>
-    {
-        if !enabled() || !is_menu(texture) { return None; }
-        let index = BAKES.fetch_add(1, Ordering::Relaxed);
-        if index >= 2 { return None; }
-        record(format_args!(
-            "MENU_RENDER BAKE_BEGIN index={index} cache_epoch={} label={:?} physical={:?} source_id={:?} source_srgb={} target_id={:?} target_srgb={} target_rt={} lut_id={:?} shader=Alter blend=Opaque sampler_request=linear_clamp gamma_request=source_srgb destination=sRGB_RGBA8 native_memblock_uid=unobserved",
-            texture.device.epoch.get(), texture.deferred.as_ref().map(|source| source.label.as_str()), texture.size, source.id.borrow(), source.srgb,
-            target.id.borrow(), target.srgb, target.render_target, lut.id.borrow()));
-        Some(index)
-    }
-
-    pub(super) fn bake_end(index: Option<u32>, result: &Result<()>, resident: &NativeTexture) {
-        if let Some(index) = index {
-            record(format_args!("MENU_RENDER BAKE_END index={index} result={result:?} resident_id={:?}",
-                resident.id.borrow()));
-        }
     }
 
     pub(super) fn compressed_upload(texture: &NativeTexture, info: GxtDescriptor) {
@@ -411,6 +384,7 @@ struct NativeTexture {
     id: RefCell<Option<TextureId>>,
     size: [u32; 2],
     bpp: u32,
+    indexed: bool,
     srgb: bool,
     render_target: bool,
     deferred: Option<DeferredSource>,
@@ -579,7 +553,7 @@ impl NativeTexture {
     fn allocation_bytes(&self) -> Result<usize> {
         match self.deferred.as_ref().map(|source| &source.kind) {
             Some(DeferredKind::GxtAltered { info, .. }) => info.allocation_bytes(),
-            _ => native_allocation_bytes(self.size, self.bpp),
+            _ => storage_allocation_bytes(self.size, self.bpp, self.indexed),
         }
     }
 
@@ -695,10 +669,32 @@ pub struct RenderTarget {
     pub tex: TexRef,
 }
 
+// The owner and its encoders share CPU-only scratch storage. Native submit
+// copies these vertices before returning; this never aliases a GXM arena.
+#[derive(Default)]
+struct VertexBuffers { buffers: Vec<Vec<Vertex>>, bytes: usize }
+impl VertexBuffers {
+    fn pop(&mut self) -> Option<Vec<Vertex>> {
+        let buffer = self.buffers.pop()?;
+        self.bytes -= buffer.capacity() * std::mem::size_of::<Vertex>();
+        knife_perf::add(Metric::VertexBufferReuse, 0, 1);
+        Some(buffer)
+    }
+    fn push(&mut self, mut buffer: Vec<Vertex>) {
+        let bytes = buffer.capacity().saturating_mul(std::mem::size_of::<Vertex>());
+        if bytes == 0 || bytes > MAX_FRAME_VERTEX_BYTES.saturating_sub(self.bytes) { return; }
+        self.bytes += bytes;
+        buffer.clear();
+        self.buffers.push(buffer);
+        knife_perf::add(Metric::VertexBufferRecycle, 0, 1);
+    }
+}
+
 /// A pending frame. Dropping an unsubmitted encoder discards its commands.
 /// Texture references stay alive until all commands have returned from GXM.
 pub struct CommandEncoder {
     device: Rc<Device>,
+    vertex_reuse: Rc<RefCell<VertexBuffers>>,
     commands: Vec<Command>,
     vertex_bytes: usize,
     /// Target whose render pass is still open at the end of `commands`. Consecutive
@@ -709,14 +705,14 @@ pub struct CommandEncoder {
 /// Simulates a minimal barrier scheme: a pass needs a Finish only when it samples a
 /// target that an earlier pass in this frame wrote. Returns (passes, passes_needing).
 #[cfg(target_os = "vita")]
-pub(crate) fn analyse_passes(commands: &[Command]) -> (u64, u64) {
+fn analyse_passes(commands: &[Command]) -> (u64, u64) {
     let flags = pass_finish_flags(commands);
     (flags.len() as u64, flags.iter().filter(|f| **f).count() as u64)
 }
 
 /// One flag per pass, in submission order: does this pass sample a target that an earlier
 /// pass in the same frame wrote? A Finish is only needed for those.
-pub(crate) fn pass_finish_flags(commands: &[Command]) -> Vec<bool> {
+fn pass_finish_flags(commands: &[Command]) -> Vec<bool> {
     // RAW: a pass samples a target an earlier pass wrote.
     let mut written: std::collections::HashSet<usize> = std::collections::HashSet::new();
     // WAR: a pass renders into a target an earlier in-flight pass is sampling.
@@ -765,43 +761,6 @@ pub(crate) fn pass_finish_flags(commands: &[Command]) -> Vec<bool> {
     flags
 }
 
-#[cfg(any(target_os = "vita", test))]
-pub(crate) fn analyse_passes_unused(commands: &[Command]) -> (u64, u64) {
-    let mut written: std::collections::HashSet<usize> = std::collections::HashSet::new();
-    let (mut total, mut needing) = (0u64, 0u64);
-    let mut i = 0;
-    while i < commands.len() {
-        let Command::Begin { target, .. } = &commands[i] else { i += 1; continue };
-        total += 1;
-        let mut j = i + 1;
-        let mut need = false;
-        while j < commands.len() {
-            match &commands[j] {
-                Command::End => break,
-                Command::Draw { textures, .. } => {
-                    if textures.iter().flatten().any(|t| written.contains(&(Rc::as_ptr(t) as usize))) {
-                        need = true;
-                    }
-                }
-                Command::Copy { src, .. } => {
-                    if written.contains(&(Rc::as_ptr(src) as usize)) { need = true; }
-                }
-                _ => {}
-            }
-            j += 1;
-        }
-        if need {
-            needing += 1;
-            // A Finish drains everything submitted so far.
-            written.clear();
-        }
-        written.insert(Rc::as_ptr(target) as usize);
-        i = j;
-    }
-    (total, needing)
-}
-
-
 impl CommandEncoder {
     /// Close an open pass. Every command that is not a draw into the same target
     /// must call this first: GXM copies and passes cannot interleave.
@@ -809,6 +768,21 @@ impl CommandEncoder {
         if self.open.take().is_some() {
             self.commands.push(Command::End);
         }
+    }
+}
+
+#[path = "vita_blend_chain.rs"]
+mod blend_chain;
+
+// Uniform inputs must agree only where the selected shader actually reads a
+// shared uniform. RimText28 reads hx/steps per glyph and keeps only RGB24 shared.
+fn draw_uniforms_match(shader: EffectShader, a: &[Vertex], b: &[Vertex]) -> bool {
+    match shader {
+        EffectShader::RimTextBatched =>
+            a.first().map(|v|v.haze[1][3]) == b.first().map(|v|v.haze[1][3]),
+        EffectShader::PsChain2 =>
+            a.first().map(|v|v.haze[1]) == b.first().map(|v|v.haze[1]),
+        _ => a.first().map(|v|v.haze) == b.first().map(|v|v.haze),
     }
 }
 
@@ -833,19 +807,20 @@ enum Command {
 }
 
 impl CommandEncoder {
-    fn append(&mut self, commands: Vec<Command>) -> Result<()> {
+    fn append<C>(&mut self, commands: C) -> Result<()>
+    where C: AsRef<[Command]> + IntoIterator<Item = Command> {
         let _record = Scope::new(Metric::CommandAppend);
         let command_count = self
             .commands
             .len()
-            .checked_add(commands.len())
+            .checked_add(commands.as_ref().len())
             .context("frame command count overflow")?;
         ensure!(
             command_count <= MAX_FRAME_COMMANDS,
             "frame exceeds {MAX_FRAME_COMMANDS} GXM commands"
         );
         let mut vertex_bytes = self.vertex_bytes;
-        for command in &commands {
+        for command in commands.as_ref() {
             if let Command::Draw { vertices, .. } = command {
                 vertex_bytes = vertex_bytes
                     .checked_add(
@@ -862,9 +837,9 @@ impl CommandEncoder {
             "frame exceeds {MAX_FRAME_VERTEX_BYTES} recorded vertex bytes"
         );
         self.commands
-            .try_reserve(commands.len())
+            .try_reserve(commands.as_ref().len())
             .context("reserving frame command memory")?;
-        for command in &commands {
+        for command in commands.as_ref() {
             match command {
                 Command::Begin { target, .. } => target.changed(),
                 Command::Copy { dst, .. } => dst.changed(),
@@ -874,7 +849,7 @@ impl CommandEncoder {
         // Coalesce a run of draws that share every bound state into one submission, the
         // way the reference Vita renderer batches quads: the driver cost is per draw, and
         // a heavy frame issues 60-95 of them.
-        for command in commands {
+        for mut command in commands {
             if knife_perf::enabled() {
                 if let Command::Draw { vertices, shader, blend, textures, params } = &command {
                     let reason = match self.commands.last() {
@@ -882,7 +857,7 @@ impl CommandEncoder {
                             if a != shader { Some(Metric::MergeShader) }
                             else if b != blend { Some(Metric::MergeBlend) }
                             else if p != params { Some(Metric::MergeParams) }
-                            else if last.first().map(|v| v.haze) != vertices.first().map(|v| v.haze) { Some(Metric::MergeHaze) }
+                            else if !draw_uniforms_match(*shader,last,vertices) { Some(Metric::MergeHaze) }
                             else if last.len() + vertices.len() > MERGED_DRAW_VERTICES { Some(Metric::MergeCapacity) }
                             else if !t.iter().zip(textures).all(|(a,b)| match (a,b) {
                                 (Some(a),Some(b)) => Rc::ptr_eq(a,b), (None,None) => true, _ => false,
@@ -893,7 +868,7 @@ impl CommandEncoder {
                     if let Some(reason) = reason { knife_perf::add(reason,0,0); }
                 }
             }
-            if let Command::Draw { vertices, shader, blend, textures, params } = &command
+            if let Command::Draw { vertices, shader, blend, textures, params } = &mut command
                 && let Some(Command::Draw {
                     vertices: last_vertices,
                     shader: last_shader,
@@ -906,7 +881,7 @@ impl CommandEncoder {
                 && last_params == params
                 // The shader reads haze of the first vertex as a uniform, so a merged run
                 // must not cross a haze change.
-                && last_vertices.first().map(|v| v.haze) == vertices.first().map(|v| v.haze)
+                && draw_uniforms_match(*shader,last_vertices,vertices)
                 && last_vertices.len() + vertices.len() <= MERGED_DRAW_VERTICES
                 && last_textures.iter().zip(textures.iter()).all(|(a, b)| match (a, b) {
                     (Some(a), Some(b)) => Rc::ptr_eq(a, b),
@@ -915,8 +890,12 @@ impl CommandEncoder {
                 })
             {
                 let copy = Scope::new(Metric::CommandMerge);
+                if *shader == EffectShader::RimTextBatched { knife_perf::add(Metric::RimBatchMerge,0,1); }
                 last_vertices.extend_from_slice(vertices);
                 copy.finish((vertices.len() * std::mem::size_of::<Vertex>()) as u64, 0);
+                if knife_perf::optimizations::enabled(knife_perf::optimizations::COMPACT_STREAM) {
+                    self.vertex_reuse.borrow_mut().push(std::mem::take(vertices));
+                }
                 continue;
             }
             self.commands.push(command);
@@ -1063,7 +1042,7 @@ pub struct Renderer {
     device: Rc<Device>,
     backdrops: HashMap<[u32; 2], Rc<NativeTexture>>,
     command_reuse: RefCell<Vec<Command>>,
-    vertex_reuse: RefCell<Vec<Vec<Vertex>>>,
+    vertex_reuse: Rc<RefCell<VertexBuffers>>,
     soft_lut: Rc<NativeTexture>,
     pub bc_supported: bool,
     pub white: TexRef,
@@ -1120,6 +1099,39 @@ impl Renderer {
         MovieGpuFence { device: self.device.clone() }
     }
 
+    /// Convert one newly leased native YVU surface into an owned UNORM target.
+    /// No display/present or CPU pixel copy occurs. Native sampling is completed
+    /// before returning, allowing the decoder owner to reclaim this lease while
+    /// subsequent app frames keep sampling the same stable RGBA cache.
+    #[cfg(target_os = "vita")]
+    pub fn try_cache_movie_frame(&self, source: &TexRef, target: &RenderTarget, uv: [f32; 4]) -> Result<()> {
+        let probe = Scope::new(Metric::MovieFrameCache);
+        self.check_texture(source)?; self.check_target(target)?;
+        ensure!(source.native.bpp == 0 && target.tex.physical_size() == [960, 540]
+            && !Rc::ptr_eq(&source.native, &target.tex.native), "invalid movie cache source/target");
+        ensure!(uv.iter().all(|v| v.is_finite()) && uv[0] >= 0.0 && uv[1] >= 0.0
+            && uv[2] <= 1.0 && uv[3] <= 1.0 && uv[0] < uv[2] && uv[1] < uv[3], "invalid movie UV window");
+        let quad = Quad::rect(source.clone(), [0.0, 0.0, 960.0, 540.0], [1.0; 4])
+            .with_uv_rect(uv[0], uv[1], uv[2], uv[3]);
+        let reuse = self.vertex_reuse.borrow_mut().pop().unwrap_or_default();
+        let vertices = quad_vertices_reusing(&quad, [960.0, 540.0], [1.0; 2], reuse)?;
+        let mut commands = [Command::Begin { target: target.tex.native.clone(), clear: None },
+            Command::Draw { vertices, shader: EffectShader::Sprite, blend: EffectBlend::Opaque,
+                textures: [Some(source.native.clone()), Some(self.white.native.clone()), None, Some(self.soft_lut.clone())],
+                params: [0.0; 8] }, Command::End];
+        let submitted = execute(&self.device, &commands);
+        // Even a partial/failed submit must be settled before its native source
+        // can be acknowledged. The caller quarantines the lease if this fails.
+        let settled = self.device.call(|g| g.finish_movie_sampling());
+        if let Command::Draw { vertices, .. } = &mut commands[1] {
+            self.vertex_reuse.borrow_mut().push(std::mem::take(vertices));
+        }
+        settled?; submitted?;
+        target.tex.native.changed();
+        probe.finish(960 * 540 * 4, 1);
+        Ok(())
+    }
+
     /// # Safety
     /// Pointer must be a mapped AvPlayer YVU420P2_CSC1 frame whose allocation stays
     /// alive until finish_movie_sampling completes after the draw using it.
@@ -1129,7 +1141,7 @@ impl Renderer {
         Ok(Arc::new(GpuTexture {
             native: Rc::new(NativeTexture {
                 device: self.device.clone(), id: RefCell::new(Some(id)),
-                size: [width, height], bpp: 0, srgb: false, render_target: false,
+                size: [width, height], bpp: 0, indexed: false, srgb: false, render_target: false,
                 deferred: None, last_used: Cell::new(0), content_version: Cell::new(0), rebuild_us: Cell::new(0),
             }),
             width, height,
@@ -1194,7 +1206,7 @@ impl Renderer {
             device,
             backdrops: HashMap::new(),
             command_reuse: RefCell::new(Vec::new()),
-            vertex_reuse: RefCell::new(Vec::new()),
+            vertex_reuse: Rc::new(RefCell::new(VertexBuffers::default())),
             soft_lut,
             bc_supported: false,
             white,
@@ -1259,11 +1271,35 @@ impl Renderer {
         data: &[u8],
         label: &str,
     ) -> Result<TexRef> {
-        let tex = self.upload_raw(width, height, Upload::Rgba8(data), true)
+        let format = Self::baked_format(width,height,data);
+        let tex = make_texture(&self.device,[width,height],[width,height],Some(data),format,false,true,false)
             .with_context(|| format!("uploading baked {label}"))?;
         #[cfg(target_os = "vita")]
         menu_draw_diagnostic::texture("LABEL", &tex.native, label);
         Ok(tex)
+    }
+
+    /// RGB24 discards only alpha proven constant at 255. RGB bytes, dimensions
+    /// and colour domain stay exact; CPU source remains borrowed RGBA8.
+    pub fn baked_storage_bpp(width:u32,height:u32,data:&[u8])->u32 {
+        lossless_pixels::storage_bpp(width,height,data)
+    }
+
+    fn baked_format(width:u32,height:u32,data:&[u8])->TextureFormat {
+        if lossless_pixels::indexed_rgba(width,height,data) { TextureFormat::Indexed8FromRgba }
+        else if Self::baked_storage_bpp(width,height,data)==3 { TextureFormat::Rgb8FromRgba }
+        else { TextureFormat::Rgba8 }
+    }
+
+    /// Preflight the same storage selected by upload; validate CPU RGBA bytes
+    /// before any cache eviction, and reserve indices plus the complete palette.
+    pub fn try_reserve_baked_image_upload(&self,width:u32,height:u32,data:&[u8])->Result<()> {
+        let stride=width.checked_mul(4).context("baked row overflow")?;
+        ensure!(data.len()==layout_bytes(width,height,4,stride)?,"baked RGBA source length mismatch");
+        let format=Self::baked_format(width,height,data);
+        let indexed=matches!(format,TextureFormat::Indexed8FromRgba);
+        let bpp=if indexed {1}else{Self::baked_storage_bpp(width,height,data)};
+        reserve_cdram(&self.device,storage_allocation_bytes([width,height],bpp,indexed)?,0,&HashSet::new())
     }
 
     fn upload_raw(&self, width: u32, height: u32, data: Upload<'_>, srgb: bool) -> Result<TexRef> {
@@ -1318,7 +1354,7 @@ impl Renderer {
     /// Check the complete upload peak against measured native allowance and
     /// retire idle deferred atlases as needed. Asset caches may drop their own
     /// idle images and retry this check; active scene textures remain owned.
-    /// This observes headroom, so native allocations still return failures.
+    /// This holds real pixel storage until upload, including pool/page alignment.
     pub fn try_reserve_image_upload(
         &self,
         width: u32,
@@ -1328,6 +1364,12 @@ impl Renderer {
     ) -> Result<()> {
         let allocation = native_allocation_bytes([width, height], bpp)?;
         reserve_cdram(&self.device, allocation, 0, &HashSet::new())
+    }
+
+    /// Only exhausted, clean memory admission may ask Assets to drop idle
+    /// owners and try again. Invalid layouts and SDK/retirement errors stop.
+    pub fn is_image_memory_pressure(error: &anyhow::Error) -> bool {
+        error.is::<ImageMemoryPressure>()
     }
 
     /// Retain bounded compressed atlas bytes; decoding, upload and Alter happen
@@ -1402,10 +1444,10 @@ impl Renderer {
             "CG adoption requires an ordinary texture from this renderer");
         ensure!(Arc::strong_count(&uploaded) == 1 && Rc::strong_count(&uploaded.native) == 1,
             "CG adoption must precede publishing the texture or recording draws");
-        ensure!(uploaded.native.bpp == 4, "CG reload requires RGBA8 pixels");
-        let replacement = self.defer_source([uploaded.width, uploaded.height], uploaded.native.size,
+        ensure!((matches!(uploaded.native.bpp,3|4) || uploaded.native.indexed), "CG reload requires colour pixels");
+        let replacement = self.defer_source_format([uploaded.width, uploaded.height], uploaded.native.size,
             DeferredBytes::Reload { encoded_len, load }, label,
-            DeferredKind::Image { decode, cached })?;
+            DeferredKind::Image { decode, cached },uploaded.native.bpp,uploaded.native.indexed)?;
         reserve_cdram(&self.device, 0, replacement.native.allocation_bytes()?, &HashSet::new())
             .with_context(|| format!("admitting reloadable CG {label}"))?;
         let id = uploaded.native.id.borrow_mut().take().context("CG adoption has no native allocation")?;
@@ -1530,12 +1572,23 @@ impl Renderer {
         label: &str,
         kind: DeferredKind,
     ) -> Result<TexRef> {
+        let bpp=if matches!(&kind,DeferredKind::GxtAltered{..}){0}else{4};
+        self.defer_source_format(logical,physical,bytes,label,kind,bpp,false)
+    }
+
+    fn defer_source_format(&self,logical:[u32;2],physical:[u32;2],bytes:DeferredBytes,
+        label:&str,kind:DeferredKind,bpp:u32,indexed:bool)->Result<TexRef> {
         ensure!(logical.iter().all(|v| *v != 0), "deferred logical dimensions must be nonzero");
-        // Two bilingual source strips are 960x1080; other compact atlases fit
-        // within 960x540. This is an input extent bound, not a display size.
-        let max_size = if matches!(&kind, DeferredKind::Image { .. }) { [2048, 2048] } else { [960, 1080] };
+        // R4 compressed UI sheets/portraits can be wide or tall without being
+        // full-screen surfaces. Keep the GPU axes and CPU fallback pixel budget
+        // used by the converter; PNG/JPEG retain their decoder's axis bounds.
+        let compressed = matches!(&kind, DeferredKind::GxtAltered { .. });
+        let max_size = if compressed || matches!(&kind, DeferredKind::Image { .. }) { [2048, 2048] } else { [960, 1080] };
         ensure!(physical[0] != 0 && physical[1] != 0
-            && physical[0] <= max_size[0] && physical[1] <= max_size[1], "deferred atlas dimensions exceed compact bounds");
+            && physical[0] <= max_size[0] && physical[1] <= max_size[1],
+            "deferred image {label} {physical:?} exceeds axis bounds {max_size:?}");
+        ensure!(!compressed || u64::from(physical[0]) * u64::from(physical[1]) <= 960 * 1080,
+            "deferred GXT {label} {physical:?} exceeds compact decoded pixel budget");
         ensure!(bytes.encoded_len() != 0, "deferred image has no encoded bytes");
         ensure!(bytes.encoded_len() <= DEFERRED_SOURCE_BYTES, "deferred image exceeds encoded entry bound");
         let total = self.device.encoded_bytes.get().checked_add(bytes.retained_len())
@@ -1543,7 +1596,7 @@ impl Renderer {
         ensure!(total <= DEFERRED_SOURCE_BYTES, "deferred encoded source budget exceeded");
         let native = Rc::new(NativeTexture {
             device: self.device.clone(), id: RefCell::new(None), size: physical,
-            bpp: if matches!(&kind, DeferredKind::GxtAltered { .. }) { 0 } else { 4 },
+            bpp, indexed,
             srgb: false, render_target: false,
             deferred: Some(DeferredSource { bytes, label: label.into(), kind }),
             last_used: Cell::new(0), content_version: Cell::new(0), rebuild_us: Cell::new(0),
@@ -1782,8 +1835,14 @@ impl Renderer {
     /// the 1920x1080 logical canvas. With the scene chain also at 960x540 the
     /// scene-to-canvas blit is 1:1. Script coordinates remain unchanged.
     pub fn create_composite_target(&self, width: u32, height: u32, label: &str) -> RenderTarget {
-        self.create_target_sized([width, height], composite_physical(width, height), label)
+        self.try_create_composite_target(width, height, label)
             .expect("creating Vita UI composite target")
+    }
+
+    /// Fallible allocation for optional frame-output rings. Failure keeps the
+    /// existing target usable; physical sizing matches the primary composite.
+    pub fn try_create_composite_target(&self, width: u32, height: u32, label: &str) -> Result<RenderTarget> {
+        self.create_target_sized([width, height], composite_physical(width, height), label)
     }
 
     fn create_target_sized(
@@ -1907,21 +1966,21 @@ impl Renderer {
             "invalid text cache composite");
         let [pw, ph] = target.tex.physical_size();
         let size = [target.tex.width as f32, target.tex.height as f32];
-        let vertices = quad_vertices(&Quad::rect(source.tex.clone(), rect, [1.0; 4]),
-            size, [pw as f32 / size[0], ph as f32 / size[1]])?;
+        let reuse = if knife_perf::optimizations::enabled(knife_perf::optimizations::COMPACT_STREAM) {
+            self.vertex_reuse.borrow_mut().pop().unwrap_or_default()
+        } else { Vec::new() };
+        let vertices = quad_vertices_reusing(&Quad::rect(source.tex.clone(), rect, [1.0; 4]),
+            size, [pw as f32 / size[0], ph as f32 / size[1]], reuse)?;
         let same_target = encoder.open.as_ref().is_some_and(|open|
             Rc::ptr_eq(open, &target.tex.native));
         if !same_target { encoder.close_pass(); }
-        let mut commands = Vec::with_capacity(2);
-        if !same_target {
-            commands.push(Command::Begin { target: target.tex.native.clone(), clear: None });
-        }
-        commands.push(Command::Draw { vertices, shader: EffectShader::Alter,
+        let draw = Command::Draw { vertices, shader: EffectShader::Alter,
             blend: EffectBlend::Alpha,
             textures: [Some(source.tex.native.clone()), Some(self.white.native.clone()),
                 Some(self.white.native.clone()), Some(self.soft_lut.clone())],
-            params: [0.0; 8] });
-        encoder.append(commands)?;
+            params: [0.0; 8] };
+        if same_target { encoder.append([draw])?; }
+        else { encoder.append([Command::Begin { target: target.tex.native.clone(), clear: None }, draw])?; }
         encoder.open = Some(target.tex.native.clone());
         target.tex.native.changed();
         Ok(())
@@ -1955,7 +2014,13 @@ impl Renderer {
         let fetch_overlay = fetch_enabled && self.device.call(|g| g.shader_available(21))?;
         let fetch_darken = fetch_enabled && self.device.call(|g| g.shader_available(25))?;
         let fetch_plain_normal = fetch_enabled && self.device.call(|g| g.shader_available(23))?;
+        let blend_chain = fetch_enabled
+            && knife_perf::optimizations::enabled(knife_perf::optimizations::BLEND_CHAIN)
+            && !target.tex.native.srgb && self.device.call(|g| g.shader_available(27))?;
+        let batched_rim = self.device.call(|g| g.shader_available(28))?;
         let plain_sprite = self.device.call(|g| g.shader_available(22))?;
+        let plain_forcealpha = knife_perf::optimizations::enabled(knife_perf::optimizations::PLAIN_FORCEALPHA)
+            && self.device.call(|g| g.shader_available(26))?;
         let ps_shader = |q: &Quad, op| {
             if op == PsOp::Normal && fetch_plain_normal && plain_ps19_source(q) {
                 Some(EffectShader::PsPlain19)
@@ -1966,8 +2031,11 @@ impl Renderer {
             }
         };
         let source_shader = |q: &Quad| {
-            if plain_sprite && plain_ps_source(q) { EffectShader::PlainSprite }
-            else { effect_shader(q.shade) }
+            if q.shade == Shade::RimText && batched_rim { EffectShader::RimTextBatched }
+            else if plain_sprite && plain_ps_source(q) { EffectShader::PlainSprite }
+            else if plain_forcealpha && q.shade == Shade::ForceAlpha && plain_material(q) {
+                EffectShader::PlainForceAlpha
+            } else { effect_shader(q.shade) }
         };
         let has_ps = quads.iter().any(|q| matches!(q.blend, Blend::Ps(op)
             if !ps18_direct(q) && ps_shader(q, op).is_none()));
@@ -2004,7 +2072,9 @@ impl Renderer {
             });
             open = true;
         }
-        for q in quads {
+        let mut skip = false;
+        for (index,q) in quads.iter().enumerate() {
+            if skip { skip = false; continue; }
             self.check_texture(&q.tex)?;
             ensure!(
                 !Rc::ptr_eq(&q.tex.native, &target.tex.native),
@@ -2046,6 +2116,28 @@ impl Renderer {
             let vertices = quad_vertices_reusing(q, [tw, th], scale, reuse)?;
             #[cfg(target_os = "vita")]
             menu_draw_diagnostic::quad(q, target, &vertices, scale);
+            if blend_chain && let Some(next) = quads.get(index+1)
+                && let (Blend::Ps(a),Blend::Ps(b)) = (q.blend,next.blend)
+                && let (Some(sa),Some(sb)) = (ps_shader(q,a),ps_shader(next,b))
+                && self.device.call(|g|g.chain_pair_available(a as u32,b as u32))?
+            {
+                self.check_texture(&next.tex)?;
+                ensure!(!Rc::ptr_eq(&next.tex.native,&target.tex.native), "a chain cannot sample its active target");
+                // Validate every original source before considering its replacement.
+                // Invalid parameters must remain errors, rather than being hidden by
+                // an optional optimization or a fully clipped intersection.
+                let compact = knife_perf::optimizations::enabled(knife_perf::optimizations::COMPACT_STREAM);
+                let reuse = if compact { self.vertex_reuse.borrow_mut().pop().unwrap_or_default() } else { Vec::new() };
+                let next_vertices = quad_vertices_reusing(next,[tw,th],scale,reuse)?;
+                let pair = blend_chain::pair(q,next,[sa,sb],[tw,th],[pw,ph],
+                    &self.white.native,&self.soft_lut);
+                if compact { self.vertex_reuse.borrow_mut().push(next_vertices); }
+                if let Some(pair) = pair {
+                    if compact { self.vertex_reuse.borrow_mut().push(vertices); }
+                    if !open { commands.push(Command::Begin {target:target.tex.native.clone(),clear:None}); }
+                    commands.extend(pair);open = true;skip = true;continue;
+                }
+            }
             if let Blend::Ps(op) = q.blend && !ps18_direct(q) {
                 // A fully clipped PS quad must not snapshot or open a pass.
                 if vertices.is_empty() {
@@ -2467,6 +2559,7 @@ impl Renderer {
     pub fn encoder(&self) -> CommandEncoder {
         CommandEncoder {
             device: self.device.clone(),
+            vertex_reuse: self.vertex_reuse.clone(),
             commands: if knife_perf::optimizations::enabled(knife_perf::optimizations::COMPACT_STREAM) {
                 std::mem::take(&mut *self.command_reuse.borrow_mut())
             } else { Vec::new() },
@@ -2529,14 +2622,9 @@ impl Renderer {
             // Native submission has copied vertices; resource owners are retired by native completion.
             let mut commands = std::mem::take(&mut encoder.commands);
             let mut vertices = self.vertex_reuse.borrow_mut();
-            vertices.clear();
-            let mut retained = 0usize;
             for command in commands.drain(..) {
-                if let Command::Draw { vertices: mut buffer, .. } = command {
-                    let bytes = buffer.capacity().saturating_mul(std::mem::size_of::<Vertex>());
-                    if bytes <= MAX_FRAME_VERTEX_BYTES.saturating_sub(retained) {
-                        retained += bytes; buffer.clear(); vertices.push(buffer);
-                    }
+                if let Command::Draw { vertices: buffer, .. } = command {
+                    vertices.push(buffer);
                 }
             }
             *self.command_reuse.borrow_mut() = commands;
@@ -2596,16 +2684,22 @@ fn make_texture_inner(
     );
     let bpp = match format {
         TextureFormat::Rgba8 => 4,
-        TextureFormat::R8 => 1,
+        TextureFormat::R8 | TextureFormat::Indexed8FromRgba => 1,
+        TextureFormat::Rgb8FromRgba => 3,
     };
     ensure!(!srgb || bpp == 4, "R8 cannot be interpreted as sRGB");
     let [w, h] = physical;
-    let stride = w.checked_mul(bpp).context("texture row size overflow")?;
-    let length = layout_bytes(w, h, bpp, stride)?;
+    let indexed=matches!(format,TextureFormat::Indexed8FromRgba);
+    let source_bpp=if bpp==3 || indexed {4}else{bpp};
+    let stride = w.checked_mul(source_bpp).context("texture row size overflow")?;
+    let length = layout_bytes(w, h, source_bpp, stride)?;
     if let Some(bytes) = bytes {
         ensure!(bytes.len() >= length, "texture source is truncated");
+        ensure!(bpp!=3 || lossless_pixels::opaque_rgba(w,h,bytes), "RGB24 source must be exactly opaque RGBA8");
     }
-    let allocation = native_allocation_bytes(physical, bpp)?;
+    ensure!((bpp!=3 && !indexed) || (bytes.is_some() && !render_target),"packed colour is immutable sampled storage only");
+    ensure!(!indexed || lossless_pixels::palette_colors(w,h,bytes.unwrap_or_default()).is_some(),"palette exceeds 256 complete RGBA colours");
+    let allocation = storage_allocation_bytes(physical, bpp,indexed)?;
     if reclaim {
         reserve_cdram(device, allocation, 0, &HashSet::new())?;
     }
@@ -2615,7 +2709,7 @@ fn make_texture_inner(
             device: device.clone(),
             id: RefCell::new(Some(id)),
             size: physical,
-            bpp,
+            bpp, indexed,
             srgb,
             render_target,
             deferred: None,
@@ -2647,7 +2741,11 @@ fn select_group_ps_fetch(op: PsOp, general: bool, normal: bool, group_normal: bo
 }
 
 fn plain_ps_source(q: &Quad) -> bool {
-    q.shade == Shade::Sprite && q.rule.is_none() && q.soft.is_none() && !q.masked
+    q.shade == Shade::Sprite && plain_material(q)
+}
+
+fn plain_material(q: &Quad) -> bool {
+    q.rule.is_none() && q.soft.is_none() && !q.masked
         // Include hx.w: dropping that flag would lose premultiplication.
         && q.haze.iter().flatten().all(|value| *value == 0.0)
 }
@@ -2667,10 +2765,17 @@ fn ps18_direct(q: &Quad) -> bool {
 
 /// Match the native linear texture's 8-pixel pitch and CDRAM memblock rounding,
 /// including R8 atlas allocations. Validate before evicting any cached image.
+fn storage_allocation_bytes(size:[u32;2],bpp:u32,indexed:bool)->Result<usize> {
+    if !indexed { return native_allocation_bytes(size,bpp); }
+    native_allocation_bytes(size,1)?; // shared axis/overflow validation
+    let bytes=lossless_pixels::indexed_bytes(size[0],size[1]).context("indexed allocation overflow")?;
+    Ok(Gxm::texture_charge(bytes).map_err(anyhow::Error::msg)? as usize)
+}
+
 fn native_allocation_bytes([width, height]: [u32; 2], bpp: u32) -> Result<usize> {
     ensure!(width != 0 && height != 0 && width <= 2048 && height <= 2048,
         "native texture dimensions are outside 1..=2048");
-    ensure!(bpp == 1 || bpp == 4, "native texture allocation format is unsupported");
+    ensure!(matches!(bpp,1|3|4), "native texture allocation format is unsupported");
     let pitch = width.checked_add(7).context("native texture pitch overflow")? & !7;
     let bytes = u64::from(pitch).checked_mul(u64::from(height))
         .and_then(|v| v.checked_mul(u64::from(bpp))).context("native texture size overflow")?;
@@ -2679,9 +2784,17 @@ fn native_allocation_bytes([width, height]: [u32; 2], bpp: u32) -> Result<usize>
 }
 
 /// Reclaim idle atlases against both cache policy and measured native headroom.
-/// Query again after each fenced native destruction: kernel pressure need not
-/// equal our own accounting. The query is an observation, so an allocation can
-/// still fail and must retain normal RAII rollback.
+/// Reserve actual native pixel storage, rather than treating a free-byte query
+/// as an allocation guarantee. Native storage includes pitch, pool pages and
+/// kernel alignment. Only clean CDRAM pressure permits bounded reclamation;
+/// descriptor or teardown errors retain normal fail-closed RAII handling.
+#[derive(Debug)]
+struct ImageMemoryPressure;
+impl std::fmt::Display for ImageMemoryPressure {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result { f.write_str("image memory pressure") }
+}
+impl std::error::Error for ImageMemoryPressure {}
+
 fn reserve_cdram(
     device: &Device,
     peak: usize,
@@ -2694,14 +2807,18 @@ fn reserve_cdram(
         Ok(device.resident_deferred_bytes.get().checked_add(cache_growth)
             .context("deferred cache size overflow")? <= budget)
     };
-    let mut available = device.call(|g| g.available_cdram()).context("querying native CDRAM allowance")?;
-    if fits_cache()? && available >= peak { return Ok(()); }
-    if available < peak {
+    let try_storage = || -> Result<bool> {
+        if peak == 0 { return Ok(true); }
+        device.call(|g| g.reserve_texture(peak)).context("reserving native texture storage")
+    };
+    let mut admitted = fits_cache()? && try_storage()?;
+    if admitted { return Ok(()); }
+    {
         // Logical eviction can precede physical completion. Wait only under
         // real memory pressure, then account the actually reclaimed storage.
         device.call(|g| g.reclaim_retired(true))?;
-        available = device.call(|g| g.available_cdram())?;
-        if fits_cache()? && available >= peak { return Ok(()); }
+        admitted = fits_cache()? && try_storage()?;
+        if admitted { return Ok(()); }
     }
     // Build and sort victims only under actual pressure. A scene with enough
     // headroom must not repeatedly walk every registered logical texture.
@@ -2721,14 +2838,17 @@ fn reserve_cdram(
     } else { victims.sort_by_key(|texture| texture.last_used.get()); }
     let mut victims = victims.into_iter();
     loop {
-        let fits_cache = fits_cache()?;
-        if fits_cache && available >= peak { return Ok(()); }
+        let cache_fits = fits_cache()?;
+        if cache_fits && admitted { return Ok(()); }
         let Some(victim) = victims.next() else {
-            if !fits_cache {
-                bail!("deferred texture budget has no evictable atlas: {} + {cache_growth} > {budget}",
-                    device.resident_deferred_bytes.get());
+            if !cache_fits {
+                return Err(anyhow::Error::new(ImageMemoryPressure).context(format!(
+                    "deferred texture budget has no evictable atlas: {} + {cache_growth} > {budget}",
+                    device.resident_deferred_bytes.get())));
             }
-            bail!("native CDRAM headroom has no evictable atlas: bake/allocation peak {peak} > available {available}");
+            let available = device.call(|g| g.available_cdram())?;
+            return Err(anyhow::Error::new(ImageMemoryPressure).context(format!(
+                "native CDRAM storage has no evictable atlas: allocation {peak}, reported free {available}; physical-page admission failed")));
         };
         let id = victim.id.borrow_mut().take();
         if let Some(id) = id {
@@ -2742,11 +2862,8 @@ fn reserve_cdram(
             device.drain()?;
             victim.release_resident_charge()?;
             evict.finish_hot(victim.deferred.as_ref().map_or("unknown", |s| &s.label), bytes as u64, 0);
-            available = device.call(|g| g.available_cdram()).context("querying native CDRAM allowance")?;
-            if available < peak {
-                device.call(|g| g.reclaim_retired(true))?;
-                available = device.call(|g| g.available_cdram())?;
-            }
+            device.call(|g| g.reclaim_retired(true))?;
+            admitted = fits_cache()? && try_storage()?;
         }
     }
 }
@@ -2871,10 +2988,17 @@ fn prepare_deferred(device: &Device, commands: &[Command], admit: &mut FrameAdmi
             let stride = width.checked_mul(4).context("deferred decode stride overflow")?;
             ensure!(pixels.len() == layout_bytes(width, height, 4, stride)?, "deferred RGBA byte length mismatch for {}", source.label);
             let _ = srgb; // Decoder metadata; native descriptors never apply gamma.
+            let format=if texture.indexed {
+                ensure!(lossless_pixels::palette_colors(width,height,&pixels).is_some(),"palette reload exceeds 256 colours for {}",source.label);
+                TextureFormat::Indexed8FromRgba
+            }else if texture.bpp==3 {
+                ensure!(lossless_pixels::opaque_rgba(width,height,&pixels),"opaque reload changed alpha for {}",source.label);
+                TextureFormat::Rgb8FromRgba
+            }else{TextureFormat::Rgba8};
             admit(&mut || reserve_cdram(device, allocation, allocation, &pinned))
                 .with_context(|| format!("preparing native atlas {}", source.label))?;
             let uploaded = make_texture_inner(&texture.device, texture.size, texture.size,
-                Some(&pixels), TextureFormat::Rgba8, false, true, false, false)
+                Some(&pixels), format, false, true, false, false)
                 .with_context(|| format!("uploading native atlas {}", source.label))?;
             drop(pixels);
             let id = uploaded.native.id.borrow_mut().take()
@@ -2999,8 +3123,8 @@ fn scene_kind(target: &NativeTexture) -> u32 {
     #[cfg(target_os = "vita")]
     if let Some(label) = target_labels::get(target as *const NativeTexture as usize) {
         return match label.as_str() {
-            "stage" => 1, "group pixel" => 2, "group mask" => 3,
-            "scene" | "canvas" => 5,
+            "stage" | "stage ring" => 1, "group pixel" => 2, "group mask" => 3,
+            "scene" | "canvas" | "canvas ring" => 5,
             _ if target.deferred.is_some() => 9,
             _ => 0,
         };
@@ -3130,6 +3254,7 @@ fn execute_with_admission(device: &Device, commands: &[Command], admit: &mut Fra
                     let diagnostic_draw = menu_draw_diagnostic::draw_begin(device, _command_index,
                         vertices, *shader, *blend, textures, &ids, *params, diagnostic_target);
                     if matches!(*shader, EffectShader::Ps | EffectShader::PsFetch | EffectShader::PsFetch19 | EffectShader::PsGroup19 | EffectShader::PsFetch11 | EffectShader::PsFetch13 | EffectShader::PsPlain19 | EffectShader::PsFetch2) || params[7] == -18.0 { knife_perf::record_ps(params[0] as u32); }
+                    if *shader == EffectShader::PsChain2 { knife_perf::record_ps(params[0] as u32); knife_perf::record_ps(params[1] as u32); }
                     let result = g.draw_effect(
                         vertices,
                         *shader,
@@ -3206,11 +3331,9 @@ fn effect_blend(blend: Blend) -> EffectBlend {
     }
 }
 
+#[cfg(test)]
 fn quad_vertices(q: &Quad, size: [f32; 2], scale: [f32; 2]) -> Result<Vec<Vertex>> {
-    let build = Scope::new(Metric::QuadBuild);
-    let result = quad_vertices_inner(q, size, scale, Vec::new());
-    build.finish(result.as_ref().map_or(0, |v| (v.len() * std::mem::size_of::<Vertex>()) as u64), 0);
-    result
+    quad_vertices_reusing(q, size, scale, Vec::new())
 }
 
 fn quad_vertices_reusing(q: &Quad, size: [f32; 2], scale: [f32; 2], reuse: Vec<Vertex>) -> Result<Vec<Vertex>> {

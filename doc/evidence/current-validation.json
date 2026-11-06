@@ -1,0 +1,53 @@
+{
+  "status": "PASS-build-and-scoped-host-checks",
+  "validated_at": "2026-11-06T12:10:53.012633+00:00",
+  "build_tag": "tsukihime540-offline-shaders-20261106",
+  "target": "armv7-sony-vita-newlibeabihf",
+  "vpk": {
+    "path": "release/knife-vita-tsukihime-540p.vpk",
+    "bytes": 5385822,
+    "sha256": "732a8b147b2d87c3139bffb99db2566745d99cba2bad200c46199fe9c3c9bba9",
+    "eboot_sha256": "aace269b6f74ec345345e6c9477c829bf3559cd0562518f22f5be8f522a5103b"
+  },
+  "source_hashes_verified": 332,
+  "package_files_verified": 20,
+  "package_crc_verified": true,
+  "elf32_arm_verified": true,
+  "runtime_compiler_symbols_absent": true,
+  "asset_manifest_sha256": "0c4188c923f744870d660a384e0c55f59f1d3e3d8997e9baf6150a5eb7e0fc75",
+  "assets_modified": false,
+  "offline_shader_programs": 109,
+  "specialized_variants": 63,
+  "fresh_tests": {
+    "offline_inventory_binary_and_cost": 4,
+    "native_copy_routing_cases": 28,
+    "native_copy_routing_checks": 6287,
+    "native_input_cases": 877,
+    "native_input_checks": 2631,
+    "native_input_negative_controls": 5,
+    "renderer_default_assets540": 127,
+    "stable_eighty_layers": 1,
+    "stable_perf": 3
+  },
+  "nonpassing_configuration": {
+    "command": "knife-render full suite with assets-540p,knife-perf/vita-stable",
+    "passed": 122,
+    "failed": 5,
+    "reason": "Existing tests assume enabled stage-prefix/group/spare cache budgets; stable feature disables or reduces these. Default configuration passes all 127; stable pressure case passes separately.",
+    "names": [
+      "optional_gpu_cache_admission_reclaims_only_cold_unpinned_residency_with_one_mib_spare",
+      "retained_group_batch_preserves_every_rgba8_node_and_dynamic_pair_while_reducing_stage_passes",
+      "stage_prefix_build_and_hit_preserve_clear_and_destination_dependent_suffix_order",
+      "stage_prefix_cached_version_source_generation_and_clear_changes_invalidate",
+      "stage_prefix_pressure_bypass_and_trim_keep_recorded_texture_ownership_safe"
+    ]
+  },
+  "previous_asset_validation": "stable-assets-validation.json",
+  "hardware_verified": false,
+  "gpu_timing_verified": false,
+  "gpu_pixel_equivalence_verified": false,
+  "remote_main": "e247f7bd7ad72e164af82fcb3db283106b970928",
+  "branch": "perf/mofa-sync-20261102",
+  "committed": false,
+  "pushed": false
+}

@@ -88,7 +88,9 @@ def repair_image(raw, name, strips, native):
             raise ValueError('PNG/JPEG dimensions mismatch')
     else:
         raise ValueError(f'oversized unsupported KIMG codec {codec}')
-    # Use mofa's per-language 960x540 fit and preserve logical coordinates.
+    # Legacy R2 compatibility fallback only. A full-frame fit loses density in
+    # tall sprites and atlases; restore_tsukihime_quality.py rebuilds these from
+    # original source pixels after this historical migration, within GPU/CPU bounds.
     # Lossless PNG keeps the decoded UNORM colour/alpha of existing codec9 art;
     # it does not run inverse Alter a second time or add another DXT generation.
     result, info = encode_portable(image, (lw, lh), srgb=codec not in (7, 9),

@@ -25,15 +25,15 @@ __pycache__/
 *.self
 *.velf
 eboot.bin
-# generated shader/probe logs
-doc/*.log
+# Generated logs belong in .work; current small records live in doc/evidence.
+# Older shared scripts still write these disposable report locations.
+/doc/*.json
+/doc/*.log
+/doc/logs/
 # Local IDE state and investigation output (not engine/build inputs)
 .idea/
 .DS_Store
-/doc/logs/
-/doc/performance/
-/doc/*-evidence.json
-/doc/vita-*-host-tests.json
+.pytest_cache/
 /tools/render-audit/
 /tools/vita-shader-compiler/
 /tools/vita_audit_log.py

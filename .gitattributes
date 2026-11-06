@@ -7,5 +7,3 @@ knife/vita/shaders/generated/** -text
 knife/knife/data/vita_* -text
 # Preserve the verified upstream archives, headers, modules and notices exactly.
 knife/vita/vendor/** -text -whitespace
-# Historical archives retain their original CRLF where present.
-doc/archive/** whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

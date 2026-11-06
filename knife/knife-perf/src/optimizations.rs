@@ -22,6 +22,15 @@ pub const COALESCE_BAKE: u32 = 1 << 16;
 pub const RESOURCE_IO_CACHE: u32 = 1 << 17;
 pub const STAGE_PREFIX: u32 = 1 << 18;
 pub const GROUP_BATCH: u32 = 1 << 19;
+pub const UI_PASS_CACHE: u32 = 1 << 20;
+pub const PLAIN_FORCEALPHA: u32 = 1 << 21;
+pub const UI_SOURCE_PREFETCH: u32 = 1 << 22;
+pub const ARCHIVE_GLOW_BOUNDS: u32 = 1 << 23;
+pub const BLEND_CHAIN: u32 = 1 << 24;
+pub const PRODUCER_REUSE: u32 = 1 << 25;
+pub const ASYNC_REBAKE: u32 = 1 << 26;
+pub const TARGET_RING: u32 = 1 << 27;
+pub const SHADER_SPECIALIZATION: u32 = 1 << 28;
 pub const FEATURES: &[(&str, u32)] = &[
     ("shared-atlas", SHARED_ATLAS), ("gxt-ready", GXT_READY),
     ("batch-arena", BATCH_ARENA), ("group-fused", GROUP_FUSED),
@@ -34,13 +43,23 @@ pub const FEATURES: &[(&str, u32)] = &[
     ("coalesce-bake", COALESCE_BAKE), ("resource-io-cache", RESOURCE_IO_CACHE),
     ("stage-prefix", STAGE_PREFIX),
     ("group-batch", GROUP_BATCH),
+    ("ui-pass-cache", UI_PASS_CACHE),
+    ("plain-forcealpha", PLAIN_FORCEALPHA),
+    ("ui-source-prefetch", UI_SOURCE_PREFETCH),
+    ("archive-glow-bounds", ARCHIVE_GLOW_BOUNDS),
+    ("blend-chain", BLEND_CHAIN),
+    ("producer-reuse", PRODUCER_REUSE),
+    ("async-rebake", ASYNC_REBAKE),
+    ("target-ring", TARGET_RING),
+    ("shader-specialization", SHADER_SPECIALIZATION),
 ];
 // Expand only as the corresponding implementation becomes available.
 pub const IMPLEMENTED: u32 = SHARED_ATLAS | GXT_READY | BATCH_ARENA | GROUP_FUSED | PS_FETCH
     | ASYNC_SUBMIT | COMPACT_STREAM | DIRECT_STAGE | TEXTURE_POOL
     | DECODE_OWNER | GRAY_R8 | ANIMATION_WINDOW
     | DEPENDENCY_GRAPH | SOURCE_RENAME | GRADE_CACHE | STREAM_INDEX
-    | COALESCE_BAKE | RESOURCE_IO_CACHE | STAGE_PREFIX | GROUP_BATCH;
+    | COALESCE_BAKE | RESOURCE_IO_CACHE | STAGE_PREFIX | GROUP_BATCH | UI_PASS_CACHE | PLAIN_FORCEALPHA | UI_SOURCE_PREFETCH | ARCHIVE_GLOW_BOUNDS
+    | BLEND_CHAIN | PRODUCER_REUSE | ASYNC_REBAKE | TARGET_RING | SHADER_SPECIALIZATION;
 // Executable startup explicitly selects a profile before creating resources.
 static ACTIVE: AtomicU32 = AtomicU32::new(0);
 pub fn set(mask: u32) { ACTIVE.store(mask & IMPLEMENTED, Ordering::Relaxed); }
@@ -96,5 +115,6 @@ mod tests {
             BATCH_ARENA | ASYNC_SUBMIT | DEPENDENCY_GRAPH | SOURCE_RENAME);
         assert!(parse("all typo").is_err());
         assert_eq!(parse("all -ps-fetch").unwrap(), IMPLEMENTED & !PS_FETCH);
+        assert_eq!(parse("all -shader-specialization").unwrap(), IMPLEMENTED & !SHADER_SPECIALIZATION);
     }
 }

@@ -10,7 +10,7 @@ static volatile unsigned int host_completion;
 volatile unsigned int *sceGxmGetNotificationRegion(void) { return &host_completion; }
 int sceGxmNotificationWait(const SceGxmNotification *n) { *n->address = n->value; return 0; }
 
-enum Fault { NONE, ALLOC, BASE, MAP, INIT, MIN, MAG, CLAMP_U, CLAMP_V, GAMMA };
+enum Fault { NONE, ALLOC, BASE, MAP, INIT, MIN, MAG, CLAMP_U, CLAMP_V, GAMMA, PALETTE };
 enum { ALIGNMENT = 256 * 1024, MAX_DATA = 4 * 1024 * 1024 };
 static _Alignas(256 * 1024) uint8_t backing[MAX_DATA], input[MAX_DATA];
 static _Alignas(64) uint8_t movie_frame[128];
@@ -25,6 +25,10 @@ static uint32_t wanted_width, wanted_height, wanted_format, wanted_srgb, wanted_
 static uint32_t wanted_allocation;
 static char name[128];
 static const int fault_code = -73, unmap_code = -81, free_code = -82;
+static int alloc_fault_code = -73;
+static int linear_test;
+static unsigned palette_calls;
+static uint32_t wanted_palette_offset;
 
 static void expect(int ok, const char *expression, int line) {
     ++checks;
@@ -43,6 +47,7 @@ static void reset(KvGxm *g, const char *label) {
     allocated = released = finishes = transfers = 0;
     alloc_calls = init_calls = min_calls = mag_calls = u_calls = v_calls = gamma_calls = 0;
     map_calls = unmap_calls = base_calls = free_calls = unexpected_calls = 0;
+    linear_test=0; palette_calls=0; wanted_palette_offset=0;
 }
 
 /* These stubs constrain only the external SDK boundary. Allocation content is
@@ -57,7 +62,7 @@ SceUID sceKernelAllocMemBlock(const char *label, SceKernelMemBlockType type,
     ++alloc_calls;
     EXPECT(label && type == SCE_KERNEL_MEMBLOCK_TYPE_USER_CDRAM_RW && options == NULL);
     EXPECT(size == wanted_allocation && size <= sizeof(backing) && !(size % ALIGNMENT));
-    if (status(ALLOC)) return fault_code;
+    if (status(ALLOC)) return alloc_fault_code;
     if (size > sizeof(backing)) return -99;
     EXPECT(allocated == released);
     memset(backing, 0xa7, size); allocated = size;
@@ -108,9 +113,17 @@ int sceGxmTextureSetGammaMode(SceGxmTexture *t, SceGxmTextureGammaMode mode) {
     ++gamma_calls; EXPECT(t && wanted_srgb && mode == SCE_GXM_TEXTURE_GAMMA_BGR); return status(GAMMA);
 }
 void sceGxmFinish(SceGxmContext *context) { ++finishes; EXPECT(context == owner->context); }
-int sceGxmTransferFinish(void) { ++transfers; return unexpected(); }
+int sceGxmTransferFinish(void) { ++transfers; return linear_test ? 0 : unexpected(); }
 int sceGxmTextureInitLinear(SceGxmTexture *t, const void *p, SceGxmTextureFormat f,
-        unsigned w, unsigned h, unsigned n) { (void)t; (void)p; (void)f; (void)w; (void)h; (void)n; return unexpected(); }
+        unsigned w, unsigned h, unsigned n) {
+    if (!linear_test) return unexpected();
+    ++init_calls; EXPECT(t && p==backing && (uint32_t)f==wanted_format);
+    EXPECT(w==wanted_width && h==wanted_height && n==0); return status(INIT);
+}
+int sceGxmTextureSetPalette(SceGxmTexture *t,const void *palette) {
+    ++palette_calls; EXPECT(linear_test && t && palette==backing+wanted_palette_offset);
+    EXPECT(!((uintptr_t)palette&(SCE_GXM_PALETTE_ALIGNMENT-1))); return status(PALETTE);
+}
 int sceGxmTextureValidate(const SceGxmTexture *t) { (void)t; return unexpected(); }
 int sceGxmDestroyRenderTarget(SceGxmRenderTarget *t) { (void)t; return unexpected(); }
 int sceGxmSyncObjectDestroy(SceGxmSyncObject *t) { (void)t; return unexpected(); }
@@ -259,7 +272,8 @@ static void failed_upload(enum Fault point, int rollback) {
     }
 }
 static void budget(void) {
-    static const uint32_t used[] = {(48U*1024*1024-KV_JPEG_HW_CDRAM_RESERVE),(48U*1024*1024-KV_JPEG_HW_CDRAM_RESERVE)-ALIGNMENT+1U,UINT32_MAX};
+    enum { TEST_LIMIT = CDRAM_LIMIT - 16U*1024*1024 };
+    static const uint32_t used[] = {TEST_LIMIT,TEST_LIMIT-ALIGNMENT+1U,UINT32_MAX};
     for(unsigned i=0;i<3;++i) {
         KvGxm g; reset(&g,"rounded CDRAM admission rejects before SDK allocation");
         setup_upload(1,1,0x81000000U,32,0,0); g.stats.cdram_mapped_bytes=used[i];
@@ -272,10 +286,10 @@ static void budget(void) {
     KvGxmTexture *out=NULL;
     EXPECT(upload(&g,32,&out)==KV_BUDGET && !alloc_calls && !g.textures);
     reset(&g,"exact rounded budget boundary succeeds");
-    setup_upload(1,1,0x81000000U,32,0,0); g.stats.cdram_mapped_bytes=(48U*1024*1024-KV_JPEG_HW_CDRAM_RESERVE)-ALIGNMENT;
+    setup_upload(1,1,0x81000000U,32,0,0); g.stats.cdram_mapped_bytes=TEST_LIMIT-ALIGNMENT;
     EXPECT(upload(&g,32,&out)==0);
-    if(out) { EXPECT(g.stats.cdram_mapped_bytes==(48U*1024*1024-KV_JPEG_HW_CDRAM_RESERVE)); EXPECT(kv_gxm_texture_destroy(&g,out)==0); }
-    EXPECT(g.stats.cdram_mapped_bytes==(48U*1024*1024-KV_JPEG_HW_CDRAM_RESERVE)-ALIGNMENT);
+    if(out) { EXPECT(g.stats.cdram_mapped_bytes==TEST_LIMIT); EXPECT(kv_gxm_texture_destroy(&g,out)==0); }
+    EXPECT(g.stats.cdram_mapped_bytes==TEST_LIMIT-ALIGNMENT);
 }
 int main(void) {
     /* Public encoded formats are literal SDK ABI values, not test-owned IDs. */

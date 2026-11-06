@@ -176,7 +176,7 @@ def inspect_native(args):
             missing.append(relative)
     # These are build inputs, not files to look up in another local project.
     compiler = ROOT / "knife/vita/vendor/shacccg/libshacccg.suprx"
-    if not compiler.is_file() or hashlib.sha256(compiler.read_bytes()).hexdigest() != "0c58b5d3e1cc47d9837b8c59ab6f3c299bfe7adf55a83f547d553f9fbb776552":
+    if (args.variant or os.environ.get('KNIFE_VITA_VARIANT', 'tsukihime540')) != 'tsukihime540' and (not compiler.is_file() or hashlib.sha256(compiler.read_bytes()).hexdigest() != "0c58b5d3e1cc47d9837b8c59ab6f3c299bfe7adf55a83f547d553f9fbb776552"):
         missing.append("local libshacccg.suprx missing or modified; supply your own copy at knife/vita/vendor/shacccg/libshacccg.suprx (see README.md)")
     manifest = ROOT / "knife/vita/vendor/dependencies/manifest.json"
     try:

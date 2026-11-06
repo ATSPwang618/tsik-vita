@@ -1,0 +1,22 @@
+{
+  "observed_failure": "ASSETS REQUIRED / WRONG FILE SIZE / w_allpac.mrg",
+  "device_ftp_bytes": {
+    "w_allpac.mrg": 2475186176,
+    "w_allpaccg.mrg": 291788800,
+    "w_allpacml.mrg": 57913344,
+    "w_allui.mrg": 71229440
+  },
+  "device_manifest_sha256": "1cd41de0fc031e07cf91161932563570d593387d7c6f2ab84c7888b93f19182a",
+  "manifest_byte_equal_to_dist": true,
+  "device_eboot_sha256": "249f1f1aee6a3a172302524c6edb49d02aea8a58af4b652bf52f8ae3a8f2799d",
+  "device_eboot_equal_to_delivered_vpk": true,
+  "legacy_signed_size": -1819781120,
+  "legacy_rust_metadata_len": 18446744071889770496,
+  "sdk_evidence": {
+    "rust_vita_off_t": "c_int/i32",
+    "newlib_off_t": "long/32bits",
+    "newlib_lseek_native_call": "sceIoLseek32",
+    "native_sdk_seek": "sceIoLseek, SceOff/i64"
+  },
+  "remote_writes": false
+}

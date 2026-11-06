@@ -1,0 +1,262 @@
+{
+  "status": "PASS",
+  "validated_at": "2026-11-02T17:22:19.770045+00:00",
+  "build_tag": "tsukihime540-stable-20261102",
+  "target": "armv7-sony-vita-newlibeabihf",
+  "vpk": {
+    "path": "release/knife-vita-tsukihime-540p.vpk",
+    "bytes": 7178475,
+    "sha256": "7d89bda329e4d0c8071ea17ce50eb7a16237c80b60fb8c16f1ee47a45ae26d91",
+    "eboot_sha256": "9335833a3948cd7cf9d1c96b4b4cbdda9e3fb0f9e2c1264c98af433075df3d9c"
+  },
+  "source_hashes_verified": 328,
+  "package_files_verified": 21,
+  "livearea_files_verified": 5,
+  "asset_manifest_sha256": "0c4188c923f744870d660a384e0c55f59f1d3e3d8997e9baf6150a5eb7e0fc75",
+  "assets_modified": true,
+  "fresh_tests": {
+    "render": 127,
+    "render_shipped_layouts": 3606,
+    "stable_eighty_layer_pressure": 1,
+    "stable_memory_budget_and_perf": 3,
+    "bilingual_runtime_and_console": 69,
+    "platform": 68,
+    "python_asset_tests": 23,
+    "native_lossless_cases": 39,
+    "native_lossless_checks": 587,
+    "native_compressed_cases": 87,
+    "native_compressed_checks": 1104,
+    "native_reservation_cases": 12,
+    "native_reservation_checks": 154,
+    "stable_text_cache": 12,
+    "startup_files": 107,
+    "startup_bytes_read": 13168938
+  },
+  "previous_largefile_tests": {
+    "core": 51,
+    "platform": 68,
+    "bilingual": 66,
+    "render": 112
+  },
+  "regression_before_fix": {
+    "scope": "stable cache budget and recent text cache ownership",
+    "expected_failures_recorded": true,
+    "preprocessing_tests_first_failed_on_missing_tool": true
+  },
+  "ui": {
+    "atlases_registered": 24,
+    "members_registered": 438,
+    "gxt_gpu_headers_and_cpu_decodes": 236,
+    "visible_button_cells": 60,
+    "old_rejected_members": 15,
+    "affected_atlases": 9,
+    "gxt_max_axis": 2048,
+    "gxt_max_physical_pixels": 1036800,
+    "png_max_shape": [
+      960,
+      1080
+    ]
+  },
+  "mofa_bounds_reference": "86c1fd8a108f5daf32e5fa5d923b8ec672a95260",
+  "console": {
+    "quiet_build": false,
+    "performance_console_default": true,
+    "native_arm_output": "kv_perf_console branches to sceClibPrintf",
+    "runtime_levels": [
+      "INFO",
+      "WARN",
+      "ERROR"
+    ],
+    "bounded_background_worker": true,
+    "file_log_default": false,
+    "hardware_capture_verified": false
+  },
+  "test_sources": [
+    {
+      "path": "tools/stabilize-tsukihime-assets.py",
+      "bytes": 13975,
+      "sha256": "f9aed4d07f414ca48b8a2a73338487c308e4b6dc718edb1c68d02c1eff0666da"
+    },
+    {
+      "path": "tools/test_tsukihime_stability.py",
+      "bytes": 5405,
+      "sha256": "6958277c5ab2126f6afcee4cf01b9678952922371c1467e29cad1b3b148f551d"
+    },
+    {
+      "path": "tools/verify-tsukihime-runtime-assets.py",
+      "bytes": 9397,
+      "sha256": "2a45b84011639be66510a1578bd43ece0b2b14eb517a700dcf2f729bb0ffc9dd"
+    },
+    {
+      "path": "knife/knife-perf/src/memory_budget.rs",
+      "bytes": 2707,
+      "sha256": "e39421f68cf4099499a3f28068394e4d00364b59c03cc2f319e12046e5cdabbf"
+    },
+    {
+      "path": "knife/knife-render/src/vita_tests.rs",
+      "bytes": 142559,
+      "sha256": "64579f523462d1a466d4f27945eebd0a73fe98dec9c60fdc2a84795274722498"
+    },
+    {
+      "path": "knife/knife/src/game/text_cache.rs",
+      "bytes": 30800,
+      "sha256": "a5625179b21df7d48a5ab4d01d03a644a1bbadcf29ee720260f1b86f8848b31e"
+    },
+    {
+      "path": "knife/knife/src/game/rebake_cohort.rs",
+      "bytes": 14771,
+      "sha256": "9adcbe115c47e33c5d5db77a070c6dd28348f5dc6c4d5cd913eeee2eba674ec7"
+    }
+  ],
+  "runtime_verified": false,
+  "hardware_verified": false,
+  "remote_writes": false,
+  "branch": "perf/mofa-sync-20261102",
+  "remote_main": "e247f7bd7ad72e164af82fcb3db283106b970928",
+  "limitations": [
+    "All new results are offline; no Vita GPU sampling, no traversal of the reported failure point or complete routes.",
+    "512 KiB applies to story images after language selection, not protected UI atlases, writable targets or all driver memory.",
+    "80 layers represent old/new RGBA pixels in one bounded host fixture; real scene residency depends on other owners and effects.",
+    "Inputs and archive integrity were verified; downscaling and resized GXT re-encoding deliberately lose image detail.",
+    "Historical lossless/R4 evidence identifies older packs and is not this stable pack's current identity."
+  ],
+  "native_reservation_tests": {
+    "cases": 12,
+    "checks": 154,
+    "failures": 0,
+    "sanitizers": [
+      "ASan",
+      "UBSan"
+    ],
+    "hardware_verified": false
+  },
+  "image_size_audit": {
+    "files": 16764,
+    "gxt_cpu_decodes": 23113,
+    "c_native_decodes": 813,
+    "selected_layouts": 6736,
+    "pool_modes": 2,
+    "uploads_per_layout_per_mode": 2,
+    "details": "image-size-audit.json"
+  },
+  "cdram_diagnosis": "cdram-diagnosis.json",
+  "previous_ui_regression_before_fix": {
+    "passed": 112,
+    "failed_as_expected": 2
+  },
+  "audit_sources": [
+    {
+      "path": "tools/test-vita-reservation.sh",
+      "bytes": 693,
+      "sha256": "34c35c74f2252ea3705498947972f45a6e81dea0c0cd2aa4c20eb8e3ee888a03"
+    },
+    {
+      "path": "tools/test_tsukihime_quality.py",
+      "bytes": 5729,
+      "sha256": "7f4ba32090bbda1e0857037beaae28a871b19b2fd103e1c62174a447b7f872b1"
+    },
+    {
+      "path": "tools/probes/tsukihime-bilingual/examples/verify_quality_gxt.rs",
+      "bytes": 2532,
+      "sha256": "1a526eaf9568d014bf7214e3677575be6137932bb886e8cad7fb3fcb82710cd3"
+    }
+  ],
+  "lossless_audit": "lossless-textures.json (historical pack; runtime storage policy retained)",
+  "remote_read_only": {
+    "local_branch": "perf/mofa-sync-20261102",
+    "remote_main_sha": "e247f7bd7ad72e164af82fcb3db283106b970928",
+    "remote_working_branch_exists": false,
+    "push_performed": false,
+    "local_commit_performed": false
+  },
+  "scope": "offline tests and paired ARM/package validation; not a hardware acceptance",
+  "asset_files": 16764,
+  "asset_bytes_excluding_manifest": 2427075112,
+  "asset_manifest_bytes": 2762525,
+  "stable_assets": {
+    "policy": "story-rgba512k-axis960-v1",
+    "images": 23177,
+    "resized": 15901,
+    "remaining_oversized": 0,
+    "story_rgba_pitch_limit": 524288,
+    "story_rgba_new_page_limit": 524288,
+    "axis_limit": 960,
+    "data_update_files": [
+      {
+        "path": "w_allpac.hed",
+        "bytes": 234144,
+        "sha256": "18a2fb19471a7897f70aaf01e5e4b7745d3450e7d9f48f99bce9bc01f7ed8a48"
+      },
+      {
+        "path": "w_allpac.mrg",
+        "bytes": 819984384,
+        "sha256": "e4e3dd649e1119e5a96e7c644e5d0207c6259f3a599eda55b33066f75d2190e6"
+      },
+      {
+        "path": "w_allpaccg.hed",
+        "bytes": 12176,
+        "sha256": "3eb8798684923d219e312f0c874587c691b8c824bb5e6bb4d4e607edf44fe3bd"
+      },
+      {
+        "path": "w_allpaccg.mrg",
+        "bytes": 98576384,
+        "sha256": "aa67591b096dcf430c4c14a300fee1f557297d9054471b017ed416b20a386e8c"
+      },
+      {
+        "path": "w_allpacml.hed",
+        "bytes": 2760,
+        "sha256": "73ea167ccd93356a48beb3019611d0e5addf00565ea645656101cdc21facd9f9"
+      },
+      {
+        "path": "w_allpacml.mrg",
+        "bytes": 27881472,
+        "sha256": "2d41c51e83dcd342ad75a02e421d27a23c4828ab9af089032e450fd634b9ab83"
+      },
+      {
+        "path": "vita-540p-assets.json",
+        "bytes": 2762525,
+        "sha256": "0c4188c923f744870d660a384e0c55f59f1d3e3d8997e9baf6150a5eb7e0fc75"
+      }
+    ],
+    "protected": "w_allui/CG thumbnail pages, parts, fonts, stream",
+    "full_pack_max_rgba_page_bytes": 4194304,
+    "device_failure_image": {
+      "archive": "w_allpac",
+      "index": 2685,
+      "entry": "AOK_A_21_00_N01_03_03.NXGZ",
+      "logical": [
+        2591,
+        2582
+      ],
+      "selected_physical": [
+        360,
+        359
+      ],
+      "rgba_bytes": 516960,
+      "rgba_pitch_bytes": 516960,
+      "rgba_pool_slice_bytes": 516992,
+      "rgba_new_page_bytes": 524288,
+      "native_new_page_bytes": 262144
+    },
+    "original_resolution_preserved": false
+  },
+  "documentation_links_verified": 102,
+  "source_diff_whitespace_check": "PASS",
+  "cleanup": {
+    "completed": true,
+    "completed_at": "2026-11-02T17:27:36.449566+00:00",
+    "project_disposable_logical_bytes": 52358489,
+    "external_build_cache_logical_bytes": 2632814116,
+    "external_build_caches": [
+      "/root/.cache/knife-vita-tsik",
+      "/root/.cache/knife-vita-tsik-audit-host"
+    ],
+    "retained_outputs": [
+      "dist/TSUKIHIME-RE/assets",
+      "release/knife-vita-tsukihime-540p.vpk"
+    ],
+    "wsl_vhd_compacted": false,
+    "physical_disk_recovery_measured": false,
+    "no_duplicate_asset_tree": true
+  }
+}

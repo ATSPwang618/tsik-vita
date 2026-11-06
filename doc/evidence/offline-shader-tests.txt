@@ -1,0 +1,10 @@
+2026-11-06 offline shaders: build/source/ZIP/ELF/no-runtime-compiler checks PASS.
+shader-copy-tests.log: RESULT PASS: 28 cases, 6287 checks, 0 failures
+shader-effects-inputs.log: RESULT PASS: 877 cases, 2631 checks, 0 failures; 312 valid, 565 rejected inputs
+shader-effects-inputs.log: RESULT PASS: actual effect input validation and all five negative mutation controls verified.
+shader-render-default-tests.log: test result: ok. 127 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s
+shader-stable-test.log: test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 126 filtered out; finished in 0.06s
+shader-perf-tests.log: test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Offline shader Python suite: 4 passed; 109 programs compiled twice; exact binary/source identities checked.
+Full stable-feature renderer run: 122 passed / 5 configuration-assumption failures; recorded in current-validation.json.
+No hardware run, GPU pixel readback or GPU timing measurement.

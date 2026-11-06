@@ -90,10 +90,10 @@ impl PerfLog {
             "\"scene_size\":[{},{}],\"composite_size\":[{},{}],\"resolution_source\":\"code\",\"color_contract\":\"encoded-unorm8-uchar4\",\"asset_gxt_codec\":9,",
             "\"audio_pcm_pool_bytes\":23040,\"audio_queue_blocks\":4,",
             "\"audio_block_us\":20000,\"audio_mix_scope\":\"ready PCM mix; stream IO/decode on independent channels\",",
-            "\"audio_stream_channels\":8,\"audio_stream_queue_blocks\":10,\"audio_stream_pool_blocks\":12,\"audio_stream_pool_ceiling_bytes\":737280,",
+            "\"audio_stream_channels\":8,\"audio_stream_queue_blocks\":10,\"audio_stream_pool_blocks\":12,\"audio_stream_pool_ceiling_bytes\":737280,\"audio_stream_missing_scope\":\"per-stream absent PCM sample frames; excludes intentional pauses; device underrun is independent\",",
             "\"frame_work_excludes_pacer\":true,\"render_is_cpu_submission_including_waits\":true,",
             "\"memory_scope\":\"GXM mappings and separate JPEG temporary CDRAM; excludes Rust and codec heap\",",
-            "\"worker_time_scope\":\"archive read plus selected software/hardware decode\",",
+            "\"worker_time_scope\":\"archive read plus selected software/hardware decode\",\"movie_owner_scope\":\"native open/poll/control/frame/close run on one persistent worker; frame cache is main-thread GPU submission plus fence\",",
             "\"jpeg_hardware_cdram_reserve\":3145728,",
             "\"image_worker_audio_counters\":\"cumulative u32; wrap possible\",\"interval_ms\":5000,\"sink\":\"sceClibPrintf\",\"audit_schema\":1,\"audit_counter_bits\":64,\"frame_work_excludes_logger\":true}}\n"),
             memory.newlib_heap_bytes, memory.libc_heap_bytes, memory.main_stack_bytes,
@@ -110,11 +110,14 @@ impl PerfLog {
         let header = header.trim_end().strip_suffix('}').expect("header object").to_owned()
             + &format!(concat!(",\"logger_transport\":\"bounded-worker-v1\",\"audit_bank_policy\":\"changed-cumulative-v1\",",
                 "\"previous_console_scope\":\"main collect/enqueue; printf is console_worker_last_us\",",
-                "\"language_fixed\":{},\"cache_budgets\":{{\"cpu_source\":{},\"cpu_graded\":{},\"gpu_resource\":{},\"gpu_text\":{},\"gpu_group\":{},\"gpu_total_with_jpeg\":109051904}}}}\n"),
+                "\"language_fixed\":{},\"cache_budgets\":{{\"cpu_source\":{},\"cpu_graded\":{},\"cpu_grade_base\":{},\"cpu_sound\":{},\"cpu_sound_prepare\":{},\"cpu_sound_pins\":{},\"gpu_resource\":{},\"gpu_text\":{},\"gpu_text_entries\":{},\"gpu_group\":{},\"gpu_target_ring\":{},\"gpu_movie_frame\":{},\"gpu_total_with_jpeg\":109051904}}}}\n"),
                 if cfg!(all(feature = "assets-540p", not(feature = "tsukihime"))) { 2 } else { -1 },
                 knife_perf::memory_budget::CPU_SOURCE_BYTES, knife_perf::memory_budget::CPU_GRADED_BYTES,
+                knife_perf::memory_budget::CPU_GRADE_BASE_BYTES, knife_perf::memory_budget::CPU_SOUND_BYTES,
+                knife_perf::memory_budget::CPU_SOUND_PREPARE_BYTES, knife_perf::memory_budget::CPU_SOUND_PREPARED_BYTES,
                 knife_perf::memory_budget::GPU_RESOURCE_BYTES, knife_perf::memory_budget::GPU_TEXT_BYTES,
-                knife_perf::memory_budget::GPU_GROUP_BYTES);
+                knife_perf::memory_budget::GPU_TEXT_ENTRIES, knife_perf::memory_budget::GPU_GROUP_BYTES,
+                knife_perf::memory_budget::GPU_TARGET_RING_BYTES, knife_perf::memory_budget::GPU_MOVIE_FRAME_BYTES);
         knife_platform_vita::audit::console(&header)?;
         knife_perf::set_enabled(true);
         knife_platform_vita::audit::set_enabled(true);
@@ -143,7 +146,7 @@ impl PerfLog {
     }
 
     fn record(&mut self, frame: u64, work: u64, update: u64, render: u64, wall: u64,
-        game: &game::Game, renderer: &Renderer) -> std::io::Result<bool> {
+        game: &game::Game, renderer: &Renderer, ui: &ui::Ui) -> std::io::Result<bool> {
         self.frames.record(work, update, render, wall);
         let snapshot_started = Instant::now();
         let probe = crate::vita_audit::FrameProbe::capture().delta(self.before);
@@ -242,13 +245,20 @@ impl PerfLog {
         let transport = knife_platform_vita::audit::console_stats();
         let memory = knife_platform_vita::memory_available().ok();
         let available = memory.unwrap_or_default();
+        // UI is separate from script scene/PC: title-hosted load/config pages
+        // can all report scene=0, PC=0. Capture only at the five-second boundary.
+        let (screen, title_state, title_cursor, overlay, menu_state, menu_cursor) = ui.vita_diagnostic_state();
+        let quote = |text: &str| { let mut out = String::new(); knife_perf::json_string(&mut out, text); out };
+        let ui_state = format!(concat!("{{\"screen\":{},\"title_state\":{},\"title_cursor\":{},",
+            "\"overlay\":{},\"menu_state\":{},\"menu_cursor\":{}}}"),
+            quote(&screen), title_state, title_cursor, quote(&overlay), menu_state, menu_cursor);
         let line = line.trim_end().strip_suffix('}').expect("sample object").to_owned()
             + &format!(concat!(",\"console_worker_last_us\":{},\"console_worker_total_us\":{},\"console_batches\":{},",
                 "\"console_dropped_batches\":{},\"console_write_failures\":{},\"console_queued_bytes\":{},",
-                "\"language_id\":{},\"memory_available\":{},\"kernel_main_free\":{},\"kernel_cdram_free\":{},\"heap_used\":{},\"heap_headroom\":{}}}\n"),
+                "\"language_id\":{},\"memory_available\":{},\"kernel_main_free\":{},\"kernel_cdram_free\":{},\"heap_used\":{},\"heap_headroom\":{},\"ui_at_window_end\":{}}}\n"),
                 transport.last_us, transport.total_us, transport.completed, transport.dropped, transport.failures,
                 transport.queued_bytes, game.assets.language(), memory.is_some(), available.kernel_main,
-                available.kernel_cdram, available.heap_used, available.heap_headroom);
+                available.kernel_cdram, available.heap_used, available.heap_headroom, ui_state);
         knife_platform_vita::audit::console(&line)?;
         let compact = format!("{{\"kind\":\"frame_window\",\"frame\":{frame},\"frames\":{},\"elapsed_ms\":{},\"window_ms\":{},\"scene\":{},\"pc\":{},\"work_us\":{},\"render_us\":{},\"update_us\":{},\"wall_us\":{},\"max_work_us\":{},\"p50_work_upper_us\":{},\"p95_work_upper_us\":{},\"p99_work_upper_us\":{},\"over_16ms\":{},\"over_33ms\":{}}}\n",
             sample.frames,self.started.elapsed().as_millis(),elapsed,game.scene_index,game.current_pc(),
@@ -276,6 +286,7 @@ impl DevLog {
         Ok(Self(true))
     }
     fn event(&mut self, text: &str) {
+        tracing::info!(target: "runtime", "{text}");
         if self.0 {
             use std::io::Write;
             if let Ok(mut file) = std::fs::OpenOptions::new().create(true).append(true).open(Self::PATH) {
@@ -310,6 +321,10 @@ fn install_panic_hook() {
 }
 
 pub fn run() -> Result<()> {
+    if option_env!("KNIFE_VITA_QUIET") != Some("1") {
+        let _ = crate::vita_log::install(|line| { let _ = knife_platform_vita::audit::console(line); });
+    }
+    install_panic_hook();
     let mut log = DevLog::open()?;
     if log.0 {
         let previous = std::panic::take_hook();
@@ -331,7 +346,6 @@ pub fn run() -> Result<()> {
 }
 
 fn run_game(log: &mut DevLog) -> Result<()> {
-    install_panic_hook();
     #[cfg(all(feature = "assets-540p", not(feature = "tsukihime")))]
     savedata::set_language_override(2);
     let limit = if option_env!("KNIFE_VITA_DEV_DIAGNOSTICS") == Some("1") {
@@ -488,7 +502,7 @@ fn run_game(log: &mut DevLog) -> Result<()> {
         if let (Some(perf_log), Some(render_started)) = (&mut perf, render_started) {
             let render_us = render_started.elapsed().as_micros() as u64;
             let work_us = now.elapsed().as_micros() as u64;
-            match perf_log.record(frame, work_us, update_us, render_us, wall_us, &game, &renderer) {
+            match perf_log.record(frame, work_us, update_us, render_us, wall_us, &game, &renderer, &ui) {
                 Ok(true) => {},
                 Ok(false) => perf = None,
                 Err(error) => {

@@ -26,10 +26,17 @@ if [[ "$BUILD_KIND" != dev && "$BUILD_KIND" != release ]] || [[ "$BUILD_KIND" = 
 fi
 export KNIFE_VITA_BUILD_KIND="$BUILD_KIND"
 # Release runs indefinitely and omits the synchronous diagnostic file writes.
+# Tsukihime keeps the bounded console worker enabled for VitaDeck/CatLog,
+# matching the current mofa-vita delivery. No plugin/network setup is changed.
 # DEV remains bounded and writes to its separate save namespace.
 if [[ "$BUILD_KIND" = release ]]; then
     export KNIFE_VITA_DEV_DIAGNOSTICS=0
-    export KNIFE_VITA_QUIET="${KNIFE_VITA_QUIET:-1}"
+    if [[ "$VARIANT" = tsukihime540 ]]; then
+        export KNIFE_VITA_QUIET="${KNIFE_VITA_QUIET:-0}"
+        export KNIFE_PERF_CONSOLE="${KNIFE_PERF_CONSOLE:-1}"
+    else
+        export KNIFE_VITA_QUIET="${KNIFE_VITA_QUIET:-1}"
+    fi
     export KNIFE_VITA_SAVE_NAMESPACE=production
     unset KNIFE_VITA_DEV_MAX_FRAMES
 else
@@ -136,7 +143,7 @@ export KNIFE_VITA_TITLE_ID="${KNIFE_VITA_TITLE_ID:-$TITLE_ID}"
 # Baked into the perf log header so a hardware log always names its package.
 export KNIFE_BUILD_TAG="${KNIFE_BUILD_TAG:-$VARIANT}"
 # Validate the locally supplied packaging input before compiling anything.
-if [[ "$MODE" = game ]]; then
+if [[ "$MODE" = game && "$VARIANT" != tsukihime540 ]]; then
     export KNIFE_VITA_SHADER_COMPILER="$ROOT/knife/vita/vendor/shacccg/libshacccg.suprx"
     python3 - "$KNIFE_VITA_SHADER_COMPILER" <<'CHECK_COMPILER'
 import hashlib, sys
@@ -215,7 +222,7 @@ output.write_text((source / "NOTICE").read_text() + "\n" + (source / "LICENSE").
 WRITE_NOTICE
 PACKAGE_EXTRA=(-a "$OUTPUT/SceShaccCgExt-NOTICE.txt=sce_module/SceShaccCgExt-NOTICE.txt"
     -a "$ROOT/knife/vita/vendor/dependencies/licenses=licenses/native-dependencies")
-if [[ "$MODE" = game ]]; then
+if [[ "$MODE" = game && "$VARIANT" != tsukihime540 ]]; then
     PACKAGE_EXTRA+=(-a "$KNIFE_VITA_SHADER_COMPILER=sce_module/libshacccg.suprx")
 fi
 vita-pack-vpk -s "$OUTPUT/param.sfo" -b "$OUTPUT/eboot.bin" \

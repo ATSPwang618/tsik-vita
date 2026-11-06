@@ -1,0 +1,18 @@
+{
+  "verified_at": "2026-11-01T23:52:26.452755+00:00",
+  "upstream_commit": "46fc68859918c5107eeee534c8c00a05654301be",
+  "tests": {
+    "renderer_host": 112,
+    "tsukihime_and_pipeline_helpers": 66,
+    "vita_platform": 67,
+    "audio_shared": 24,
+    "perf": 2,
+    "python_quality": 8,
+    "shader_input_cases": 877,
+    "shader_input_checks": 2631,
+    "negative_mutation_controls": 5
+  },
+  "runtime_verified": false,
+  "hardware_verified": false,
+  "scope": "Prior performance migration verification summary; current package identity is current-build.json"
+}

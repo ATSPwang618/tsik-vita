@@ -1,0 +1,1437 @@
+{
+  "status": "PASS",
+  "applied": true,
+  "before": {
+    "policy": "story-rgba512k-axis960-v1",
+    "counts": {
+      "images": 23177,
+      "oversized": 15901
+    },
+    "archives": {
+      "w_allpac": {
+        "images": 21876,
+        "oversized": 14765,
+        "max_rgba_pitch_bytes": 4201600
+      },
+      "w_allpaccg": {
+        "images": 1024,
+        "oversized": 1024,
+        "max_rgba_pitch_bytes": 4187904
+      },
+      "w_allpacml": {
+        "images": 277,
+        "oversized": 112,
+        "max_rgba_pitch_bytes": 3248224
+      },
+      "allpachd": {
+        "images": 0,
+        "oversized": 0,
+        "max_rgba_pitch_bytes": 0
+      }
+    },
+    "max_rgba_pitch_bytes": 4201600,
+    "rgba_pitch_limit": 524288,
+    "examples": [
+      {
+        "archive": "w_allpac",
+        "index": 52,
+        "name": "BLACK",
+        "physical": [
+          960,
+          540
+        ],
+        "rgba_pitch_bytes": 2073600
+      },
+      {
+        "archive": "w_allpac",
+        "index": 53,
+        "name": "BLUE",
+        "physical": [
+          960,
+          540
+        ],
+        "rgba_pitch_bytes": 2073600
+      },
+      {
+        "archive": "w_allpac",
+        "index": 54,
+        "name": "GREEN",
+        "physical": [
+          960,
+          540
+        ],
+        "rgba_pitch_bytes": 2073600
+      },
+      {
+        "archive": "w_allpac",
+        "index": 55,
+        "name": "ORANGE",
+        "physical": [
+          960,
+          540
+        ],
+        "rgba_pitch_bytes": 2073600
+      },
+      {
+        "archive": "w_allpac",
+        "index": 56,
+        "name": "RED",
+        "physical": [
+          960,
+          540
+        ],
+        "rgba_pitch_bytes": 2073600
+      },
+      {
+        "archive": "w_allpac",
+        "index": 57,
+        "name": "WHITE",
+        "physical": [
+          960,
+          540
+        ],
+        "rgba_pitch_bytes": 2073600
+      },
+      {
+        "archive": "w_allpac",
+        "index": 58,
+        "name": "YELLOW",
+        "physical": [
+          960,
+          540
+        ],
+        "rgba_pitch_bytes": 2073600
+      },
+      {
+        "archive": "w_allpac",
+        "index": 59,
+        "name": "IMG0000",
+        "physical": [
+          1280,
+          724
+        ],
+        "rgba_pitch_bytes": 3706880
+      },
+      {
+        "archive": "w_allpac",
+        "index": 60,
+        "name": "IMG0001",
+        "physical": [
+          1600,
+          647
+        ],
+        "rgba_pitch_bytes": 4140800
+      },
+      {
+        "archive": "w_allpac",
+        "index": 61,
+        "name": "IMG0002",
+        "physical": [
+          1249,
+          829
+        ],
+        "rgba_pitch_bytes": 4164896
+      },
+      {
+        "archive": "w_allpac",
+        "index": 62,
+        "name": "IMG0003",
+        "physical": [
+          512,
+          720
+        ],
+        "rgba_pitch_bytes": 1474560
+      },
+      {
+        "archive": "w_allpac",
+        "index": 63,
+        "name": "IMG0004",
+        "physical": [
+          512,
+          720
+        ],
+        "rgba_pitch_bytes": 1474560
+      },
+      {
+        "archive": "w_allpac",
+        "index": 64,
+        "name": "IMG0005",
+        "physical": [
+          1280,
+          720
+        ],
+        "rgba_pitch_bytes": 3686400
+      },
+      {
+        "archive": "w_allpac",
+        "index": 65,
+        "name": "IMG0006",
+        "physical": [
+          1280,
+          720
+        ],
+        "rgba_pitch_bytes": 3686400
+      },
+      {
+        "archive": "w_allpac",
+        "index": 66,
+        "name": "IMG0007",
+        "physical": [
+          1517,
+          683
+        ],
+        "rgba_pitch_bytes": 4152640
+      },
+      {
+        "archive": "w_allpac",
+        "index": 67,
+        "name": "IMG0008",
+        "physical": [
+          1517,
+          683
+        ],
+        "rgba_pitch_bytes": 4152640
+      },
+      {
+        "archive": "w_allpac",
+        "index": 68,
+        "name": "IMG0009",
+        "physical": [
+          1517,
+          683
+        ],
+        "rgba_pitch_bytes": 4152640
+      },
+      {
+        "archive": "w_allpac",
+        "index": 69,
+        "name": "IMG0010",
+        "physical": [
+          512,
+          720
+        ],
+        "rgba_pitch_bytes": 1474560
+      },
+      {
+        "archive": "w_allpac",
+        "index": 70,
+        "name": "IMG0011",
+        "physical": [
+          512,
+          720
+        ],
+        "rgba_pitch_bytes": 1474560
+      },
+      {
+        "archive": "w_allpac",
+        "index": 71,
+        "name": "IMG0012",
+        "physical": [
+          890,
+          540
+        ],
+        "rgba_pitch_bytes": 1935360
+      },
+      {
+        "archive": "w_allpac",
+        "index": 72,
+        "name": "IMG0013",
+        "physical": [
+          1280,
+          720
+        ],
+        "rgba_pitch_bytes": 3686400
+      },
+      {
+        "archive": "w_allpac",
+        "index": 73,
+        "name": "IMG0014",
+        "physical": [
+          1280,
+          720
+        ],
+        "rgba_pitch_bytes": 3686400
+      },
+      {
+        "archive": "w_allpac",
+        "index": 74,
+        "name": "IMG0015",
+        "physical": [
+          1280,
+          720
+        ],
+        "rgba_pitch_bytes": 3686400
+      },
+      {
+        "archive": "w_allpac",
+        "index": 75,
+        "name": "IMG0016",
+        "physical": [
+          1280,
+          720
+        ],
+        "rgba_pitch_bytes": 3686400
+      }
+    ],
+    "hardware_verified": false
+  },
+  "after": {
+    "policy": "story-rgba512k-axis960-v1",
+    "counts": {
+      "images": 23177,
+      "oversized": 0
+    },
+    "archives": {
+      "w_allpac": {
+        "images": 21876,
+        "oversized": 0,
+        "max_rgba_pitch_bytes": 524288
+      },
+      "w_allpaccg": {
+        "images": 1024,
+        "oversized": 0,
+        "max_rgba_pitch_bytes": 524288
+      },
+      "w_allpacml": {
+        "images": 277,
+        "oversized": 0,
+        "max_rgba_pitch_bytes": 524160
+      },
+      "allpachd": {
+        "images": 0,
+        "oversized": 0,
+        "max_rgba_pitch_bytes": 0
+      }
+    },
+    "max_rgba_pitch_bytes": 524288,
+    "rgba_pitch_limit": 524288,
+    "examples": [],
+    "hardware_verified": false
+  },
+  "changes": [
+    {
+      "archive": "w_allpac",
+      "resized": 14765,
+      "before_archive_bytes": 2475186176,
+      "after_archive_bytes": 819984384,
+      "max_changed_rgba_pitch_before": 4201600,
+      "max_changed_rgba_pitch_after": 524288,
+      "examples": [
+        {
+          "index": 52,
+          "member": "BLACK",
+          "before": [
+            960,
+            540
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            1920,
+            1080
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 2073600,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 53,
+          "member": "BLUE",
+          "before": [
+            960,
+            540
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            1920,
+            1080
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 2073600,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 54,
+          "member": "GREEN",
+          "before": [
+            960,
+            540
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            1920,
+            1080
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 2073600,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 55,
+          "member": "ORANGE",
+          "before": [
+            960,
+            540
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            1920,
+            1080
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 2073600,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 56,
+          "member": "RED",
+          "before": [
+            960,
+            540
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            1920,
+            1080
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 2073600,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 57,
+          "member": "WHITE",
+          "before": [
+            960,
+            540
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            1920,
+            1080
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 2073600,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 58,
+          "member": "YELLOW",
+          "before": [
+            960,
+            540
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            1920,
+            1080
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 2073600,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 59,
+          "member": "IMG0000",
+          "before": [
+            1280,
+            724
+          ],
+          "physical": [
+            480,
+            271
+          ],
+          "logical": [
+            2560,
+            1449
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 3706880,
+          "rgba_pitch_after": 520320
+        },
+        {
+          "index": 60,
+          "member": "IMG0001",
+          "before": [
+            1600,
+            647
+          ],
+          "physical": [
+            568,
+            229
+          ],
+          "logical": [
+            3560,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 4140800,
+          "rgba_pitch_after": 520288
+        },
+        {
+          "index": 61,
+          "member": "IMG0002",
+          "before": [
+            1249,
+            829
+          ],
+          "physical": [
+            440,
+            292
+          ],
+          "logical": [
+            2560,
+            1700
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 4164896,
+          "rgba_pitch_after": 513920
+        },
+        {
+          "index": 62,
+          "member": "IMG0003",
+          "before": [
+            512,
+            720
+          ],
+          "physical": [
+            304,
+            428
+          ],
+          "logical": [
+            1024,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 1474560,
+          "rgba_pitch_after": 520448
+        },
+        {
+          "index": 63,
+          "member": "IMG0004",
+          "before": [
+            512,
+            720
+          ],
+          "physical": [
+            304,
+            428
+          ],
+          "logical": [
+            1024,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 1474560,
+          "rgba_pitch_after": 520448
+        },
+        {
+          "index": 64,
+          "member": "IMG0005",
+          "before": [
+            1280,
+            720
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            2560,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 3686400,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 65,
+          "member": "IMG0006",
+          "before": [
+            1280,
+            720
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            2560,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 3686400,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 66,
+          "member": "IMG0007",
+          "before": [
+            1517,
+            683
+          ],
+          "physical": [
+            536,
+            241
+          ],
+          "logical": [
+            3200,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 4152640,
+          "rgba_pitch_after": 516704
+        },
+        {
+          "index": 67,
+          "member": "IMG0008",
+          "before": [
+            1517,
+            683
+          ],
+          "physical": [
+            536,
+            241
+          ],
+          "logical": [
+            3200,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 4152640,
+          "rgba_pitch_after": 516704
+        }
+      ],
+      "hardware_verified": false
+    },
+    {
+      "archive": "w_allpaccg",
+      "resized": 1024,
+      "before_archive_bytes": 291788800,
+      "after_archive_bytes": 98576384,
+      "max_changed_rgba_pitch_before": 4187904,
+      "max_changed_rgba_pitch_after": 524288,
+      "examples": [
+        {
+          "index": 0,
+          "member": "IMG3000",
+          "before": [
+            512,
+            720
+          ],
+          "physical": [
+            304,
+            428
+          ],
+          "logical": [
+            1024,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 1474560,
+          "rgba_pitch_after": 520448
+        },
+        {
+          "index": 1,
+          "member": "IMG3001",
+          "before": [
+            1280,
+            720
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            2560,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 3686400,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 2,
+          "member": "IMG3002",
+          "before": [
+            1517,
+            683
+          ],
+          "physical": [
+            536,
+            241
+          ],
+          "logical": [
+            3200,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 4152640,
+          "rgba_pitch_after": 516704
+        },
+        {
+          "index": 3,
+          "member": "IMG3003",
+          "before": [
+            512,
+            720
+          ],
+          "physical": [
+            304,
+            428
+          ],
+          "logical": [
+            1024,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 1474560,
+          "rgba_pitch_after": 520448
+        },
+        {
+          "index": 4,
+          "member": "IMG3004",
+          "before": [
+            1280,
+            720
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            2560,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 3686400,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 5,
+          "member": "IMG3005",
+          "before": [
+            1280,
+            720
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            2560,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 3686400,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 6,
+          "member": "IMG3006",
+          "before": [
+            1280,
+            720
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            2560,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 3686400,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 7,
+          "member": "IMG3007",
+          "before": [
+            1280,
+            720
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            2560,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 3686400,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 8,
+          "member": "IMG3008",
+          "before": [
+            1280,
+            720
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            2560,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 3686400,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 9,
+          "member": "IMG3009",
+          "before": [
+            1280,
+            720
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            2560,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 3686400,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 10,
+          "member": "IMG3010",
+          "before": [
+            1280,
+            720
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            2560,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 3686400,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 11,
+          "member": "IMG3011",
+          "before": [
+            1280,
+            720
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            2560,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 3686400,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 12,
+          "member": "IMG3012",
+          "before": [
+            1280,
+            720
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            2560,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 3686400,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 13,
+          "member": "IMG3013",
+          "before": [
+            1280,
+            720
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            2560,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 3686400,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 14,
+          "member": "IMG3014",
+          "before": [
+            1280,
+            720
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            2560,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 3686400,
+          "rgba_pitch_after": 518400
+        },
+        {
+          "index": 15,
+          "member": "IMG3015",
+          "before": [
+            1280,
+            720
+          ],
+          "physical": [
+            480,
+            270
+          ],
+          "logical": [
+            2560,
+            1440
+          ],
+          "strips": 1,
+          "codec_before": 9,
+          "codec_after": 9,
+          "rgba_pitch_before": 3686400,
+          "rgba_pitch_after": 518400
+        }
+      ],
+      "hardware_verified": false
+    },
+    {
+      "archive": "w_allpacml",
+      "resized": 112,
+      "before_archive_bytes": 57913344,
+      "after_archive_bytes": 27881472,
+      "max_changed_rgba_pitch_before": 3248224,
+      "max_changed_rgba_pitch_after": 524160,
+      "examples": [
+        {
+          "index": 52,
+          "member": "IMG1699",
+          "before": [
+            946,
+            1706
+          ],
+          "physical": [
+            378,
+            682
+          ],
+          "logical": [
+            1892,
+            3414
+          ],
+          "strips": 2,
+          "codec_before": 2,
+          "codec_after": 2,
+          "rgba_pitch_before": 3248224,
+          "rgba_pitch_after": 523776
+        },
+        {
+          "index": 53,
+          "member": "IMG1700",
+          "before": [
+            946,
+            1706
+          ],
+          "physical": [
+            378,
+            682
+          ],
+          "logical": [
+            1892,
+            3414
+          ],
+          "strips": 2,
+          "codec_before": 2,
+          "codec_after": 2,
+          "rgba_pitch_before": 3248224,
+          "rgba_pitch_after": 523776
+        },
+        {
+          "index": 54,
+          "member": "IMG1701",
+          "before": [
+            946,
+            1706
+          ],
+          "physical": [
+            378,
+            682
+          ],
+          "logical": [
+            1892,
+            3414
+          ],
+          "strips": 2,
+          "codec_before": 2,
+          "codec_after": 2,
+          "rgba_pitch_before": 3248224,
+          "rgba_pitch_after": 523776
+        },
+        {
+          "index": 55,
+          "member": "IMG1702",
+          "before": [
+            946,
+            1706
+          ],
+          "physical": [
+            378,
+            682
+          ],
+          "logical": [
+            1892,
+            3414
+          ],
+          "strips": 2,
+          "codec_before": 2,
+          "codec_after": 2,
+          "rgba_pitch_before": 3248224,
+          "rgba_pitch_after": 523776
+        },
+        {
+          "index": 56,
+          "member": "IMG1736",
+          "before": [
+            898,
+            1080
+          ],
+          "physical": [
+            464,
+            558
+          ],
+          "logical": [
+            1404,
+            1688
+          ],
+          "strips": 2,
+          "codec_before": 2,
+          "codec_after": 2,
+          "rgba_pitch_before": 1952640,
+          "rgba_pitch_after": 517824
+        },
+        {
+          "index": 57,
+          "member": "IMG1737",
+          "before": [
+            898,
+            1080
+          ],
+          "physical": [
+            464,
+            558
+          ],
+          "logical": [
+            1404,
+            1688
+          ],
+          "strips": 2,
+          "codec_before": 2,
+          "codec_after": 2,
+          "rgba_pitch_before": 1952640,
+          "rgba_pitch_after": 517824
+        },
+        {
+          "index": 58,
+          "member": "IMG2378",
+          "before": [
+            946,
+            1706
+          ],
+          "physical": [
+            378,
+            682
+          ],
+          "logical": [
+            1892,
+            3414
+          ],
+          "strips": 2,
+          "codec_before": 2,
+          "codec_after": 2,
+          "rgba_pitch_before": 3248224,
+          "rgba_pitch_after": 523776
+        },
+        {
+          "index": 59,
+          "member": "IMG2379",
+          "before": [
+            946,
+            1706
+          ],
+          "physical": [
+            378,
+            682
+          ],
+          "logical": [
+            1892,
+            3414
+          ],
+          "strips": 2,
+          "codec_before": 2,
+          "codec_after": 2,
+          "rgba_pitch_before": 3248224,
+          "rgba_pitch_after": 523776
+        },
+        {
+          "index": 60,
+          "member": "IMG2380",
+          "before": [
+            946,
+            1706
+          ],
+          "physical": [
+            378,
+            682
+          ],
+          "logical": [
+            1892,
+            3414
+          ],
+          "strips": 2,
+          "codec_before": 2,
+          "codec_after": 2,
+          "rgba_pitch_before": 3248224,
+          "rgba_pitch_after": 523776
+        },
+        {
+          "index": 61,
+          "member": "IMG2381",
+          "before": [
+            946,
+            1706
+          ],
+          "physical": [
+            378,
+            682
+          ],
+          "logical": [
+            1892,
+            3414
+          ],
+          "strips": 2,
+          "codec_before": 2,
+          "codec_after": 2,
+          "rgba_pitch_before": 3248224,
+          "rgba_pitch_after": 523776
+        },
+        {
+          "index": 62,
+          "member": "IMG2382",
+          "before": [
+            946,
+            1706
+          ],
+          "physical": [
+            378,
+            682
+          ],
+          "logical": [
+            1892,
+            3414
+          ],
+          "strips": 2,
+          "codec_before": 2,
+          "codec_after": 2,
+          "rgba_pitch_before": 3248224,
+          "rgba_pitch_after": 523776
+        },
+        {
+          "index": 63,
+          "member": "IMG2383",
+          "before": [
+            946,
+            1706
+          ],
+          "physical": [
+            378,
+            682
+          ],
+          "logical": [
+            1892,
+            3414
+          ],
+          "strips": 2,
+          "codec_before": 2,
+          "codec_after": 2,
+          "rgba_pitch_before": 3248224,
+          "rgba_pitch_after": 523776
+        },
+        {
+          "index": 64,
+          "member": "IMG2384",
+          "before": [
+            946,
+            1706
+          ],
+          "physical": [
+            378,
+            682
+          ],
+          "logical": [
+            1892,
+            3414
+          ],
+          "strips": 2,
+          "codec_before": 2,
+          "codec_after": 2,
+          "rgba_pitch_before": 3248224,
+          "rgba_pitch_after": 523776
+        },
+        {
+          "index": 65,
+          "member": "IMG2385",
+          "before": [
+            946,
+            1706
+          ],
+          "physical": [
+            378,
+            682
+          ],
+          "logical": [
+            1892,
+            3414
+          ],
+          "strips": 2,
+          "codec_before": 2,
+          "codec_after": 2,
+          "rgba_pitch_before": 3248224,
+          "rgba_pitch_after": 523776
+        },
+        {
+          "index": 66,
+          "member": "IMG2386",
+          "before": [
+            946,
+            1706
+          ],
+          "physical": [
+            378,
+            682
+          ],
+          "logical": [
+            1892,
+            3414
+          ],
+          "strips": 2,
+          "codec_before": 2,
+          "codec_after": 2,
+          "rgba_pitch_before": 3248224,
+          "rgba_pitch_after": 523776
+        },
+        {
+          "index": 67,
+          "member": "IMG2387",
+          "before": [
+            946,
+            1706
+          ],
+          "physical": [
+            378,
+            682
+          ],
+          "logical": [
+            1892,
+            3414
+          ],
+          "strips": 2,
+          "codec_before": 2,
+          "codec_after": 2,
+          "rgba_pitch_before": 3248224,
+          "rgba_pitch_after": 523776
+        }
+      ],
+      "hardware_verified": false
+    }
+  ],
+  "input_manifest_sha256": "1cd41de0fc031e07cf91161932563570d593387d7c6f2ab84c7888b93f19182a",
+  "output_manifest_sha256": "0c4188c923f744870d660a384e0c55f59f1d3e3d8997e9baf6150a5eb7e0fc75",
+  "hardware_verified": false,
+  "data_update_files": [
+    {
+      "path": "w_allpac.hed",
+      "bytes": 234144,
+      "sha256": "18a2fb19471a7897f70aaf01e5e4b7745d3450e7d9f48f99bce9bc01f7ed8a48"
+    },
+    {
+      "path": "w_allpac.mrg",
+      "bytes": 819984384,
+      "sha256": "e4e3dd649e1119e5a96e7c644e5d0207c6259f3a599eda55b33066f75d2190e6"
+    },
+    {
+      "path": "w_allpaccg.hed",
+      "bytes": 12176,
+      "sha256": "3eb8798684923d219e312f0c874587c691b8c824bb5e6bb4d4e607edf44fe3bd"
+    },
+    {
+      "path": "w_allpaccg.mrg",
+      "bytes": 98576384,
+      "sha256": "aa67591b096dcf430c4c14a300fee1f557297d9054471b017ed416b20a386e8c"
+    },
+    {
+      "path": "w_allpacml.hed",
+      "bytes": 2760,
+      "sha256": "73ea167ccd93356a48beb3019611d0e5addf00565ea645656101cdc21facd9f9"
+    },
+    {
+      "path": "w_allpacml.mrg",
+      "bytes": 27881472,
+      "sha256": "2d41c51e83dcd342ad75a02e421d27a23c4828ab9af089032e450fd634b9ab83"
+    },
+    {
+      "path": "vita-540p-assets.json",
+      "bytes": 2762525,
+      "sha256": "0c4188c923f744870d660a384e0c55f59f1d3e3d8997e9baf6150a5eb7e0fc75"
+    }
+  ],
+  "original_data_bytes": 4305521192,
+  "output_data_bytes": 2427075112,
+  "saved_data_bytes": 1878446080,
+  "protected_ui_mrg_sha256": "099bdf441a9e3d79261c3dcb8ed2d533c0ffbfb85a31bea1bd235cb572ab3a0b",
+  "runtime_policy": {
+    "newlib_heap_bytes": 268435456,
+    "cpu_source_owner_bytes": 67108864,
+    "cpu_graded_bytes": 33554432,
+    "cpu_grade_base_bytes": 3145728,
+    "cpu_sound_prepare_reserve_bytes": 41943040,
+    "cpu_sound_prepared_bytes": 16777216,
+    "cpu_ui_pass_cache_bytes": 262144,
+    "gpu_deferred_bytes": 58720256,
+    "gpu_text_bytes": 4194304,
+    "gpu_text_entries": 16,
+    "gpu_target_ring_bytes": 0,
+    "gpu_group_bytes": 4194304,
+    "gpu_movie_frame_bytes": 3145728,
+    "gpu_total_with_jpeg_bytes": 109051904,
+    "admission": "native owner accounting and kernel free memory; LRU and pressure trimming",
+    "text_cache": "exact quad signatures, typing segments then finished-run promotion; native540p bbox, extra RGBA8 rounding may differ slightly",
+    "fixed_language_id": null,
+    "default_language_id": 2,
+    "selectable_language_ids": [
+      2,
+      0
+    ],
+    "cpu_sound_cache_bytes": 16777216,
+    "language_png_decode": "selected rows; unchanged 960x1080 output / 4.25MiB working bounds",
+    "movie_owner": "one persistent native owner; bounded nonblocking main commands, GPU-completed native-frame leases",
+    "gpu_stage_prefix_bytes": 0,
+    "resource_demand": "STCH poll/PC-preserving; 10s request deadline; legacy waits bounded",
+    "glyph_upload": "whole message prewarm to cropped immutable R8 pages, normally256px wide,2MiB native-charge pool/font",
+    "cpu_pressure_headroom_bytes": 33554432,
+    "cpu_target_headroom_bytes": 50331648,
+    "cpu_hot_ui_soft_priority_bytes": 25165824,
+    "gpu_optional_cache_spare_bytes": 8388608,
+    "gpu_pressure_headroom_bytes": 16777216,
+    "story_rgba_pitch_limit_bytes": 524288,
+    "audio_stream_channels": 8,
+    "audio_stream_queued_blocks": 10,
+    "audio_stream_pcm_pool_ceiling_bytes": 737280
+  }
+}

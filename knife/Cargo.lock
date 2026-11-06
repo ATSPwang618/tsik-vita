@@ -1542,6 +1542,7 @@ name = "knife-platform-vita"
 version = "0.1.0"
 dependencies = [
  "crc32fast",
+ "knife-core",
  "knife-perf",
  "knife-render-api",
 ]

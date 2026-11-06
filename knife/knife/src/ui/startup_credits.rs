@@ -2,7 +2,8 @@
 
 pub const PARTS_INDEX: usize = 5;
 const FADE_FRAMES: f32 = 30.0;
-const HOLD_FRAMES: f32 = 240.0;
+// Half a second in, seven seconds readable, half a second out at 60 Hz.
+const HOLD_FRAMES: f32 = 420.0;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Credits {
@@ -50,10 +51,10 @@ mod tests {
     }
 
     #[test]
-    fn automatic_screen_returns_to_boot_in_about_five_seconds() {
+    fn automatic_screen_returns_to_boot_in_about_eight_seconds() {
         let mut credits = Credits::new();
-        let done = (1..=320).find(|_| credits.advance(1.0)).unwrap();
-        assert!((298..=302).contains(&done), "completed at {done} frames");
+        let done = (1..=500).find(|_| credits.advance(1.0)).unwrap();
+        assert!((478..=482).contains(&done), "completed at {done} frames");
         assert_eq!(credits.alpha(), 0.0);
     }
 
@@ -84,8 +85,8 @@ mod tests {
             let done = credits.advance(2.5);
             assert!((0.0..=1.0).contains(&credits.alpha()));
             if done { break; }
-            assert!(elapsed < 310.0);
+            assert!(elapsed < 490.0);
         }
-        assert!((295.0..=307.5).contains(&elapsed));
+        assert!((475.0..=487.5).contains(&elapsed), "completed at {elapsed} frames");
     }
 }

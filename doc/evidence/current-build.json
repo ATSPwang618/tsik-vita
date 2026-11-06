@@ -1,0 +1,2018 @@
+{
+  "built_at": "2026-11-06T12:10:21.059445+00:00",
+  "target": "armv7-sony-vita-newlibeabihf",
+  "rust_toolchain": "nightly-2026-05-28",
+  "build_tag": "tsukihime540-offline-shaders-20261106",
+  "performance_sink": "sceClibPrintf",
+  "performance_transport": {
+    "writer": "bounded background worker",
+    "queue_batches": 3,
+    "queue_bytes": 196608,
+    "max_batch_bytes": 98304,
+    "banks": "changed cumulative; full every6 windows or after observed transport failure",
+    "loss": "whole-window drops counted; cumulative counters recover, histograms/hotspots do not"
+  },
+  "vita_cache_policy": {
+    "newlib_heap_bytes": 268435456,
+    "cpu_source_owner_bytes": 67108864,
+    "cpu_graded_bytes": 33554432,
+    "cpu_grade_base_bytes": 3145728,
+    "cpu_sound_prepare_reserve_bytes": 41943040,
+    "cpu_sound_prepared_bytes": 16777216,
+    "cpu_ui_pass_cache_bytes": 262144,
+    "gpu_deferred_bytes": 58720256,
+    "gpu_text_bytes": 4194304,
+    "gpu_text_entries": 16,
+    "gpu_target_ring_bytes": 0,
+    "gpu_group_bytes": 4194304,
+    "gpu_movie_frame_bytes": 3145728,
+    "gpu_total_with_jpeg_bytes": 109051904,
+    "admission": "native owner accounting and kernel free memory; LRU and pressure trimming",
+    "text_cache": "exact quad signatures, typing segments then finished-run promotion; native540p bbox, extra RGBA8 rounding may differ slightly",
+    "fixed_language_id": null,
+    "default_language_id": 2,
+    "selectable_language_ids": [
+      2,
+      0
+    ],
+    "cpu_sound_cache_bytes": 16777216,
+    "language_png_decode": "selected rows; unchanged 960x1080 output / 4.25MiB working bounds",
+    "movie_owner": "one persistent native owner; bounded nonblocking main commands, GPU-completed native-frame leases",
+    "gpu_stage_prefix_bytes": 0,
+    "resource_demand": "STCH poll/PC-preserving; 10s request deadline; legacy waits bounded",
+    "glyph_upload": "whole message prewarm to cropped immutable R8 pages, normally256px wide,2MiB native-charge pool/font",
+    "cpu_pressure_headroom_bytes": 33554432,
+    "cpu_target_headroom_bytes": 50331648,
+    "cpu_hot_ui_soft_priority_bytes": 25165824,
+    "gpu_optional_cache_spare_bytes": 8388608,
+    "gpu_pressure_headroom_bytes": 16777216,
+    "story_rgba_pitch_limit_bytes": 524288,
+    "audio_stream_channels": 8,
+    "audio_stream_queued_blocks": 10,
+    "audio_stream_pcm_pool_ceiling_bytes": 737280
+  },
+  "optimization_profile": {
+    "default": "all",
+    "file": "optimization-profile.txt in external data root",
+    "features": [
+      "shared-atlas",
+      "gxt-ready",
+      "batch-arena",
+      "group-fused",
+      "ps-fetch",
+      "async-submit",
+      "compact-stream",
+      "direct-stage",
+      "texture-pool",
+      "decode-owner",
+      "gray-r8",
+      "animation-window",
+      "dependency-graph",
+      "source-rename",
+      "grade-cache",
+      "stream-index",
+      "coalesce-bake",
+      "resource-io-cache",
+      "stage-prefix",
+      "group-batch",
+      "ui-pass-cache",
+      "plain-forcealpha",
+      "ui-source-prefetch",
+      "archive-glow-bounds",
+      "blend-chain",
+      "producer-reuse",
+      "async-rebake",
+      "target-ring",
+      "shader-specialization"
+    ],
+    "batch_dependencies": [
+      "async-submit",
+      "compact-stream"
+    ],
+    "graph_and_rename_dependencies": [
+      "batch-arena",
+      "async-submit"
+    ]
+  },
+  "runtime_shader_cache": {
+    "root": "ux0:data/TSUKIHIME-RE/shader-cache",
+    "abi": 5,
+    "entry_abi": 2,
+    "color_contract": "encoded-unorm8-uchar4",
+    "asset_gxt_codec": 9,
+    "compiler_policy": 1,
+    "extensions_archive_sha256": "2707ddf51699b95b9b8b45ac806b1521318ddaf9500aaf07c3db6d1edb710cdf",
+    "source_sha256": "a67370f222f6c21657c14dd917cf4a42ab6af9544e4063ffe8fb7d62f7ed966d",
+    "execution": "embedded-offline-gxp",
+    "runtime_compilation": false,
+    "compiler_module_bundled": false,
+    "compiler_module": null,
+    "capability_validation_required": true
+  },
+  "performance_console_default": true,
+  "quiet_build": false,
+  "performance_console_forced_off": false,
+  "build_kind": "release",
+  "diagnostics_enabled": false,
+  "rustc": "rustc 1.98.0-nightly (57d06900f 2026-05-27)\nbinary: rustc\ncommit-hash: 57d06900fd7d9ee06d3a7f323bb77f17ab3cfaf8\ncommit-date: 2026-05-27\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6\n",
+  "scope": "Unbounded actual Game/Ui entry, direct GXM, code-fixed native 540p scene/composite; 960x544 scanout; hardware testing pending",
+  "feature": "vita-gxm",
+  "features": [
+    "vita-gxm",
+    "assets-540p",
+    "tsukihime"
+  ],
+  "frame_limit": null,
+  "asset_manifest_sha256": "0c4188c923f744870d660a384e0c55f59f1d3e3d8997e9baf6150a5eb7e0fc75",
+  "assets": "external ux0:data/TSUKIHIME-RE/assets; no game assets in VPK",
+  "resource_error_file": "ux0:data/TSUKIHIME-RE/resource-error.json",
+  "save_namespace": "production",
+  "title_id": "KNIF00541",
+  "physical_canvas": [
+    960,
+    540
+  ],
+  "fixed_render_resolution": {
+    "source": "code",
+    "configuration_read": false,
+    "scene": [
+      960,
+      540
+    ],
+    "composite": [
+      960,
+      540
+    ]
+  },
+  "scene_pixels": [
+    960,
+    540
+  ],
+  "composite_pixels": [
+    960,
+    540
+  ],
+  "display": [
+    960,
+    540
+  ],
+  "script_coordinates": [
+    1920,
+    1080
+  ],
+  "param_sfo": {
+    "path": ".work/vita/game-release-tsukihime-540p/param.sfo",
+    "sha256": "69cf2d0d682cdc29c55f5eb37487d3fce3cf046b95d91ba159137fce999f0bde",
+    "attribute2": 12
+  },
+  "entrypoint": "tools/build-vita.sh",
+  "tools": {
+    "arm-vita-eabi-gcc": {
+      "path": "/opt/vitasdk/bin/arm-vita-eabi-gcc",
+      "sha256": "0295392f92d2a684377e0b7af149c3c023ef8fc1ab1f30e6333249ef44879155"
+    },
+    "arm-vita-eabi-strip": {
+      "path": "/opt/vitasdk/bin/arm-vita-eabi-strip",
+      "sha256": "ca287e2dd5bf12a4fa1d58b95a7e6d6fd4b57c377b5b98cf1ff05b9526beaccf"
+    },
+    "vita-elf-create": {
+      "path": "/opt/vitasdk/bin/vita-elf-create",
+      "sha256": "46ff8758d9f985e71a06136bec2343c1f7e292860b31ddfb0daa1ca046a962d2"
+    },
+    "vita-make-fself": {
+      "path": "/opt/vitasdk/bin/vita-make-fself",
+      "sha256": "e99af0e868be333ba7f7ccf1f3885a62c0b178a71bf349792dde84ecf1f0c399"
+    },
+    "vita-mksfoex": {
+      "path": "/opt/vitasdk/bin/vita-mksfoex",
+      "sha256": "35416c6dc8f8bde5d5360eff1156618e20564ebe46b911a8d02fbac1866aef8b"
+    },
+    "vita-pack-vpk": {
+      "path": "/opt/vitasdk/bin/vita-pack-vpk",
+      "sha256": "819f1623592e6dc8479c53c8fca16729c108322bda60003a569524654f3617f2"
+    }
+  },
+  "artifacts": [
+    {
+      "path": ".work/vita/game-release-tsukihime-540p/SceShaccCgExt-NOTICE.txt",
+      "bytes": 36276,
+      "sha256": "139f5c26a2858f8372f76ea23f642b761f2a233c00d2b5d140a80016b5584f49"
+    },
+    {
+      "path": ".work/vita/game-release-tsukihime-540p/eboot.bin",
+      "bytes": 10001967,
+      "sha256": "aace269b6f74ec345345e6c9477c829bf3559cd0562518f22f5be8f522a5103b"
+    },
+    {
+      "path": ".work/vita/game-release-tsukihime-540p/elf-create.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".work/vita/game-release-tsukihime-540p/elf-identity.txt",
+      "bytes": 1609,
+      "sha256": "33a49f794aeb7cdd2de88cdd85156a0009c413202b0a5c9c8e231a6375d5f987"
+    },
+    {
+      "path": ".work/vita/game-release-tsukihime-540p/knife-vita-tsukihime-540p.vpk",
+      "bytes": 5385822,
+      "sha256": "732a8b147b2d87c3139bffb99db2566745d99cba2bad200c46199fe9c3c9bba9"
+    },
+    {
+      "path": ".work/vita/game-release-tsukihime-540p/knife.elf",
+      "bytes": 8948080,
+      "sha256": "5c11a30a92ff8d20bce3bf6ebb8ed69483eefc12df012b8e6ce951666cb3b914"
+    },
+    {
+      "path": ".work/vita/game-release-tsukihime-540p/knife.map",
+      "bytes": 9267987,
+      "sha256": "70eefb13c2ad8ee988b611984d782b47098e9b37bef58dddc22c9da4df9f985d"
+    },
+    {
+      "path": ".work/vita/game-release-tsukihime-540p/knife.velf",
+      "bytes": 9997871,
+      "sha256": "70040060568eb8c24701b72d00c3ffed242bf6e84bb9e5cd20cb3f24c56cf7b4"
+    },
+    {
+      "path": ".work/vita/game-release-tsukihime-540p/param.sfo",
+      "bytes": 912,
+      "sha256": "69cf2d0d682cdc29c55f5eb37487d3fce3cf046b95d91ba159137fce999f0bde"
+    },
+    {
+      "path": ".work/vita/game-release-tsukihime-540p/undefined-symbols.txt",
+      "bytes": 333,
+      "sha256": "ce729a54a87bb944081665234e1bd87c1354116af0fa6ccec65e17ba81dae463"
+    }
+  ],
+  "package_contents": [
+    {
+      "path": ".work/vita/game-release-tsukihime-540p/knife-vita-tsukihime-540p.vpk",
+      "files": [
+        {
+          "path": "LICENSE",
+          "bytes": 17098,
+          "sha256": "2684de17300e0a434686f1ec7f8af6045207a4b457a3fe04b2b9ce655e7c5d50"
+        },
+        {
+          "path": "eboot.bin",
+          "bytes": 10001967,
+          "sha256": "aace269b6f74ec345345e6c9477c829bf3559cd0562518f22f5be8f522a5103b"
+        },
+        {
+          "path": "licenses/native-dependencies/NOTICE.txt",
+          "bytes": 770,
+          "sha256": "8efd46aec306b642971f9edfd1b7df9d6c1733e64bdbec40e55113b1756340c6"
+        },
+        {
+          "path": "licenses/native-dependencies/libjpeg-turbo/LICENSE.md",
+          "bytes": 6077,
+          "sha256": "ba6bceebcba0fdd35488477c2cca8c4632ce82c74dbfbc87d886ce6fc4433579"
+        },
+        {
+          "path": "licenses/native-dependencies/libjpeg-turbo/README.ijg",
+          "bytes": 12799,
+          "sha256": "75815e3bf6484201a3c3d17a1bbf10f2e8e3237f84df10a2357ea896db2a81d6"
+        },
+        {
+          "path": "licenses/native-dependencies/libogg/COPYING",
+          "bytes": 1466,
+          "sha256": "d2ab5758336489da61c12cc5bb757da5339c4ae9001f9bb0562b4370249af814"
+        },
+        {
+          "path": "licenses/native-dependencies/libpng/LICENSE",
+          "bytes": 5345,
+          "sha256": "bdb0a645ea18c60507d0368379b1ac5474b92255fcc2d115e07486a7672ba526"
+        },
+        {
+          "path": "licenses/native-dependencies/opus/COPYING",
+          "bytes": 1945,
+          "sha256": "01e1167d54a096d123cf6dfbbeb19587278845c6481d2d66d545669846079551"
+        },
+        {
+          "path": "licenses/native-dependencies/opus/LICENSE_PLEASE_READ.txt",
+          "bytes": 703,
+          "sha256": "7efb4989e0cd1b256229bdf2f09300c5d14e35db0e7476bfb87fac243498273d"
+        },
+        {
+          "path": "licenses/native-dependencies/opusfile/COPYING",
+          "bytes": 1487,
+          "sha256": "0267ae795ab744c4e0f9c45e249440fdf2e75dac8c804f36066b28649bf74aaf"
+        },
+        {
+          "path": "licenses/native-dependencies/provenance.json",
+          "bytes": 7679,
+          "sha256": "972fe8e076eb7e5fb0b3775b1a98c9fc6150bae569b2c31509448490b7500c15"
+        },
+        {
+          "path": "licenses/native-dependencies/taihen/LICENSE",
+          "bytes": 1075,
+          "sha256": "b82d83d4c589bfba4c9ce82de4ba98d2b9186b5c59e6cb848bd7ef143b1af437"
+        },
+        {
+          "path": "licenses/native-dependencies/zlib/LICENSE",
+          "bytes": 1002,
+          "sha256": "e32ff4e00d9d94930537635291da39e7e612703334bf6fde8c7f1686fe8a45a2"
+        },
+        {
+          "path": "sce_module/SceShaccCgExt-NOTICE.txt",
+          "bytes": 36276,
+          "sha256": "139f5c26a2858f8372f76ea23f642b761f2a233c00d2b5d140a80016b5584f49"
+        },
+        {
+          "path": "sce_sys/icon0.png",
+          "bytes": 8429,
+          "sha256": "dda7dcdba19681485de521719ed1e640834d101ae2e4f4ad1267e49f20fbdd3c"
+        },
+        {
+          "path": "sce_sys/livearea/contents/bg.png",
+          "bytes": 167257,
+          "sha256": "c2975dbdc1520ec700f84278f9df44c3cc0c1ff9443a8ccf7bce074296b0443e"
+        },
+        {
+          "path": "sce_sys/livearea/contents/startup.png",
+          "bytes": 1824,
+          "sha256": "5567faeb83bf07cdf2ffd82b251324e403d856f53a402d5ab1a14e8c068a5a5a"
+        },
+        {
+          "path": "sce_sys/livearea/contents/template.xml",
+          "bytes": 712,
+          "sha256": "d9dde6a9e87650b929c2ae6c9cfe18f8dad270529d048a0fe2e1519d8e7751fa"
+        },
+        {
+          "path": "sce_sys/param.sfo",
+          "bytes": 912,
+          "sha256": "69cf2d0d682cdc29c55f5eb37487d3fce3cf046b95d91ba159137fce999f0bde"
+        },
+        {
+          "path": "sce_sys/pic0.png",
+          "bytes": 174260,
+          "sha256": "5b028e950b5746e12e1875862ea9dc558534edaa71fcb63e70e7fd8ad2dd8b0f"
+        }
+      ]
+    }
+  ],
+  "source_files": [
+    {
+      "path": "doc/evidence/offline-shaders.json",
+      "bytes": 122409,
+      "sha256": "b80273ca06ab862d49f5fef3b3c2d88b658e944acfcd34105fb28e62160a97de"
+    },
+    {
+      "path": "knife/Cargo.lock",
+      "bytes": 103482,
+      "sha256": "a119eeda6fab9ce8872c20c09c5065ec91dd98214e7715f209ec601e5b733f55"
+    },
+    {
+      "path": "knife/Cargo.toml",
+      "bytes": 935,
+      "sha256": "f187ef55276a3494fed2cc641ceb9d51271cd095c081af15ab0cf3024dcf5797"
+    },
+    {
+      "path": "knife/knife/Cargo.toml",
+      "bytes": 3713,
+      "sha256": "db1c924940cd55c6fffa1638ccc983afcb44ea178f64cb75b38cbc54f0404537"
+    },
+    {
+      "path": "knife/knife/build.rs",
+      "bytes": 638,
+      "sha256": "4e3e3a495ab80b7437ea06ed7a35647681f35adab7f52ecf63ed99dbe6cf5053"
+    },
+    {
+      "path": "knife/knife/data/exe_tables.bin",
+      "bytes": 810460,
+      "sha256": "773647e1b163bd3fc80f8facd1f911348fb6494ee65280bb5085e97e7de26b9f"
+    },
+    {
+      "path": "knife/knife/data/exe_tables_overseas.bin",
+      "bytes": 878806,
+      "sha256": "99466e5aa9d550a1032a4212182ffb7c6d681cdea0e7606af6b544d32bc660f6"
+    },
+    {
+      "path": "knife/knife/data/exe_tables_witch.bin",
+      "bytes": 377495,
+      "sha256": "16d240522e468d87b3c1161fbfecdcf91347e7d684cfefb069df7ab68d08ce35"
+    },
+    {
+      "path": "knife/knife/data/vita_atlas_index_540p.rs",
+      "bytes": 216761,
+      "sha256": "a9cdead0db286e43b16fc104402c77dfe549e765cf86f06ee8f70a369335e035"
+    },
+    {
+      "path": "knife/knife/data/vita_atlas_index_tsukihime_540p.rs",
+      "bytes": 86445,
+      "sha256": "9f3d1a199d909cd234a71d8367a612d724b807b658647f871b21cddf9655f3a3"
+    },
+    {
+      "path": "knife/knife/data/vita_stream_index_540p.txt",
+      "bytes": 239773,
+      "sha256": "5dd103fc8fc2405e9774e9e8a13dc2b4e4c1891dc67bfa011ac180f84f48f6d2"
+    },
+    {
+      "path": "knife/knife/data/vita_stream_index_tsukihime_540p.txt",
+      "bytes": 466139,
+      "sha256": "c1c7a329b0a3204b2aee0791b3b42ed00549fe203b32c4ea98c4984ef73f8652"
+    },
+    {
+      "path": "knife/knife/src/assets.rs",
+      "bytes": 125633,
+      "sha256": "5c427c916a0ebfc0a744e0563349eb40b9293e63895af5c0d92f7747aded7178"
+    },
+    {
+      "path": "knife/knife/src/atlas_cache.rs",
+      "bytes": 18189,
+      "sha256": "886b7324ef6a9c656b34a6a241dc978e21ae2fd6372b82c8181b3f4f911583fd"
+    },
+    {
+      "path": "knife/knife/src/controller_axis.rs",
+      "bytes": 788,
+      "sha256": "cfb93e2bc4e2dc52eed53bc6d20fcb6bbf084eea728748340847dacd16d9bf31"
+    },
+    {
+      "path": "knife/knife/src/flow.rs",
+      "bytes": 34052,
+      "sha256": "dd608a7ee52118874106531da7cd62a30f4d6a8bb44042f1034b77f8e8f791f5"
+    },
+    {
+      "path": "knife/knife/src/flow_table.rs",
+      "bytes": 88677,
+      "sha256": "c1dc4a789f069cb284b0a8a2863c378f99280b8f0041c84a28b754f126bfba6b"
+    },
+    {
+      "path": "knife/knife/src/fx.rs",
+      "bytes": 14059,
+      "sha256": "514e370bc3677d2e3d5ef6b0e378ae5bebc885183b8d4d2f12bcbc8a5b2cea15"
+    },
+    {
+      "path": "knife/knife/src/gallery.rs",
+      "bytes": 5956,
+      "sha256": "565f8edc8d2611ae6cab8ff5e772f1646f0a1fac1a853bb4d842034b4a55864a"
+    },
+    {
+      "path": "knife/knife/src/gallery_table.rs",
+      "bytes": 95188,
+      "sha256": "2df3ba3eaae015c2ccc01d48c42aa9d2f7877b34d82987cf1001f20506f1861e"
+    },
+    {
+      "path": "knife/knife/src/game/bake_batch.rs",
+      "bytes": 3698,
+      "sha256": "5dbc18a3e5b1b09c3795124e6ee3aeed4a043b11fdcacbabc132e8d45f0c687e"
+    },
+    {
+      "path": "knife/knife/src/game/choice.rs",
+      "bytes": 44416,
+      "sha256": "56c381a3aba0093c266d899badf6f6f971cec66cdcdcee6655998f113f1ad8d5"
+    },
+    {
+      "path": "knife/knife/src/game/flow_jump.rs",
+      "bytes": 21451,
+      "sha256": "5e4ba833d7cd2ce63b9f853d835a9fdd48c94bd1e91eda15b56205d4e64623ff"
+    },
+    {
+      "path": "knife/knife/src/game/focus.rs",
+      "bytes": 21869,
+      "sha256": "0011d2c18467b5313e4327edfadd3858e062f46f5be544bf5f0ad11c059ff539"
+    },
+    {
+      "path": "knife/knife/src/game/ghost.rs",
+      "bytes": 10139,
+      "sha256": "043bc38b3f20f12faab197b76d4835babc55fb39aa3557d3432a76ea85a16138"
+    },
+    {
+      "path": "knife/knife/src/game/group_batch.rs",
+      "bytes": 5222,
+      "sha256": "df4737dbf000d9faaf6b325908d29004c9d808bdb6512a59b3494af90012f741"
+    },
+    {
+      "path": "knife/knife/src/game/group_cache.rs",
+      "bytes": 11950,
+      "sha256": "5be867c222aaa49b94c8146ae16355b7c9d734c896b2bbde9b27e212c596ff0a"
+    },
+    {
+      "path": "knife/knife/src/game/group_schedule.rs",
+      "bytes": 3746,
+      "sha256": "4947266c80e4d6412facce74c9f7d7ce3ef12e732c99fd8d287de8c498394b50"
+    },
+    {
+      "path": "knife/knife/src/game/producer_reuse.rs",
+      "bytes": 7400,
+      "sha256": "26984aaae0dd87219568f39913aaea16931e0a2c9c786a3a79e3d07b831a68d3"
+    },
+    {
+      "path": "knife/knife/src/game/rebake_cohort.rs",
+      "bytes": 14771,
+      "sha256": "9adcbe115c47e33c5d5db77a070c6dd28348f5dc6c4d5cd913eeee2eba674ec7"
+    },
+    {
+      "path": "knife/knife/src/game/records.rs",
+      "bytes": 45468,
+      "sha256": "7a62cad5caae524f79318f112f6593b25516cd2c8d38d99922432d4ba3b270db"
+    },
+    {
+      "path": "knife/knife/src/game/shake.rs",
+      "bytes": 6339,
+      "sha256": "249071b89f1f761fb5fcda0a8fd7c7d66a085c4dd55d5bcf80e98eccbe828f7f"
+    },
+    {
+      "path": "knife/knife/src/game/sound_barrier.rs",
+      "bytes": 10036,
+      "sha256": "59c18dae99eac27b5f4b4a1f39222cfe2231f0692282f2a29434bb581bf61974"
+    },
+    {
+      "path": "knife/knife/src/game/stage_prefix.rs",
+      "bytes": 7184,
+      "sha256": "58d1b6b084aa8465ec3f54c9cb958553ca70ecb88576bad627340f5519228a13"
+    },
+    {
+      "path": "knife/knife/src/game/story_movie.rs",
+      "bytes": 12354,
+      "sha256": "1cc0c4ccc0567a589c82a850460cc2e0a784c8be58e15cf62caa5a9dadb06612"
+    },
+    {
+      "path": "knife/knife/src/game/teatime.rs",
+      "bytes": 15485,
+      "sha256": "c31bde9b97bf909143b38cb9e9116ec35c2044caa1019c61b407b8651b9ad5a1"
+    },
+    {
+      "path": "knife/knife/src/game/text_cache.rs",
+      "bytes": 30800,
+      "sha256": "a5625179b21df7d48a5ab4d01d03a644a1bbadcf29ee720260f1b86f8848b31e"
+    },
+    {
+      "path": "knife/knife/src/game/ui_pass_cache.rs",
+      "bytes": 14424,
+      "sha256": "adbc4fb6ae54f07e037b5158690dd6be8917bf8dad3e357084e064506227c2dd"
+    },
+    {
+      "path": "knife/knife/src/game/witch_log.rs",
+      "bytes": 10767,
+      "sha256": "4b2558e5b71bf9d291be76dc56fc6141e0cd1567c79fc3dd766ab97671c0defd"
+    },
+    {
+      "path": "knife/knife/src/game.rs",
+      "bytes": 440793,
+      "sha256": "6d6904f63e0fd443da8bc605a989622e364c41077e26294c6d1c714b7513bb10"
+    },
+    {
+      "path": "knife/knife/src/gamepad.rs",
+      "bytes": 12442,
+      "sha256": "6c53662c5cb3d0c1d0cea7a1d6e3206f8107a64ca8abbfeebecf2342fde5bea5"
+    },
+    {
+      "path": "knife/knife/src/grade.rs",
+      "bytes": 34145,
+      "sha256": "55493bd354d0961dfa05076d1a4821fc264ba021aa1e02af899efcceb9e10718"
+    },
+    {
+      "path": "knife/knife/src/grade_cache.rs",
+      "bytes": 19856,
+      "sha256": "44bafb208810caf11418edf35a75d1b7287d88ea638ca6cbb0f502a25e08c604"
+    },
+    {
+      "path": "knife/knife/src/graded_cache.rs",
+      "bytes": 9249,
+      "sha256": "9d998b1f3c3a22786778c12c26bf208caf9d2c886373d101684886125c833230"
+    },
+    {
+      "path": "knife/knife/src/image_needed.rs",
+      "bytes": 10229,
+      "sha256": "252eaa7853f7735a0f85864d29b1ebec7105622113f9bb5b7147ab98113685e9"
+    },
+    {
+      "path": "knife/knife/src/ini.rs",
+      "bytes": 7820,
+      "sha256": "4d072ae7a6389fcc4723604c6059b10ab925e08ac473ee8c80df3f66f7c3e99f"
+    },
+    {
+      "path": "knife/knife/src/languages.rs",
+      "bytes": 5364,
+      "sha256": "007f1064d4632d0290b475559d34b85bddc924fd988fd046cc346866fb8c6269"
+    },
+    {
+      "path": "knife/knife/src/main.rs",
+      "bytes": 40465,
+      "sha256": "b3bde8cdc885cc359ffc2e6aa7bc268dc2d8b62eb4201396b7781d0c9a40a3ab"
+    },
+    {
+      "path": "knife/knife/src/motion.rs",
+      "bytes": 34255,
+      "sha256": "6e991300050628e37c8741c54b12cd2de77339f1e9b3e722d99343a9dd4324ba"
+    },
+    {
+      "path": "knife/knife/src/motion_loops.rs",
+      "bytes": 44569,
+      "sha256": "23130b2577a6b3346e061f549fb26e0487d5ad16a19f77bb4cf6fa7f8befad33"
+    },
+    {
+      "path": "knife/knife/src/movie/audio.rs",
+      "bytes": 2741,
+      "sha256": "1f50ff573d584fce46543377b318ae53fc32e34bca24a9384310fda8e3a6e2c9"
+    },
+    {
+      "path": "knife/knife/src/movie/bitstream.rs",
+      "bytes": 9381,
+      "sha256": "55f0c75fd3a78a8968d630cf51f1ceab76e731c5ac822eaf8665441588fd8941"
+    },
+    {
+      "path": "knife/knife/src/movie/decoder.rs",
+      "bytes": 12262,
+      "sha256": "c1172b57eacd18c227a0b9b378e2d779d462836b300bf5d9396f2cf16dd74304"
+    },
+    {
+      "path": "knife/knife/src/movie/gstreamer.rs",
+      "bytes": 7786,
+      "sha256": "4c273075ea00b803db3a6ff65fbe88a9e3aefd194e4858ebdc00b5b7d847bb8a"
+    },
+    {
+      "path": "knife/knife/src/movie/media_foundation.rs",
+      "bytes": 14056,
+      "sha256": "4d4900e20627c9594706155072acc574d909f3db46f73fae60d9d19aac96e07c"
+    },
+    {
+      "path": "knife/knife/src/movie/mod.rs",
+      "bytes": 14382,
+      "sha256": "c801223bc344076252b4b922bd9be004573133ce52016d1820c55a2454cb013d"
+    },
+    {
+      "path": "knife/knife/src/movie/mp4.rs",
+      "bytes": 4523,
+      "sha256": "f75fa4c09e26c3e3685507783447cbce3190daf2d3b485ef1d208c1efbbcbf3c"
+    },
+    {
+      "path": "knife/knife/src/movie/owner.rs",
+      "bytes": 15448,
+      "sha256": "2ec47cae46ca4770cd04738b1e133de2f4d39d6403fc54822248d8ccb50f9093"
+    },
+    {
+      "path": "knife/knife/src/movie/videotoolbox.rs",
+      "bytes": 12497,
+      "sha256": "df16a9485de4c5662a94e16b090d70eb1843f9b9dfbdd51e6446bd1fbd88d930"
+    },
+    {
+      "path": "knife/knife/src/movie/vita.rs",
+      "bytes": 12468,
+      "sha256": "67fd411f116c2e2d983657474944c845993adcd54c3e48e36c24094278c3cc0f"
+    },
+    {
+      "path": "knife/knife/src/save.rs",
+      "bytes": 10946,
+      "sha256": "bf5bf15d03604d71c2af2bfb9960b6081f71295eb0e66aa62aa6c83ab6fae8fb"
+    },
+    {
+      "path": "knife/knife/src/save_tables.rs",
+      "bytes": 99148,
+      "sha256": "9e7bdd911adcfcc787b695a730ffed763852d6ee723f5e37d4f5910b9922e6a3"
+    },
+    {
+      "path": "knife/knife/src/savedata.rs",
+      "bytes": 51613,
+      "sha256": "0e3270ab80b1101110f7705c70effde05e04a8f004593d748d286fb9bbaa5060"
+    },
+    {
+      "path": "knife/knife/src/sound.rs",
+      "bytes": 31519,
+      "sha256": "ef89df19c7f490ee8f0866ca90fb3f3028abbf39ba05c541fdc4ebdc28e26c97"
+    },
+    {
+      "path": "knife/knife/src/sound_needed.rs",
+      "bytes": 12972,
+      "sha256": "233afd31781b053a752b2112e4717dc2ddcd53c32adcf868ab002c015ed27184"
+    },
+    {
+      "path": "knife/knife/src/stage.rs",
+      "bytes": 91471,
+      "sha256": "246370ff8cfa6f6bf2808d74dcdb734888db4f65df3dc0fc7334639c4bbbf532"
+    },
+    {
+      "path": "knife/knife/src/text/atlas.rs",
+      "bytes": 21922,
+      "sha256": "2c061948a5485edf0c576ffb06d316ca48cc1553a06de81d4f01b025f60e30e7"
+    },
+    {
+      "path": "knife/knife/src/text.rs",
+      "bytes": 86104,
+      "sha256": "12bedccad18391ac9c02b0aa14ff8156c33ddd19fa2133a896ece334a03266f8"
+    },
+    {
+      "path": "knife/knife/src/text_stream.rs",
+      "bytes": 8603,
+      "sha256": "3b2025746db653d36d233b8407d7a0b8695b077a58956baf54e9456fd0607da7"
+    },
+    {
+      "path": "knife/knife/src/ui/pad.rs",
+      "bytes": 19982,
+      "sha256": "d75c2296e8a2bd8968c839625ea64a616b79929dd716390812b71eca56bb9ace"
+    },
+    {
+      "path": "knife/knife/src/ui/startup_credits.rs",
+      "bytes": 2791,
+      "sha256": "c4abec096db6efd57954b5ac5ba8b7eb31eef4acb4b184fff8b3b35846d4ec07"
+    },
+    {
+      "path": "knife/knife/src/ui/touch.rs",
+      "bytes": 59229,
+      "sha256": "b3f73b6004679f9022dc3edd04d14dd97871560b0b331495e14f0cf8891f5121"
+    },
+    {
+      "path": "knife/knife/src/ui/witch/archive.rs",
+      "bytes": 46061,
+      "sha256": "45153b861b28301aede469b0290019fe9dc57d2ca543eb8836e64b2831d853cc"
+    },
+    {
+      "path": "knife/knife/src/ui/witch/backlog.rs",
+      "bytes": 19167,
+      "sha256": "8fdf3d21ccb0ebb968a70125dcad7dd534b72c3fe5440e3a689df7414d3758a5"
+    },
+    {
+      "path": "knife/knife/src/ui/witch/cg.rs",
+      "bytes": 31411,
+      "sha256": "6bc77c730bf6e33fd8aabcde4ee81e4f49a4b88b6aa994d203e89da7dc48ad37"
+    },
+    {
+      "path": "knife/knife/src/ui/witch/cgtab.rs",
+      "bytes": 74437,
+      "sha256": "3ff83c0e1ad1d972d0aa13e54470ce4c82b5a3a36b0b12ba9f1e5df6fa7471d7"
+    },
+    {
+      "path": "knife/knife/src/ui/witch/conf.rs",
+      "bytes": 54781,
+      "sha256": "33fa6cb7aae43d87228ac96b41c5a101807b164d018a4e2fca5d9ede4283e052"
+    },
+    {
+      "path": "knife/knife/src/ui/witch/dialog.rs",
+      "bytes": 8082,
+      "sha256": "8c813e3c8ebaab34fd99b50eef29450410701be5d1ed415d372205fdf3220183"
+    },
+    {
+      "path": "knife/knife/src/ui/witch/guide.rs",
+      "bytes": 5463,
+      "sha256": "e386a8a2eaba2f0c58e387d3ea68e1353a78ecf3b181fe1a8dd9d7024bc43d30"
+    },
+    {
+      "path": "knife/knife/src/ui/witch/menu.rs",
+      "bytes": 17772,
+      "sha256": "ce89629228919c9b7bdb1d29a224528ad05f5b6a0fec0f1afa73eb39b640a41f"
+    },
+    {
+      "path": "knife/knife/src/ui/witch/modepnl.rs",
+      "bytes": 8534,
+      "sha256": "52b38583a8de9b3fd1f4fd2b27e93d34b3876a51e18901c19f68ce3176748081"
+    },
+    {
+      "path": "knife/knife/src/ui/witch/objs.rs",
+      "bytes": 23140,
+      "sha256": "f96a3a7b1b753bab4c3367ce3041bf6482a4832bea1d4c91c0e241b511304fb2"
+    },
+    {
+      "path": "knife/knife/src/ui/witch/objtab.rs",
+      "bytes": 161945,
+      "sha256": "02a963f0e50841803aba8a5a5ba1da9ef6bde2a479a50c48594d3f0829c6ccae"
+    },
+    {
+      "path": "knife/knife/src/ui/witch/popup.rs",
+      "bytes": 4970,
+      "sha256": "88c6035459802fb04457c4540828c7d96e9255168c5b4aa1662df9a29467370d"
+    },
+    {
+      "path": "knife/knife/src/ui/witch/save.rs",
+      "bytes": 41552,
+      "sha256": "c8da7a8cf11d29739e77a5edf96c3d0d6e5a743ae2beace462c542b6abe734ef"
+    },
+    {
+      "path": "knife/knife/src/ui/witch/sound.rs",
+      "bytes": 34689,
+      "sha256": "a77f453b883800f02647c001fad6df2acd75b8ebc8d459cf6ea356e9a31d222d"
+    },
+    {
+      "path": "knife/knife/src/ui/witch/title.rs",
+      "bytes": 51239,
+      "sha256": "7f2c73e7d52b729fbe4b45a3fc70016b386ddc42b20380d96ca1aedfa6867407"
+    },
+    {
+      "path": "knife/knife/src/ui/witch.rs",
+      "bytes": 19822,
+      "sha256": "2dec1682f7e6e09b82b25ccd7a7f3e6345f90a5ccdff501dad61119820767bed"
+    },
+    {
+      "path": "knife/knife/src/ui.rs",
+      "bytes": 374935,
+      "sha256": "ea2a5f07e628423b6c99716d4b46c19461f1dc1e2ecdb8cb3a7c1ae5e76be6e6"
+    },
+    {
+      "path": "knife/knife/src/ui_images.rs",
+      "bytes": 1455,
+      "sha256": "04f1eafe9b54d563ed8786afea8b3e5505469d78944557050a73051aabb3470d"
+    },
+    {
+      "path": "knife/knife/src/vita_atlas_index.rs",
+      "bytes": 1193,
+      "sha256": "fdb7358284e6891ca6a409dd247053b34d4f127f1a9620fb92c05a5b6aae966e"
+    },
+    {
+      "path": "knife/knife/src/vita_audit.rs",
+      "bytes": 15913,
+      "sha256": "e1d3da335cfbb32b22cf3cdd66ad3733f5886c67604e77b36e80f145f67a8f30"
+    },
+    {
+      "path": "knife/knife/src/vita_entry.rs",
+      "bytes": 33734,
+      "sha256": "e8ea68d18b401cec22177a94be7417cb96146c864724fb5669f1100ed25f152d"
+    },
+    {
+      "path": "knife/knife/src/vita_image_cache.rs",
+      "bytes": 8916,
+      "sha256": "40c5f54d5a2e2102f2d562ec1b0e5677025fcf82860e75a3aa3428874b5dd176"
+    },
+    {
+      "path": "knife/knife/src/vita_input.rs",
+      "bytes": 7379,
+      "sha256": "8f5b63616e8d2604d71c50d4e41ff14e4d52a2a6d5e5058472e98a7c7eb9222b"
+    },
+    {
+      "path": "knife/knife/src/vita_log.rs",
+      "bytes": 3738,
+      "sha256": "403628aee33f6aba1dcd251e716af5a81fd28788a84ef7dd98d4ac1d7407d37c"
+    },
+    {
+      "path": "knife/knife/src/vita_stream_index.rs",
+      "bytes": 5739,
+      "sha256": "6a97afbede0fd4d23433a36cabeef43f6579f102ac114e154ad3070b23c136e2"
+    },
+    {
+      "path": "knife/knife/src/vita_watchdog.rs",
+      "bytes": 10008,
+      "sha256": "f84b7a96f9e263d9773b190583a3604abae99db4224c29ce7fe116aed86466fc"
+    },
+    {
+      "path": "knife/knife/src/voice_ids.rs",
+      "bytes": 4932,
+      "sha256": "20f0bbad8fbcc074427b24b7632905dc9e8dc8df6b415174d5e35d7a32370292"
+    },
+    {
+      "path": "knife/knife/src/witch.rs",
+      "bytes": 7172,
+      "sha256": "be9230dd2049be79220824d0dea3bc778fa7f0e37be50574c0a491ca8d52ed6c"
+    },
+    {
+      "path": "knife/knife-audio/Cargo.toml",
+      "bytes": 455,
+      "sha256": "5f6859cb617e09970f6bf7469825002cdcd0d2416c2ab8aaf6dc62c37235e827"
+    },
+    {
+      "path": "knife/knife-audio/src/bfsar.rs",
+      "bytes": 24270,
+      "sha256": "7e235f1b6325b1a6406e2f43e8a4d2ecd4b277bac6f9db43eae12856f096b69a"
+    },
+    {
+      "path": "knife/knife-audio/src/codec.rs",
+      "bytes": 12614,
+      "sha256": "c090994409daf2d95ae8dd8a2305fe00fafe3ef6c1927a7fa8e7bf2984ed7366"
+    },
+    {
+      "path": "knife/knife-audio/src/lib.rs",
+      "bytes": 23967,
+      "sha256": "240528ca7aaa6fe4ac9c4c9418b9c5bca46d3860893742f0abacf1548f6b2254"
+    },
+    {
+      "path": "knife/knife-audio/src/nopus_stream.rs",
+      "bytes": 11355,
+      "sha256": "8064e914e41d94e9b3b73ce2d3461a370e2a7ca28989767f72278c3a68012554"
+    },
+    {
+      "path": "knife/knife-audio/src/pcm_cache.rs",
+      "bytes": 5348,
+      "sha256": "23fae2a607f9136f604c0aa94695200273adf6325be63ab0f8dd9b871246fb79"
+    },
+    {
+      "path": "knife/knife-audio/src/stream_pump.rs",
+      "bytes": 15683,
+      "sha256": "a1dce227857a7e2286f8b9aa8cc279c643a16198fb02700253e93f8da04c6974"
+    },
+    {
+      "path": "knife/knife-audio/src/vita.rs",
+      "bytes": 36938,
+      "sha256": "6b70f4e8e630e6279d52d8192e7c2957e5a4b45bb301512eb4300fcdee2266e3"
+    },
+    {
+      "path": "knife/knife-audio/src/vita_opus.rs",
+      "bytes": 2898,
+      "sha256": "120f0952a38c22aa1b2a1657cd6596dbda088cfe07b0eb057c889864383fcef5"
+    },
+    {
+      "path": "knife/knife-audio/tests/fwav_memory.rs",
+      "bytes": 5819,
+      "sha256": "3fed829c83eeefd2c576743c7206751a1f9ec6a61fbf5a7fa5fed5aa934c0cb8"
+    },
+    {
+      "path": "knife/knife-core/Cargo.toml",
+      "bytes": 336,
+      "sha256": "8758550f1c75761e9cd403be417341127732a8b18cc7a0ecbd93aca8cc9fddc2"
+    },
+    {
+      "path": "knife/knife-core/build.rs",
+      "bytes": 311,
+      "sha256": "b2f0e2a12c4961ae68d8e73f2d33ce380cbe3139c3fd1b91a4b3e8902f228f27"
+    },
+    {
+      "path": "knife/knife-core/examples/dump_scene.rs",
+      "bytes": 604,
+      "sha256": "d0287f9e60254aaf9c554c0d1394677ef11b4ff52c89bd2baba222f0fd926412"
+    },
+    {
+      "path": "knife/knife-core/examples/scan_grade_usage.rs",
+      "bytes": 2924,
+      "sha256": "a8c7a608e8d8e3bbd8bb5c783c7e5889a0a77cc9de1b5c84ad2b19d9d68e98f1"
+    },
+    {
+      "path": "knife/knife-core/examples/verify_archive_file.rs",
+      "bytes": 2576,
+      "sha256": "37f700e41e10c67b39bd1390873d8aa0fbd10d1b863f5294a177d54cc18b8876"
+    },
+    {
+      "path": "knife/knife-core/src/exe.rs",
+      "bytes": 16390,
+      "sha256": "75532575d5f045adc46de3b456659993afcdfa7042487ed8ef7252507b26f87e"
+    },
+    {
+      "path": "knife/knife-core/src/file_io.rs",
+      "bytes": 658,
+      "sha256": "029c34e8aec9cf4998a3905c8c0851b24679ea778fc28111feae45053e09f007"
+    },
+    {
+      "path": "knife/knife-core/src/file_io_native.rs",
+      "bytes": 8367,
+      "sha256": "5a30bd56232ebfacb516b6e069965031b525d9fd26747035ccf563bae6267bdf"
+    },
+    {
+      "path": "knife/knife-core/src/format/archive.rs",
+      "bytes": 32144,
+      "sha256": "cc56c8debdd938dfabbacb31cb4e34b18f8db55fb48e8e5016fc512885487b3b"
+    },
+    {
+      "path": "knife/knife-core/src/format/archive_cache.rs",
+      "bytes": 5955,
+      "sha256": "7568870ae73aaa2f1f7224a7510b35ff8b614bc88ea60e36698bf74e6ca025df"
+    },
+    {
+      "path": "knife/knife-core/src/format/bffnt.rs",
+      "bytes": 5140,
+      "sha256": "9b8b6218f6b1993eb2ba0dfb19a1e6cc582e1bf87e84daac1aa51c8696e7a0fe"
+    },
+    {
+      "path": "knife/knife-core/src/format/bfttf.rs",
+      "bytes": 926,
+      "sha256": "813401a3ac9d70a0a460f5d870d29a8afbf8586ba92d9174153c7b9c1b4a5f30"
+    },
+    {
+      "path": "knife/knife-core/src/format/bntx.rs",
+      "bytes": 5608,
+      "sha256": "c93e85231bae13dc5155e26f1e02adbceb48216182fac1f260ca3f7684451b0a"
+    },
+    {
+      "path": "knife/knife-core/src/format/bntx_decode.rs",
+      "bytes": 1965,
+      "sha256": "6b733feccf50aba3eac1de2bb666c46ab4e9679d8b343ab4d2202f67cba85e8d"
+    },
+    {
+      "path": "knife/knife-core/src/format/cff.rs",
+      "bytes": 13632,
+      "sha256": "99fc9d390e2b5e67641c5ed492f771b3aac341ea0b062093c6fd6c43ae9977a2"
+    },
+    {
+      "path": "knife/knife-core/src/format/compact.rs",
+      "bytes": 9505,
+      "sha256": "165c9402ac79b983400829c694b2e663454eecb9e8e9535c3ad47ab13b7ce4e2"
+    },
+    {
+      "path": "knife/knife-core/src/format/gxt_decode.rs",
+      "bytes": 10268,
+      "sha256": "695c28f185bc1b753dea191bd059b75650d9943aee3785d8e826229590d733c2"
+    },
+    {
+      "path": "knife/knife-core/src/format/mod.rs",
+      "bytes": 256,
+      "sha256": "8a8abfbb4f1d65aa5292258c7aebd1edfc2094ecd43e8c89570c7f65d3bae6df"
+    },
+    {
+      "path": "knife/knife-core/src/format/mzp.rs",
+      "bytes": 2636,
+      "sha256": "5b7fa57ca4c405b1b474d4de50d3ae390162d1fd6e867f8b5ee1049bd2b4b96d"
+    },
+    {
+      "path": "knife/knife-core/src/format/mzx.rs",
+      "bytes": 2650,
+      "sha256": "bcd7ed32b5238c204d0133f19393d21ce81ed9818f2232d90a32f26b2f245d45"
+    },
+    {
+      "path": "knife/knife-core/src/format/nx.rs",
+      "bytes": 8102,
+      "sha256": "dfb66ae10e57390cd20ef455e6585eba8e769c35fa25bed0961dec5a8a6757bf"
+    },
+    {
+      "path": "knife/knife-core/src/format/script.rs",
+      "bytes": 3328,
+      "sha256": "c6984b0c4e9a6f1f19e54c2b00dba3db23492c00116a3049595129b0f63a4507"
+    },
+    {
+      "path": "knife/knife-core/src/format/sfnt.rs",
+      "bytes": 5618,
+      "sha256": "78a2b53d50c0622f21ccae9cb344f2e000d89b2390672cfa720595e935ac09e6"
+    },
+    {
+      "path": "knife/knife-core/src/io_metrics.rs",
+      "bytes": 1629,
+      "sha256": "92d50cba57002d0b4e8aa1c8de9afa0cdaae58ed91c81f11822045681cc0cdf3"
+    },
+    {
+      "path": "knife/knife-core/src/lib.rs",
+      "bytes": 196,
+      "sha256": "b7e11196fc84aefd55095579c1960526ea7cddcfdb360d1218d137877166aefd"
+    },
+    {
+      "path": "knife/knife-core/src/linebreak.rs",
+      "bytes": 7004,
+      "sha256": "0f83106d624f8cce7ea779c2cd9e27f41562f4a47bafb45e9332c39671cee01f"
+    },
+    {
+      "path": "knife/knife-core/src/vm/mod.rs",
+      "bytes": 67,
+      "sha256": "bcaeb2e93174380322c6879dda9ed7e87b42aa483bd76a4611a7521d7b0bef10"
+    },
+    {
+      "path": "knife/knife-core/src/vm/parse.rs",
+      "bytes": 8390,
+      "sha256": "d1e3ca0f4eef347c01bd1353478bb590e27df1bd33dbb9dacf0f40ba5c1a2a2f"
+    },
+    {
+      "path": "knife/knife-core/tests/archive_bounded.rs",
+      "bytes": 7368,
+      "sha256": "a432d7c309e34246c0950a8312ff3bc6c17d1116c507183413a1d908a60954ba"
+    },
+    {
+      "path": "knife/knife-core/tests/range_audit.rs",
+      "bytes": 2042,
+      "sha256": "7d0888063c863485937b4d6aa58414dce38671ff37607bcf71baffd0728eac90"
+    },
+    {
+      "path": "knife/knife-perf/Cargo.toml",
+      "bytes": 126,
+      "sha256": "803605139e538514a7f61acdbbba05d9d64f4fd7be90180b143ad02bd17faebe"
+    },
+    {
+      "path": "knife/knife-perf/src/lib.rs",
+      "bytes": 21463,
+      "sha256": "306e0f33b6dc773c7261af39d3c984fdf870023a60d80c000352e6783522e983"
+    },
+    {
+      "path": "knife/knife-perf/src/memory_budget.rs",
+      "bytes": 2707,
+      "sha256": "e39421f68cf4099499a3f28068394e4d00364b59c03cc2f319e12046e5cdabbf"
+    },
+    {
+      "path": "knife/knife-perf/src/optimizations.rs",
+      "bytes": 5845,
+      "sha256": "92680eae23a0cd677acbfeea1fb7c28fcb1f3172b980e476bc6a1916963b9db8"
+    },
+    {
+      "path": "knife/knife-platform-vita/Cargo.toml",
+      "bytes": 1246,
+      "sha256": "5cb87853cd6c4e0dbc6dedca89694e54d815efab50e715ae25cb95346fd8dd6a"
+    },
+    {
+      "path": "knife/knife-platform-vita/build.rs",
+      "bytes": 6022,
+      "sha256": "9fff7631c9c38d68385263dbd1d30055626f1b743f4aec2e82793839d566cbd6"
+    },
+    {
+      "path": "knife/knife-platform-vita/examples/check_assets.rs",
+      "bytes": 551,
+      "sha256": "f0488d689b80067e4530ab9c71d59d1a7c7714bad96b9667f8f3ae9611986a19"
+    },
+    {
+      "path": "knife/knife-platform-vita/examples/image_decoder_probe.rs",
+      "bytes": 457,
+      "sha256": "70fc0636d0b7e14398d5e47e8f29e29d8469b9aad635224744378a0bb06c0e06"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/asset_check.rs",
+      "bytes": 10396,
+      "sha256": "2c6728cfb25753c9c33e82bf9254d0c685a717ce0cd2a4a31c1ebba52ad4042d"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/asset_profile_270p.rs",
+      "bytes": 4386,
+      "sha256": "a4e0255a83400616ecdf32b0fe7bb233cd05722b51fe65a336b4f30e1b1e8cf7"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/asset_profile_540p.rs",
+      "bytes": 4397,
+      "sha256": "50ab563453a4e4c57ef460b17250d78e4eeb93cae656bccc071cc7fba46105c8"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/asset_profile_tsukihime_540p.rs",
+      "bytes": 12316,
+      "sha256": "c51b926df16881a0689b25a0d49622b6bd661bda231d687d48c1b813a4ba2ffa"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/audio_decode.rs",
+      "bytes": 6783,
+      "sha256": "bb705edced8f398fbb61e6dd868444f8e90398813181fc44e66df3175981c3d1"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/audio_metrics.rs",
+      "bytes": 1597,
+      "sha256": "bb3a2ca933b41936f7bbcb1714ee97bf868d7a1cb04aae2e7c8ea1df15b1da18"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/audio_output.rs",
+      "bytes": 19485,
+      "sha256": "08e4e3d048b9c5229ba7c5cdabd770811375ed61e23ecac77e6baa321dc94970"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/audio_probe.rs",
+      "bytes": 5065,
+      "sha256": "bfc5586a29eca3d137eafe138bdbf3ad1c84b71a503475c2ee9eee8ad44dbd7d"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/audit.rs",
+      "bytes": 3296,
+      "sha256": "73154ec67ddba2ba654cdfdd8f69d8800b0b15a8ab9bf9f4b312d9387c0e2a46"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/bin/compressed_probe.rs",
+      "bytes": 369,
+      "sha256": "0bae8888bd4606328b0f54513aa48e8159f8b87c7f3f63fd33fb0de7f5d95cf6"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/bin/effects_probe.rs",
+      "bytes": 354,
+      "sha256": "31cad52160718001b3223b3536f13112521f426f5d22678ebad49ca0ba35381d"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/bin/gxm_probe.rs",
+      "bytes": 346,
+      "sha256": "09142c563ea3468d71a6292fb614552e10d1094708c140bb5a61aaf46fd0dfb2"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/bin/image_probe.rs",
+      "bytes": 1501,
+      "sha256": "07b52863088e3a71e2f7f149b6d9c46129ab121e4fb3486cdc27f24209911678"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/bin/pipeline_probe.rs",
+      "bytes": 356,
+      "sha256": "3a0028d3d5c8c6cd93db8297a721e9db614a442b5e32e1e02090e84d7c0962e7"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/bin/platform_probe.rs",
+      "bytes": 388,
+      "sha256": "c3b90cae45fd6e628071609ac580ddcaabfed2e482cb53a743fe3106c2cc437b"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/bin/ui_color_probe.rs",
+      "bytes": 443,
+      "sha256": "5c428e4808328f05d87e8c0d8807d599886b29b3461824e171e1c9420bf5ce7b"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/bin/vita-audio-probe.rs",
+      "bytes": 1016,
+      "sha256": "d12c43ca2a43f305ef07ca6e65cf0db48a291ce021d382dbf15f2988f92a1480"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/boot_error.rs",
+      "bytes": 7170,
+      "sha256": "69bcd902ebf11c528be33cb0533911730df9516c0e6646a5537712d861158f6f"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/compressed_probe.rs",
+      "bytes": 7140,
+      "sha256": "d0cdf7b4cefc1e891976f9f1d26c45899c20bd55f4ba35ce99a7f3a8edeb4ea2"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/console_codec.rs",
+      "bytes": 2215,
+      "sha256": "ce2645f768493adce3b7ac474f657e3c1766ba3a49f3d664635edae65436cacd"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/console_worker.rs",
+      "bytes": 4632,
+      "sha256": "3699981fa3c2f5883f3c607def9b5159712fc880066908ac0a69b05edfbba20c"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/effects_probe.rs",
+      "bytes": 10389,
+      "sha256": "cfeec72c503bff1778c4e65fda5c0ceb70e0c5b3f5acf479944ac741585e990e"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/frame_timing.rs",
+      "bytes": 2484,
+      "sha256": "dff408f4fda10b590f52e8e0f3d065c197e0dca605d89f8c933315d3331f0326"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/gxm.rs",
+      "bytes": 29446,
+      "sha256": "90f2f5f8ed95582d222813e887826a8c886b62ea5a456ae43dc2efdef18daf4d"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/gxm_probe.rs",
+      "bytes": 8237,
+      "sha256": "37002c79027537004aaf5432e03cc81bd526aab4d9354b62e38cdb4b09bb2e63"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/gxt.rs",
+      "bytes": 11918,
+      "sha256": "d25e8f63bb107bfb8e294934be26281ff0988aebf556eab767b93678d5f2f832"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/image.rs",
+      "bytes": 13162,
+      "sha256": "2ca56e7a502284a8bf6aa80c02eb72c4c493d8c530795739b0d92a4d3cf4243e"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/image_probe.rs",
+      "bytes": 3391,
+      "sha256": "f7de56e8a14b6292f7f900db7afc74ba612a1ac25c3d3913c952ad143201d392"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/image_worker.rs",
+      "bytes": 24636,
+      "sha256": "e04483f0c072487d665fdab8f628d9e96eaa1dd6b42785a58f37b68acf4229ea"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/lib.rs",
+      "bytes": 4571,
+      "sha256": "b3f6465acd58bef4c7847fc56a7ea4c961c586a1038db0146735361d33f284e6"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/movie.rs",
+      "bytes": 13774,
+      "sha256": "8d7bd99b921be7c32da92d161bb790b2b7ce2d8df18d62ae0a436b6482600291"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/movie_geometry.rs",
+      "bytes": 24870,
+      "sha256": "8d54abd61c911ce82d7cfe2337ce99c8abd7eb02ed98d665d764a9be4eb28171"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/movie_view.rs",
+      "bytes": 5677,
+      "sha256": "9698438265e0305d8dda5f3bb0d20b4b172b7a285efc00058cc60324228b0ae2"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/native.rs",
+      "bytes": 8654,
+      "sha256": "3ff006480d435f78b5036c3f26e0e381aa1bd856d14ebd1d16beb240d98b3d16"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/perf_switch.rs",
+      "bytes": 3109,
+      "sha256": "eaa8182734b98c978a02e5623a5cffc6915d0e72bc305ec35ae5d85549dd3346"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/pipeline_probe.rs",
+      "bytes": 5418,
+      "sha256": "b164542b4893f70b79322dc62a6fc5e8a322e1c8e4247e054668c6085a1b69ff"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/resource_state.rs",
+      "bytes": 4082,
+      "sha256": "b5b37d03740e8716a4cdbe7f5cf2b65d28be31fafb26c37aa69883d48c14afaf"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/storage.rs",
+      "bytes": 36911,
+      "sha256": "a8cf9ef7857700ee469dceb8c763d4decdaa9cdaa693b6e257a49117d7139932"
+    },
+    {
+      "path": "knife/knife-platform-vita/src/ui_color_probe.rs",
+      "bytes": 10832,
+      "sha256": "9db68d3d2cecc26649e70ec98bf12b92f5d93f683ef38554617d2aeea522dfda"
+    },
+    {
+      "path": "knife/knife-platform-vita/tests/frame_timing.rs",
+      "bytes": 1445,
+      "sha256": "6035995a2a7d9f1daa3ba948260566b808a2f70c0d85e3de500c0cb2fadc2922"
+    },
+    {
+      "path": "knife/knife-render/Cargo.toml",
+      "bytes": 634,
+      "sha256": "cf8111fb16b9bc400c75f241a38c55882e77f26a75ce62d783387f11a3544143"
+    },
+    {
+      "path": "knife/knife-render/src/byte_view.rs",
+      "bytes": 3514,
+      "sha256": "dbe1312905d4f100c3b1d31fdeeda8d22ac566a8c0b2734ea23fa910323f689c"
+    },
+    {
+      "path": "knife/knife-render/src/desktop.rs",
+      "bytes": 56683,
+      "sha256": "8762d66a1f81724dc05c7caca60c7a52f1cd683766f239203cf1a429410685b0"
+    },
+    {
+      "path": "knife/knife-render/src/lib.rs",
+      "bytes": 430,
+      "sha256": "1afe4979916545695cbaa03be9ff7f9db9c1d54fb65914be8064ef1fe4901670"
+    },
+    {
+      "path": "knife/knife-render/src/vita.rs",
+      "bytes": 157446,
+      "sha256": "d3aab760c787a7f38d34386eb44165e154c847aeb51dbad9f3c9c3c1cb236ead"
+    },
+    {
+      "path": "knife/knife-render/src/vita_blend_chain.rs",
+      "bytes": 8271,
+      "sha256": "5d678b85dd9935b7439d8e6b05ce4db42731c365ed79df0c31de07d63678aa5a"
+    },
+    {
+      "path": "knife/knife-render/src/vita_pixels.rs",
+      "bytes": 3593,
+      "sha256": "14f8f4f4a67576719726225a685fc21cf823ed356d8cb0b172a57e3d942bf10c"
+    },
+    {
+      "path": "knife/knife-render/src/vita_test_backend.rs",
+      "bytes": 18702,
+      "sha256": "1f0a510478b8704fcdf1291a9ced80a0f00fc59f886cca924fe3e2ac0f185b31"
+    },
+    {
+      "path": "knife/knife-render/src/vita_tests.rs",
+      "bytes": 142559,
+      "sha256": "64579f523462d1a466d4f27945eebd0a73fe98dec9c60fdc2a84795274722498"
+    },
+    {
+      "path": "knife/knife-render-api/Cargo.toml",
+      "bytes": 155,
+      "sha256": "1b579986ff71ae7e87d70dcd5d2e0b7f97e21586caf1ba3e87752a7ebc9de309"
+    },
+    {
+      "path": "knife/knife-render-api/src/lib.rs",
+      "bytes": 7513,
+      "sha256": "770bda5e4ba66bc372eadd0f0cdc6281568c7f15c1ce37442524008750d642b5"
+    },
+    {
+      "path": "knife/rust-toolchain.toml",
+      "bytes": 58,
+      "sha256": "9f1a0a2c68f26509bfef2ced5f52268438896c7793fd8a1b7ae5b5bbec552d4a"
+    },
+    {
+      "path": "knife/vita/CMakeLists.txt",
+      "bytes": 3694,
+      "sha256": "3bd458d2ee3ec1acea3965fd699bf8a922829206affc84acea12700e766a377c"
+    },
+    {
+      "path": "knife/vita/audio_decode.c",
+      "bytes": 6459,
+      "sha256": "b18b7beab2696002aef474a7b810e79833a7c2a6cacc059702095e9af33ba189"
+    },
+    {
+      "path": "knife/vita/audio_decode.h",
+      "bytes": 1236,
+      "sha256": "55049d7e9c7f10d0ce5e87ca9c0d8e7683684c40f5b0922c18d03e338a71c689"
+    },
+    {
+      "path": "knife/vita/audio_output.c",
+      "bytes": 1878,
+      "sha256": "dbf526ee9e3a40a37d16feb81c52b6bf7401d949b291e5dbd27c6e39d4ca7767"
+    },
+    {
+      "path": "knife/vita/audio_output.h",
+      "bytes": 657,
+      "sha256": "da336f60f380f646f2c8ab108711f761ac9e08806f0aaf68255e460d2c16afe6"
+    },
+    {
+      "path": "knife/vita/diagnostic_log.h",
+      "bytes": 389,
+      "sha256": "cfabe100d2208c2376b8b561f20513e4693d4066eb9f6942273d2d9c732cf468"
+    },
+    {
+      "path": "knife/vita/effects_backend.inc",
+      "bytes": 64208,
+      "sha256": "6d1f47b77ba84e0bf7eb3fa5f247c057f5ada874a58314598c1e16c6ba184f3a"
+    },
+    {
+      "path": "knife/vita/gpu_lifetime.inc",
+      "bytes": 26125,
+      "sha256": "320dd189a13ebadab1f8af55ab127b8bef312c0c550f7a1bcf451d3f2623bf44"
+    },
+    {
+      "path": "knife/vita/gxm_backend.c",
+      "bytes": 44023,
+      "sha256": "3dec0301f22409437f30a7993159a82cccdd8c4173d1ca0dcd57dc3cf5789acd"
+    },
+    {
+      "path": "knife/vita/gxm_backend.h",
+      "bytes": 8569,
+      "sha256": "c686e15f8c8507ebf6ae8dc863d9e178e763acf87d87cd210f039054b03d3100"
+    },
+    {
+      "path": "knife/vita/image_decode.c",
+      "bytes": 27123,
+      "sha256": "cda1541c44fe3d2a3452fa0f869ffb49be524b880eab10e41d997fe942ba2f09"
+    },
+    {
+      "path": "knife/vita/image_decode.h",
+      "bytes": 3111,
+      "sha256": "1cadcf95f15eb56cc431392f67ff8d511ee2f109e0aa5b91f9019ed1f27bf96b"
+    },
+    {
+      "path": "knife/vita/jpeg_hw.c",
+      "bytes": 11992,
+      "sha256": "11b47814c25e9b83cf41912c8029127e9569385b265a0153f7677373c3858042"
+    },
+    {
+      "path": "knife/vita/jpeg_hw.h",
+      "bytes": 979,
+      "sha256": "f54ea44572d018c6adc0ba1329c78c75b8e5b55b20cdd8c15955cc9a3043c5f9"
+    },
+    {
+      "path": "knife/vita/jpeg_hw_driver.h",
+      "bytes": 930,
+      "sha256": "5d381262b237292b7eeb68a069b30447298422f9be29d63a03b6cd4f235aedb6"
+    },
+    {
+      "path": "knife/vita/movie_gxm.inc",
+      "bytes": 2498,
+      "sha256": "f12909bca845681dc0b187838446484e62768cfc7000dcadd1ac85020a32fdda"
+    },
+    {
+      "path": "knife/vita/movie_player.c",
+      "bytes": 29936,
+      "sha256": "3db9888be323ab992df4f1736b988c55ac10a9436e1041b3ad8b18b1b0909645"
+    },
+    {
+      "path": "knife/vita/movie_player.h",
+      "bytes": 4634,
+      "sha256": "36ce499c8be284800c1db7105599651d6a1b1af43e1d8038b31127073e249520"
+    },
+    {
+      "path": "knife/vita/offline_shaders.c",
+      "bytes": 1149,
+      "sha256": "ab840661595ba88d32c257b9f7126e0e89968dd89c09c977ec0fbccb776379f6"
+    },
+    {
+      "path": "knife/vita/perf_audit.c",
+      "bytes": 3874,
+      "sha256": "77a4756fc7df4d035b678b3630710be10a3cb23be45b98f3bbafbfb9a5792a02"
+    },
+    {
+      "path": "knife/vita/perf_audit.h",
+      "bytes": 1500,
+      "sha256": "8ff7f539faf5c43d446b975e787b4d87b14f115667a5fd4c223c5e12a9863593"
+    },
+    {
+      "path": "knife/vita/perf_counters.def",
+      "bytes": 4908,
+      "sha256": "e1d503df24c9ddb21cca14e3273d0fc6af2f68ad0e5b798c1c9db9c0f2a86066"
+    },
+    {
+      "path": "knife/vita/platform.c",
+      "bytes": 7871,
+      "sha256": "7ab7f1b1aa3802148b0a5626ab5ced4c4b0d8961fb66d168c5f993343de08adc"
+    },
+    {
+      "path": "knife/vita/platform.h",
+      "bytes": 1740,
+      "sha256": "cd3d5da85035dbe6344ba65ee6403b7f27715e667447273095c6ab94b0ee5a6e"
+    },
+    {
+      "path": "knife/vita/runtime_shaders.c",
+      "bytes": 26245,
+      "sha256": "52a600a2656209a0ff105b24fecda316ec8a0d2b5406722346516a0f26be444b"
+    },
+    {
+      "path": "knife/vita/runtime_shaders.h",
+      "bytes": 1207,
+      "sha256": "6d753710e215e0918bdf19c1c55e8ac853b2d93f7f161ee5b1c2810014fa7bd9"
+    },
+    {
+      "path": "knife/vita/sce_sys/icon0.png",
+      "bytes": 8429,
+      "sha256": "dda7dcdba19681485de521719ed1e640834d101ae2e4f4ad1267e49f20fbdd3c"
+    },
+    {
+      "path": "knife/vita/sce_sys/livearea/contents/bg.png",
+      "bytes": 167257,
+      "sha256": "c2975dbdc1520ec700f84278f9df44c3cc0c1ff9443a8ccf7bce074296b0443e"
+    },
+    {
+      "path": "knife/vita/sce_sys/livearea/contents/startup.png",
+      "bytes": 1824,
+      "sha256": "5567faeb83bf07cdf2ffd82b251324e403d856f53a402d5ab1a14e8c068a5a5a"
+    },
+    {
+      "path": "knife/vita/sce_sys/livearea/contents/template.xml",
+      "bytes": 712,
+      "sha256": "d9dde6a9e87650b929c2ae6c9cfe18f8dad270529d048a0fe2e1519d8e7751fa"
+    },
+    {
+      "path": "knife/vita/sce_sys/pic0.png",
+      "bytes": 174260,
+      "sha256": "5b028e950b5746e12e1875862ea9dc558534edaa71fcb63e70e7fd8ad2dd8b0f"
+    },
+    {
+      "path": "knife/vita/shader_extensions.c",
+      "bytes": 2254,
+      "sha256": "8beb37fa343baeb9bccbff4629c73a41f4cef040fae68076672f5990525b7b1d"
+    },
+    {
+      "path": "knife/vita/shader_extensions.h",
+      "bytes": 794,
+      "sha256": "6357289e707ffa9cc625f4801c782eb2090a0c767cafe8e516284adfa62a32a5"
+    },
+    {
+      "path": "knife/vita/shader_module_exports.h",
+      "bytes": 3200,
+      "sha256": "fcacb35a9795061fae681faf2689b9b4a5200c1a93714a31bd3438fdc2c94158"
+    },
+    {
+      "path": "knife/vita/shader_sha256.h",
+      "bytes": 3780,
+      "sha256": "75584d45fa58a525cd397b2fde6b702be47c235ddab52e925cd420afdcc7cb57"
+    },
+    {
+      "path": "knife/vita/shaders/effects.cg",
+      "bytes": 26262,
+      "sha256": "a67370f222f6c21657c14dd917cf4a42ab6af9544e4063ffe8fb7d62f7ed966d"
+    },
+    {
+      "path": "knife/vita/shaders/generated/effects.h",
+      "bytes": 1341861,
+      "sha256": "34ee0d38a402537303f1e80a3e87144f88fc8658d5001bcc6426aa768874cd6b"
+    },
+    {
+      "path": "knife/vita/shaders/generated/runtime_source.h",
+      "bytes": 32118,
+      "sha256": "743c23a7cb01f7dae82ea10b0703a86a02f7a89057bd0d19f19e4f8cf34cd690"
+    },
+    {
+      "path": "knife/vita/shaders/generated/shaders.h",
+      "bytes": 4318,
+      "sha256": "aeef6725fa96a3f3a01a30a08c0037573b7b131f4b02fc3454583033aeb35d65"
+    },
+    {
+      "path": "knife/vita/shaders/quad_f.cg",
+      "bytes": 341,
+      "sha256": "fdb7711305a759d179e9ca1ca7a67b77180dcb0f6c609ba4eeb0dbaf524f92b5"
+    },
+    {
+      "path": "knife/vita/shaders/quad_v.cg",
+      "bytes": 576,
+      "sha256": "5e1ef53d8a5270ed69599c3587d8b58ece8ee0f6fd4df306d8b574ef52b0c3c7"
+    },
+    {
+      "path": "knife/vita/tests/audio_decode_test.c",
+      "bytes": 5816,
+      "sha256": "cbed08d0aed546e23bea9321fbf696ceb008ef928c0cb37ab024f7307aa520b6"
+    },
+    {
+      "path": "knife/vita/tests/audio_output_arm_link.c",
+      "bytes": 424,
+      "sha256": "57d735410190e06a81f592e42bb753ddf1c19644dd4db4b69d4dec1d183aaaa0"
+    },
+    {
+      "path": "knife/vita/tests/audio_output_host.rs",
+      "bytes": 509,
+      "sha256": "91fc09722a044e4b77e066a04ee8dac16a99d6401a55c5c92f0785453fc2a317"
+    },
+    {
+      "path": "knife/vita/tests/audio_output_mock.c",
+      "bytes": 2322,
+      "sha256": "aa9749f1884ab5f041949a570c3c9356931fe37d42e7ee61701d8873d97ef6e6"
+    },
+    {
+      "path": "knife/vita/tests/effects_inputs_test.c",
+      "bytes": 19420,
+      "sha256": "37ad8efb52cbcc8c13b5823d380a8191f136682f43666755b0d0e9c9b396c0b5"
+    },
+    {
+      "path": "knife/vita/tests/gxm_budget_test.c",
+      "bytes": 5576,
+      "sha256": "00280c49a8001708bc484dcf29c2bb27ef7444b5cfc4db19b2dfc311159a48bf"
+    },
+    {
+      "path": "knife/vita/tests/gxm_compressed_test.c",
+      "bytes": 20303,
+      "sha256": "6406f4a8a20e5bcc9262bd479c68a44034224cf74a7be37e64672c5a2bb910e0"
+    },
+    {
+      "path": "knife/vita/tests/gxm_copy_test.c",
+      "bytes": 34426,
+      "sha256": "99e0e305a77cd946ef1c499114af85f0a513385b168d49119bc1d250f1d9e3b7"
+    },
+    {
+      "path": "knife/vita/tests/gxm_lossless_test.c",
+      "bytes": 3517,
+      "sha256": "f1b1230b07607fba49bf65970cf043613c271b89c4a755c44f9c9e7bfb0f89c3"
+    },
+    {
+      "path": "knife/vita/tests/gxm_present_test.c",
+      "bytes": 9126,
+      "sha256": "83ec155e54001079437735c85f88f01717c366f2bef21e3f6fcc816c790d1fd6"
+    },
+    {
+      "path": "knife/vita/tests/gxm_reservation_test.c",
+      "bytes": 3906,
+      "sha256": "09f623bf7674d22256fdf41e47c3f94ad8032ff65030b6e118b204b3aba340ee"
+    },
+    {
+      "path": "knife/vita/tests/gxm_viewport_test.c",
+      "bytes": 4726,
+      "sha256": "721b720cf2dc2ba671ac65a01d8e925dce39ab295ff4776e8939c0dad2f5573f"
+    },
+    {
+      "path": "knife/vita/tests/image_decode_allocation_test.c",
+      "bytes": 3586,
+      "sha256": "8687047b0d8d6f3bfa24ab6a51fb6fe73c3e70239fe39f754b9374a0f079175c"
+    },
+    {
+      "path": "knife/vita/tests/image_decode_rust.rs",
+      "bytes": 6998,
+      "sha256": "6eef3590c6ba5a264dec4af45623760fb2c38d2305660b5f96d7284275d6a048"
+    },
+    {
+      "path": "knife/vita/tests/image_decode_rust_support.c",
+      "bytes": 561,
+      "sha256": "a934f205a1f95977ba7ae5a4326b44896a149115bd5f9e6c13bd325412509036"
+    },
+    {
+      "path": "knife/vita/tests/image_decode_test.c",
+      "bytes": 12023,
+      "sha256": "6701ca70b3023e5afe3657ab38f2621f97b6f104ea1c7db6ed9bc830b3af43f7"
+    },
+    {
+      "path": "knife/vita/tests/jpeg_hw_test.c",
+      "bytes": 7156,
+      "sha256": "821babca9fb14cc5508686f252af00bd92c7acc50ec5a7c47b1a71dce7ba4919"
+    },
+    {
+      "path": "knife/vita/tests/run_audio_decode.sh",
+      "bytes": 1144,
+      "sha256": "5c71581578c56c2418439c4eeee64bcad025a9340be0acee84dd10dcce232e9e"
+    },
+    {
+      "path": "knife/vita/tests/run_audio_output.sh",
+      "bytes": 1470,
+      "sha256": "961c26ce7260d320e6b050fc69376f429e93a3fc1c46ef2aefa90bc48603a10c"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/include/jconfig.h",
+      "bytes": 2068,
+      "sha256": "87a9ca5914c3ccdd5ac23f338cdb44e0e7826d98fa33c8fd123cbdeb3788ca0d"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/include/jerror.h",
+      "bytes": 16163,
+      "sha256": "b4e8697b3d2e06071f23a3f32c50f62f782cdee03f7b82e4595eed5e33d67288"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/include/jmorecfg.h",
+      "bytes": 14622,
+      "sha256": "b86b4abf452d39b737cb45503591e04e9ca38c5fd0e90d429387d0464005a28b"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/include/jpeglib.h",
+      "bytes": 55794,
+      "sha256": "dc3e8220f34b7e9f9e48620f5cb8dc070834feb3214bb12bbad78478ebb29e60"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/include/ogg/config_types.h",
+      "bytes": 538,
+      "sha256": "bd424c5670e21bf37fcd039d4e39a9f8f19aa5af7ee720810a07092da6557e60"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/include/ogg/ogg.h",
+      "bytes": 8373,
+      "sha256": "aad86109c1fdb377738675a63e0b19859e06ada25ae5c59c290ca7263d1dc4ca"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/include/ogg/os_types.h",
+      "bytes": 4781,
+      "sha256": "3bbab6a5d31e3c25c6080252b042afb87028e3ffff100e3e0285648b250b70f4"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/include/opus/opus.h",
+      "bytes": 59505,
+      "sha256": "036f6a6e83a20e943505743e113e90d6278cbe8240f7d5bb90b3f86261e783e3"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/include/opus/opus_defines.h",
+      "bytes": 38558,
+      "sha256": "bbd4d4e3ba99f6982b1c8d8f5541814ad77d8e8babf3cc788cf23d517b2ca9d6"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/include/opus/opus_multistream.h",
+      "bytes": 38267,
+      "sha256": "fd99c4594b4b57e406e9cab45a777895dd1b4c8de067088aa54ed7ae100b13f0"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/include/opus/opus_projection.h",
+      "bytes": 32998,
+      "sha256": "11b3427e9ca342308a93adc9a081e2479685e5b7811a3a53540609f1bbc488ad"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/include/opus/opus_types.h",
+      "bytes": 5157,
+      "sha256": "19cb301ea1eedbcbdbb5049363de061893bf11c20e505a657b69ce6ffa5b11fa"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/include/opus/opusfile.h",
+      "bytes": 116107,
+      "sha256": "fec33e1edcf905af91ed9f7bb8e5860235cc11ba5551fc2e28fc22ca951520d5"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/include/png.h",
+      "bytes": 148525,
+      "sha256": "81501c268ec5c3dc79efc6ac9fddb63b22a25e4931360ddd7b29b1744d6cb6b8"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/include/pngconf.h",
+      "bytes": 22673,
+      "sha256": "ba8620bbc7612b656cf547eab806ea90bf16b6c0b97fc99e9d39568dc926b802"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/include/pnglibconf.h",
+      "bytes": 8081,
+      "sha256": "d5739f717ab07a4ce5481a4742110013ec5b901765b4541c68755c1405006a6a"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/include/taihen.h",
+      "bytes": 20633,
+      "sha256": "d8e6d351bc6a567a06d75503be20d10dba96933ad0b9662ecb8000b579a9282d"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/include/zconf.h",
+      "bytes": 16921,
+      "sha256": "0718a11beb3295b345fb29a63b44b654b282d82c4cd0513f6225587f2b29b8bb"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/include/zlib.h",
+      "bytes": 103848,
+      "sha256": "818667d6ab6a37fe7469cb06a7f0cb2c2cb2f2c948a03e5accf1a4a74bf3020a"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/lib/libjpeg.a",
+      "bytes": 578218,
+      "sha256": "74f61be24c6cdc7a840df277df6f25b19496d6e225a04663b16fc7bc31fe0b23"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/lib/libogg.a",
+      "bytes": 26170,
+      "sha256": "5f80ddba19df7e7d9bc9257fdf1f737bdc4e59f709a625c56413883654a1f45f"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/lib/libopus.a",
+      "bytes": 599824,
+      "sha256": "e70dfa228ab99600b46c35f62d941f121f80f8aa460a3240d39e27ce9ceda61d"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/lib/libopusfile.a",
+      "bytes": 36320,
+      "sha256": "d202e0d9283c7890b08b06a874d2516ecab3ba3d99bf2db42da29ec22603638f"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/lib/libpng.a",
+      "bytes": 274804,
+      "sha256": "f8d1c6f12ae6468c12c6c81fb90f17419c517ed3bb3754c20a2dc806bd507f74"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/lib/libtaihen_stub.a",
+      "bytes": 17868,
+      "sha256": "c499972c901d64a7cb247263142e17441a32ff2d20193340b62c404053147d57"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/lib/libz.a",
+      "bytes": 92398,
+      "sha256": "ec823d1db2c1e01572396ae6843b181ee60c9f20ca4992e571ee16771231e97f"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/libraries.cmake",
+      "bytes": 2539,
+      "sha256": "d48a6787d5a9a20b8be4718dffc753d34961d5ad75a92a4bb07b7e79d279ac25"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/licenses/NOTICE.txt",
+      "bytes": 770,
+      "sha256": "8efd46aec306b642971f9edfd1b7df9d6c1733e64bdbec40e55113b1756340c6"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/licenses/libjpeg-turbo/LICENSE.md",
+      "bytes": 6077,
+      "sha256": "ba6bceebcba0fdd35488477c2cca8c4632ce82c74dbfbc87d886ce6fc4433579"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/licenses/libjpeg-turbo/README.ijg",
+      "bytes": 12799,
+      "sha256": "75815e3bf6484201a3c3d17a1bbf10f2e8e3237f84df10a2357ea896db2a81d6"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/licenses/libogg/COPYING",
+      "bytes": 1466,
+      "sha256": "d2ab5758336489da61c12cc5bb757da5339c4ae9001f9bb0562b4370249af814"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/licenses/libpng/LICENSE",
+      "bytes": 5345,
+      "sha256": "bdb0a645ea18c60507d0368379b1ac5474b92255fcc2d115e07486a7672ba526"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/licenses/opus/COPYING",
+      "bytes": 1945,
+      "sha256": "01e1167d54a096d123cf6dfbbeb19587278845c6481d2d66d545669846079551"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/licenses/opus/LICENSE_PLEASE_READ.txt",
+      "bytes": 703,
+      "sha256": "7efb4989e0cd1b256229bdf2f09300c5d14e35db0e7476bfb87fac243498273d"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/licenses/opusfile/COPYING",
+      "bytes": 1487,
+      "sha256": "0267ae795ab744c4e0f9c45e249440fdf2e75dac8c804f36066b28649bf74aaf"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/licenses/provenance.json",
+      "bytes": 7679,
+      "sha256": "972fe8e076eb7e5fb0b3775b1a98c9fc6150bae569b2c31509448490b7500c15"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/licenses/taihen/LICENSE",
+      "bytes": 1075,
+      "sha256": "b82d83d4c589bfba4c9ce82de4ba98d2b9186b5c59e6cb848bd7ef143b1af437"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/licenses/zlib/LICENSE",
+      "bytes": 1002,
+      "sha256": "e32ff4e00d9d94930537635291da39e7e612703334bf6fde8c7f1686fe8a45a2"
+    },
+    {
+      "path": "knife/vita/vendor/dependencies/manifest.json",
+      "bytes": 4344,
+      "sha256": "d478c6cd1555d6699ab2e6657aebd46ba59e2b360b93c45428152deb4eca9346"
+    },
+    {
+      "path": "knife/vita/vendor/shacccg/NOTICE",
+      "bytes": 551,
+      "sha256": "426e626702bd2693bedf613505ab332d0a17442b114124c53ddf91796f888f61"
+    },
+    {
+      "path": "knife/vita/vendor/shacccg/libshacccg.suprx",
+      "bytes": 1776523,
+      "sha256": "0c58b5d3e1cc47d9837b8c59ab6f3c299bfe7adf55a83f547d553f9fbb776552"
+    },
+    {
+      "path": "knife/vita/vendor/shacccg-ext/LICENSE",
+      "bytes": 35129,
+      "sha256": "605e9047a563c5c8396ffb18232aa4304ec56586aee537c45064c6fb425e44ad"
+    },
+    {
+      "path": "knife/vita/vendor/shacccg-ext/NOTICE",
+      "bytes": 1146,
+      "sha256": "8f70fa2019e094422ff3d9b1767595d54d6e15f1d775ad0c1aef108f7f7a938a"
+    },
+    {
+      "path": "knife/vita/vendor/shacccg-ext/libSceShaccCgExt.a",
+      "bytes": 60366,
+      "sha256": "2707ddf51699b95b9b8b45ac806b1521318ddaf9500aaf07c3db6d1edb710cdf"
+    },
+    {
+      "path": "knife/vita/vendor/shacccg-ext/source/CMakeLists.txt",
+      "bytes": 1087,
+      "sha256": "049d1fec3628981f8ade2dc68be7bb85d0c9e923e36cce9bebe7d09a911c2d9f"
+    },
+    {
+      "path": "knife/vita/vendor/shacccg-ext/source/LICENSE",
+      "bytes": 35129,
+      "sha256": "605e9047a563c5c8396ffb18232aa4304ec56586aee537c45064c6fb425e44ad"
+    },
+    {
+      "path": "knife/vita/vendor/shacccg-ext/source/include/sce_intrinsics.h",
+      "bytes": 11508,
+      "sha256": "b75a73cc0abbc247392995b8b8c58fd194e7f28f0a24686cdaa6c3f05aed8dcb"
+    },
+    {
+      "path": "knife/vita/vendor/shacccg-ext/source/include/shacccg_ext.h",
+      "bytes": 855,
+      "sha256": "ab9b5fbf06b8c023e846e6e47deef9b7e7d1642e7b1a3e37e2c49602d7884a92"
+    },
+    {
+      "path": "knife/vita/vendor/shacccg-ext/source/src/shacccg_ext.c",
+      "bytes": 35101,
+      "sha256": "b5f4747f399b579cf7c268ef2add61c0ab5536611f846ff38a29f78bbea68f93"
+    },
+    {
+      "path": "knife/vita/vendor/shacccg-ext/source/src/shacccg_ext_oop.cpp",
+      "bytes": 32564,
+      "sha256": "bcdc201a30530faa29c16418634b3e0056b7c51b160aaaf4665c9f902fb2f67b"
+    },
+    {
+      "path": "tools/build-vita.py",
+      "bytes": 18550,
+      "sha256": "493a6a047f8fea2943493f494f1ba28df08639f8b65f19409c5cc7f3c62c885a"
+    },
+    {
+      "path": "tools/build-vita.sh",
+      "bytes": 12164,
+      "sha256": "cb40faabb73c349e719e1b645285db2227bd17cc0256b68c99d6c1ec0b1b8e64"
+    },
+    {
+      "path": "tools/check-vita-package.py",
+      "bytes": 5755,
+      "sha256": "4fb97f74ac727c9ea0736754339d067cbb2741c858855b248bf84fea76681b55"
+    },
+    {
+      "path": "tools/compact_media.py",
+      "bytes": 6514,
+      "sha256": "df09d737b9ad5f020b9529f6cdcb68778bddc4b2dccd8ba7f56eadc4f1e41073"
+    },
+    {
+      "path": "tools/compile-vita-offline-shaders.py",
+      "bytes": 11400,
+      "sha256": "f9402a53225caff1aeff00a26eb01f4c6cf8fbb440cdc9342573d8b983e89f5d"
+    },
+    {
+      "path": "tools/generate-runtime-shaders.py",
+      "bytes": 1668,
+      "sha256": "f2654c99efdc18387fd1634a2514741b360f3158ff7a85aa8c4a3fc9d180be53"
+    },
+    {
+      "path": "tools/generate-vita-atlas-index.py",
+      "bytes": 4520,
+      "sha256": "61b98306c977c9a52455d2b318a5b058b2b334c33f8c02aec2a9064280850a17"
+    },
+    {
+      "path": "tools/generate-vita-stream-index.py",
+      "bytes": 985,
+      "sha256": "dae4e5a2a6ad7e21508a86b54a3ebb4c3233158ab399ae37c79c0971c28289b7"
+    },
+    {
+      "path": "tools/generate_vita_asset_profile_540.py",
+      "bytes": 4001,
+      "sha256": "96c94b57e35ea84a1421b8bfca807d8957734c15144c11bd649d3ef008105ae5"
+    },
+    {
+      "path": "tools/generate_vita_asset_profile_tsukihime_540.py",
+      "bytes": 5105,
+      "sha256": "bfd05c434c9cb5d69c534de2cbc6c2568de57a02f8669d3716438433e21b83a4"
+    },
+    {
+      "path": "tools/make-tsukihime-ja-zc.py",
+      "bytes": 13955,
+      "sha256": "0fcf94e9e441817dfc4bc48a4c4535820d0746dd1e4a808e11137ffed343d9b0"
+    },
+    {
+      "path": "tools/migrate-vita-native-color.py",
+      "bytes": 22572,
+      "sha256": "6237f7546abc3a8a32905eae81750a6648414117124aa72857d8f13d18d83510"
+    },
+    {
+      "path": "tools/native-color-blocks.c",
+      "bytes": 3524,
+      "sha256": "102ffc8f7d253f9d7b3a6cc25fd9c58743155041b5ece4e1081a50c330b72915"
+    },
+    {
+      "path": "tools/repair-tsukihime-assets.py",
+      "bytes": 11789,
+      "sha256": "212ecae7deee440756d29e1f65cd1daab408aafc1ffb11724e77f8a13c655cf3"
+    },
+    {
+      "path": "tools/sanitize-vita-elf.py",
+      "bytes": 3960,
+      "sha256": "8eb16dea9f987bc5822f649d0a1dbd5559cad1ff9a45c659c897d6372b7381ad"
+    },
+    {
+      "path": "tools/stabilize-tsukihime-assets.py",
+      "bytes": 13975,
+      "sha256": "f9aed4d07f414ca48b8a2a73338487c308e4b6dc718edb1c68d02c1eff0666da"
+    },
+    {
+      "path": "tools/test_offline_shaders.py",
+      "bytes": 3206,
+      "sha256": "04ab8149f98b3b1357bf417d53db112bc0dc9594f3b491ce4fdfc0ea501a21a1"
+    },
+    {
+      "path": "tools/test_tsukihime_bilingual.py",
+      "bytes": 3220,
+      "sha256": "8a23eae32e8893e14cc51814082582781c43f809631fb39041cc994b2e267576"
+    },
+    {
+      "path": "tools/test_tsukihime_stability.py",
+      "bytes": 5405,
+      "sha256": "6958277c5ab2126f6afcee4cf01b9678952922371c1467e29cad1b3b148f551d"
+    },
+    {
+      "path": "tools/verify-tsukihime-runtime-assets.py",
+      "bytes": 9397,
+      "sha256": "2a45b84011639be66510a1578bd43ece0b2b14eb517a700dcf2f729bb0ffc9dd"
+    },
+    {
+      "path": "tools/vita-build-receipt.py",
+      "bytes": 14381,
+      "sha256": "95ab7bca3bf12d2c70a797c907b230870d38e5320041ac84a54c7e158b5c50b0"
+    },
+    {
+      "path": "tools/vita_image_metadata.py",
+      "bytes": 4852,
+      "sha256": "84c370bb888350a05b01a01e528e71497cdc90fea2833acb45fd8c4c26a8ac36"
+    }
+  ],
+  "runtime_verified": false,
+  "hardware_verified": false
+}

@@ -38,6 +38,9 @@ fn main() {
         println!("cargo:rerun-if-changed=../vita/{name}");
     }
     println!("cargo:rerun-if-changed=../vita/shaders/generated/effects.h");
+    println!("cargo:rerun-if-changed=../vita/offline_shaders.c");
+    println!("cargo:rerun-if-changed=../../tools/compile-vita-offline-shaders.py");
+    println!("cargo:rerun-if-changed=../../doc/evidence/offline-shaders.json");
     println!("cargo:rerun-if-changed=../vita/vendor/shacccg-ext/NOTICE");
     println!("cargo:rerun-if-changed=../vita/vendor/dependencies");
     println!("cargo:rerun-if-changed=../../tools/generate-runtime-shaders.py");

@@ -35,10 +35,14 @@ mod text_stream {
 }
 mod ui;
 mod ui_images;
+#[cfg(target_os = "vita")]
+mod controller_axis;
 mod voice_ids;
 mod witch;
 #[cfg(target_os = "vita")]
 mod vita_entry;
+#[cfg(target_os = "vita")]
+mod vita_log;
 #[cfg(target_os = "vita")]
 mod vita_audit;
 #[cfg(target_os = "vita")]

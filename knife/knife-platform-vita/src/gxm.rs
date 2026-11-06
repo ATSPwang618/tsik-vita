@@ -6,6 +6,7 @@ use std::{ffi::{c_char, c_void, CStr}, marker::PhantomData, ptr::NonNull, rc::Rc
 unsafe extern "C" {
     fn kv_gxm_create(out: *mut *mut c_void, error: *mut c_char, capacity: u32) -> i32;
     fn kv_gxm_shader_available(g: *mut c_void, shader: u32) -> i32;
+    fn kv_gxm_chain_pair_available(g: *mut c_void, first: u32, second: u32) -> i32;
     fn kv_gxm_texture_create(g: *mut c_void, rgba: *const u8, width: u32, height: u32,
         stride: u32, out: *mut *mut c_void) -> i32;
     fn kv_gxm_texture_destroy(g: *mut c_void, texture: *mut c_void) -> i32;
@@ -32,6 +33,7 @@ unsafe extern "C" {
     fn kv_gxm_scene_plan(g: *mut c_void, target: *mut c_void,
         reads: *const *const c_void, count: u32, kind: u32) -> i32;
     fn kv_gxm_texture_charge(payload_bytes: u32, out: *mut u32) -> i32;
+    fn kv_gxm_texture_reserve(g: *mut c_void, payload_bytes: u32) -> i32;
     fn kv_gxm_reclaim(g: *mut c_void, wait: u32) -> i32;
     fn kv_gxm_begin(g: *mut c_void, clear: *const f32) -> i32;
     fn kv_gxm_draw_quad(g: *mut c_void, texture: *const c_void, rect: *const f32,
@@ -101,9 +103,9 @@ impl std::fmt::Debug for TextureId {
 
 #[derive(Clone, Copy, Debug)]
 #[repr(u32)]
-pub enum TextureFormat { Rgba8 = 0, R8 = 1 }
+pub enum TextureFormat { Rgba8 = 0, R8 = 1, Rgb8FromRgba = 2, Indexed8FromRgba = 3 }
 impl TextureFormat {
-    fn bytes_per_pixel(self) -> u32 { match self { Self::Rgba8 => 4, Self::R8 => 1 } }
+    fn bytes_per_pixel(self) -> u32 { match self { Self::Rgba8 => 4, Self::R8 | Self::Indexed8FromRgba => 1, Self::Rgb8FromRgba => 3 } }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u32)]
@@ -123,6 +125,11 @@ pub enum EffectShader {
     PsFetch11 = 20, PsFetch13 = 21,
     PlainSprite = 22, PsPlain19 = 23,
     PsFetch2 = 25,
+    PlainForceAlpha = 26,
+    /// Two consecutive plain PS layers with an intermediate encoded UNORM8 pack.
+    PsChain2 = 27,
+    /// Bounds and rim steps/strength are per triangle; RGB24 remains a shared uniform.
+    RimTextBatched = 28,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u32)]
@@ -133,7 +140,7 @@ pub enum EffectBlend { Alpha = 0, Add = 1, Sub = 2, Multiply = 3, Screen = 4,
 #[derive(Clone, Copy)]
 struct TextureRecord { pointer: NonNull<c_void>, width: u32, height: u32, storage: TextureStorage }
 #[derive(Clone, Copy, PartialEq, Eq)]
-enum TextureStorage { Linear(u32), Movie, Compressed }
+enum TextureStorage { Linear(u32), Indexed, Movie, Compressed }
 
 pub struct Gxm {
     pointer: Option<NonNull<c_void>>,
@@ -252,6 +259,12 @@ impl Gxm {
         self.check(status)?;
         Ok(status != 0)
     }
+    /// Startup admitted the exact compile-time material variant and its cost.
+    pub fn chain_pair_available(&self, first: u32, second: u32) -> Result<bool, String> {
+        let status = unsafe { kv_gxm_chain_pair_available(self.raw()?, first, second) };
+        self.check(status)?;
+        Ok(status != 0)
+    }
     /// Describe actual sampled resources before a scene begins; native checks
     /// RAW/WAR/WAW and consumes this reusable pointer array synchronously.
     pub fn plan_scene(&mut self, target: Option<&TextureId>, reads: &[TextureId], kind: u32) -> Result<(), String> {
@@ -279,6 +292,14 @@ impl Gxm {
         let status = unsafe { kv_gxm_texture_charge(payload_bytes, &mut charge) };
         if status < 0 { Err("invalid native texture charge".into()) } else { Ok(charge) }
     }
+    /// Admit actual pixel storage before descriptor creation. A false result
+    /// permits bounded idle-cache reclamation; other errors must propagate.
+    pub fn reserve_texture(&mut self, bytes: usize) -> Result<bool, String> {
+        let bytes = u32::try_from(bytes).map_err(|_| "texture reservation exceeds address space")?;
+        let status = unsafe { kv_gxm_texture_reserve(self.raw()?, bytes) };
+        self.check(status)?;
+        Ok(status != 0)
+    }
     /// Poll retired native texture owners, optionally waiting under explicit
     /// memory pressure. Ordinary frame submission only polls at batch begin.
     pub fn reclaim_retired(&mut self, wait: bool) -> Result<(), String> {
@@ -295,10 +316,13 @@ impl Gxm {
         render_target: bool) -> Result<TextureId, String> {
         let bpp = format.bytes_per_pixel();
         if width == 0 || height == 0 || width > 2048 || height > 2048
-            || (matches!(format, TextureFormat::R8) && (srgb || render_target)) {
+            || (bpp != 4 && (srgb || render_target)) {
             return Err("invalid native texture layout or format".into());
         }
-        if let Some(data) = data { Self::source_layout(data, width, height, stride, bpp)?; }
+        let indexed=matches!(format,TextureFormat::Indexed8FromRgba);
+        let source_bpp = if bpp == 3 || indexed { 4 } else { bpp };
+        if (bpp == 3 || indexed) && data.is_none() { return Err("packed colour requires an immutable RGBA source".into()); }
+        if let Some(data) = data { Self::source_layout(data, width, height, stride, source_bpp)?; }
         let mut texture = std::ptr::null_mut();
         // SAFETY: C validates the same dimensions and copies borrowed bytes synchronously.
         let status = unsafe { kv_gxm_texture_create_ex(self.raw()?, data.map_or(std::ptr::null(), |b| b.as_ptr()),
@@ -307,7 +331,7 @@ impl Gxm {
         self.check(status)?;
         let pointer = NonNull::new(texture).ok_or("GXM returned a null extended texture")?;
         let slot = self.textures.len();
-        self.textures.push(Some(TextureRecord { pointer, width, height, storage: TextureStorage::Linear(bpp) }));
+        self.textures.push(Some(TextureRecord { pointer, width, height, storage: if indexed {TextureStorage::Indexed}else{TextureStorage::Linear(bpp)} }));
         Ok(TextureId { slot, owner: self.owner.clone() })
     }
     /// Validates a complete single-texture GXT and copies its already swizzled
@@ -410,13 +434,15 @@ impl Gxm {
     pub fn read_texture(&mut self, id: &TextureId) -> Result<Vec<u8>, String> {
         let texture = self.texture(id)?;
         let record = self.textures[id.slot].unwrap();
-        let TextureStorage::Linear(bpp) = record.storage else {
-            return Err("only linear pixel textures support CPU reads".into());
-        };
+        let bpp=match record.storage { TextureStorage::Linear(bpp)=>bpp, TextureStorage::Indexed=>4,
+            _=>return Err("only linear pixel textures support CPU reads".into()) };
         let length = record.width as usize * record.height as usize * bpp as usize;
         let mut pixels = vec![0;length];
         // SAFETY: complete checked allocation size; native waits before reading.
         self.check(unsafe { kv_gxm_texture_read(self.raw()?,texture.as_ptr(),pixels.as_mut_ptr(),length as u32) })?;
+        if bpp == 3 {
+            return Ok(pixels.chunks_exact(3).flat_map(|p| [p[0],p[1],p[2],255]).collect());
+        }
         Ok(pixels)
     }
     pub fn draw(&mut self, texture: Option<&TextureId>, rect: [f32; 4], uv: [f32; 4],
