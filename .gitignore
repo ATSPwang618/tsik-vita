@@ -34,9 +34,7 @@ eboot.bin
 .idea/
 .DS_Store
 .pytest_cache/
-/tools/render-audit/
 /tools/vita-shader-compiler/
-/tools/vita_audit_log.py
 # Locally supplied proprietary shader compiler stays outside the source repository.
 # Downloaded utility archives are local setup files, not project source.
 /tools/hactool/*.zip

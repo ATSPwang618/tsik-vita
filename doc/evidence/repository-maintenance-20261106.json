@@ -1,0 +1,195 @@
+{
+  "schema": "tsik-vita-repository-maintenance-v1",
+  "as_of": "2026-11-06",
+  "scope": "Repository cleanup, proven unused offline-tool helpers, bilingual READMEs and technical manual rewrite. No runtime source, asset or shader-byte changes.",
+  "version_control": {
+    "branch": "main",
+    "head": "6e097e0f48180a176beba431953e908eb599f6cd",
+    "remote_main_before": "940ec63bf32c790a43361b900c96056691ad561e",
+    "remote_main_after": "940ec63bf32c790a43361b900c96056691ad561e",
+    "remote_write": false,
+    "committed": false,
+    "release_published": false
+  },
+  "deleted_tracked_files": [
+    {
+      "path": "doc/stability-plan.md",
+      "head_blob_bytes": 2180,
+      "head_blob_sha256": "51cba549e32d9d7d211e64232f79e89b48f8419f041c46c082bd8a4af4be429d",
+      "reason": "Completed plan consolidated into assets, optimizations and validation manuals."
+    },
+    {
+      "path": "tools/compile-vita-effects.ps1",
+      "head_blob_bytes": 25946,
+      "head_blob_sha256": "9d4556e5473e86245b0218f7f08fdcf9cd6514cf128a9c392f277c4140588f03",
+      "reason": "Superseded partial shader generator; could overwrite the complete current header."
+    },
+    {
+      "path": "tools/compile-vita-shaders.ps1",
+      "head_blob_bytes": 7226,
+      "head_blob_sha256": "773f90e660b5786e1fdddda1a3811e5691ee01c28d2871d961994d43dc0077f0",
+      "reason": "Superseded by the unified 109-program offline generator."
+    },
+    {
+      "path": "tools/read-vita-performance.py",
+      "head_blob_bytes": 18194,
+      "head_blob_sha256": "864161a6d0b60769bd4cf65eee1b8eaceba527220ef6e3a06c22626250a742d7",
+      "reason": "Unusable without missing vita_audit_log.py; only retained legacy callers were retired together."
+    },
+    {
+      "path": "tools/summarize-vita-artemis-performance.py",
+      "head_blob_bytes": 14951,
+      "head_blob_sha256": "4058a7ca0b6767fab885a11f6f5b7a63ce5f4427d6de665127194cf04099ef6e",
+      "reason": "One-off historic Artemis report bound to already deleted investigation inputs; not a generic log reader."
+    },
+    {
+      "path": "tools/test-vita-performance.py",
+      "head_blob_bytes": 19139,
+      "head_blob_sha256": "9abe090810b4bb3c422e8f841de5cc2b8e9b0ae842f04b452b74d8124a8dab56",
+      "reason": "Tests the retired reader and imports missing vita_audit_log.py and render-audit/compare-hardware.py."
+    },
+    {
+      "path": "tools/verify-vita-release-270p.mjs",
+      "head_blob_bytes": 11067,
+      "head_blob_sha256": "97a8f300441eb5d012b15785d352b08a73288f0ed6ba3ffb735217da20563169",
+      "reason": "Hardcoded old Witch 270p assets and deleted generated save fixture; not applicable to current Tsukihime release."
+    },
+    {
+      "path": "tools/verify-vita-release-integration.mjs",
+      "head_blob_bytes": 12958,
+      "head_blob_sha256": "816615458e42b660eaf6f8c53822375b812d5bf7b8d8ecf0c7eecdb0c3e79206",
+      "reason": "Same obsolete Witch release/fixture dependency chain."
+    },
+    {
+      "path": "tools/write_compact_delivery.py",
+      "head_blob_bytes": 12382,
+      "head_blob_sha256": "dbd2b4f76656e34556e5eb9d05673a2066105b9ecfa3aecfc1ba612dd2ba31c2",
+      "reason": "One-off English/Chinese Witch Windows report; fixed historic inputs and obsolete generated documentation."
+    },
+    {
+      "path": "tools/write_vita_270p_delivery.py",
+      "head_blob_bytes": 16026,
+      "head_blob_sha256": "1c45298e64cb1757a9bd818a0568ffdb3926c9c50ef0c6759f0983694a007679",
+      "reason": "Historic KNIF00270 report tied to absent assets, receipts and retired reader."
+    }
+  ],
+  "deleted_tracked_head_blob_bytes": 140069,
+  "duplicate_delivery_removed": {
+    "path": "release/eboot.bin",
+    "bytes": 10001967,
+    "sha256": "aace269b6f74ec345345e6c9477c829bf3559cd0562518f22f5be8f522a5103b",
+    "verified_byte_equal_to": "release/knife-vita-tsukihime-540p.vpk!eboot.bin"
+  },
+  "removed_unused_helpers": {
+    "path": "tools/migrate-vita-native-color.py",
+    "functions": [
+      "rgb565",
+      "quant565"
+    ],
+    "basis": "No Python callers or dynamic-name references; native-color-blocks.c implementations retained; converter regression suites passed."
+  },
+  "cleanup_tool_change": "Nested target directories under knife/tools are selected only next to Cargo.toml; arbitrary target fixtures and linked parent targets remain protected.",
+  "documentation": {
+    "readmes": [
+      "README.md",
+      "README.en.md"
+    ],
+    "manual_index": "doc/README.md",
+    "optimization_catalog": "doc/optimizations.md",
+    "registered_features_covered": 29,
+    "history_index": "doc/evidence/README.md",
+    "user_readme_edits_preserved": "Removed old upgrade/path-migration details remain absent from root README; detailed version compatibility lives in assets manual."
+  },
+  "checks": {
+    "python_windows": {
+      "run": 48,
+      "passed": 47,
+      "failed": 0,
+      "skipped": 1,
+      "skip_reason": "Host denied creation of symlink."
+    },
+    "cleanup_linux": {
+      "run": 4,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "includes_previously_skipped_symlink_case": true
+    },
+    "python_syntax_files": 86,
+    "powershell_syntax_files": 5,
+    "shader_inventory": {
+      "programs": 109,
+      "exact_source_and_generated_bytes": true
+    },
+    "startup_profile": "matches",
+    "atlas_index": {
+      "atlases": 24,
+      "members": 438,
+      "gxt": 236,
+      "matches": true
+    },
+    "stream_index": {
+      "entries": 16601,
+      "bytes": 466139,
+      "byte_equal": true
+    },
+    "vpk": {
+      "path": "release/knife-vita-tsukihime-540p.vpk",
+      "bytes": 5385822,
+      "sha256": "732a8b147b2d87c3139bffb99db2566745d99cba2bad200c46199fe9c3c9bba9",
+      "members": 20,
+      "zip_crc": true,
+      "title_id": "KNIF00541",
+      "attribute2": 12,
+      "rebuilt": false
+    },
+    "asset_manifest_sha256": "0c4188c923f744870d660a384e0c55f59f1d3e3d8997e9baf6150a5eb7e0fc75",
+    "build_receipt_inputs": 332,
+    "build_receipt_input_drift": [
+      {
+        "path": "tools/migrate-vita-native-color.py",
+        "build_sha256": "6237f7546abc3a8a32905eae81750a6648414117124aa72857d8f13d18d83510",
+        "current_sha256": "46450bb8260d16d541ec1f8483e1874d5e580bc59d2d579762ff48634556277e"
+      }
+    ],
+    "historical_receipts_modified": false,
+    "documentation": {
+      "markdown_files": 16,
+      "local_links_and_anchors": 197,
+      "missing_links": 0,
+      "all_29_registry_features_documented": true,
+      "unexpanded_placeholders": 0
+    },
+    "git_diff_check": true
+  },
+  "preserved": {
+    "asset_tree": "dist/TSUKIHIME-RE/assets",
+    "asset_files_including_manifest": 16765,
+    "asset_bytes_including_manifest": 2429837637,
+    "release_files": [
+      "knife-vita-tsukihime-540p.vpk"
+    ],
+    "shared_runtime_variants": true,
+    "vendor_and_licenses": true,
+    "git_history": true,
+    "player_data_untouched": true
+  },
+  "limitations": [
+    "Tracked removal sizes are HEAD blob lengths; checkout line endings may differ. New documentation also uses space; this is not a measured net free-space claim.",
+    "Historical build receipt retains one changed offline converter hash; no game runtime source or delivered binary was changed.",
+    "Full stable-feature renderer suite remains at its previously recorded 122 pass / 5 budget-assumption failures; not rerun or hidden by this maintenance task.",
+    "No new ARM build, device gameplay, GPU timing or GPU pixel readback; previous build/scoped results keep their original dates.",
+    "Full asset hashes were not rerun; current manifest identity and generated startup/atlas/stream contracts were checked.",
+    "No Git push, remote mutation, WSL compaction or external cache deletion."
+  ],
+  "temporary_cleanup": {
+    "paths": [
+      ".work/"
+    ],
+    "files": 2,
+    "logical_bytes": 469409,
+    "contents": "This task's repository audit script and regenerated stream index comparison file.",
+    "remaining_selected_paths": 0,
+    "external_caches_deleted": false
+  }
+}

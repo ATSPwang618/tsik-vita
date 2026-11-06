@@ -1,55 +1,65 @@
-# 构建与依赖
+# 构建与交付
 
-## 环境
+[文档导航](README.md) · [工具索引](../tools/README.md) · [当前包身份](validation.md)
 
-- Windows＋WSL、Linux 或 macOS；构建入口为仓库根 `tools/build-vita.py`。
-- Python 3.9+、CMake 3.20+、Ninja、Bash、Git、VitaSDK。
-- Vita Rust 工具链固定 `nightly-2026-05-28`＋`rust-src`，目标 `armv7-sony-vita-newlibeabihf`。
-- 宿主工具／测试使用 `knife/rust-toolchain.toml` 指定的 Rust 1.99.0。
+## 所需环境
 
-本机已验证 WSL `pocket-ubuntu`、VitaSDK `/opt/vitasdk`、GCC 15.2.0。这是本机路径，不是其它机器的安装要求。
+| 用途 | 依赖 |
+| --- | --- |
+| 构建 / 配套验证工具 | Python 3.11+（本机 3.13）、CMake 3.20+、Ninja、Bash、Git、VitaSDK |
+| Vita Rust | `nightly-2026-05-28` + rust-src，目标 `armv7-sony-vita-newlibeabihf` |
+| 宿主 Rust | `knife/rust-toolchain.toml` 指定 Rust 1.99.0 |
+| 素材转换 / Python 素材测试 | Pillow、NumPy；部分字体处理需要 fonttools，媒体需要 ffmpeg，GXT 需相应工具 |
+| 重编 shader | 自行提供本地 psp2cgc；仅校验现有生成文件不需要编译器 |
 
-原生依赖的头文件、静态库、来源清单和许可证保留在 `knife/vita/vendor/dependencies/`；shader 扩展在 `knife/vita/vendor/shacccg-ext/`。这些是构建输入，不属于可删除的编译缓存。
+本机曾验证 WSL `pocket-ubuntu`、VitaSDK `/opt/vitasdk`、GCC 15.2.0；这是记录路径，不要求其他机器采用同一路径。Windows 入口可调用 WSL，Linux / macOS 使用对应本地环境。
 
-月姬默认构建直接使用内嵌的 109 个离线 GXP，不需要 `libshacccg.suprx`，VPK 也不携带该模块。修改 shader 源码后需自行提供本地 `psp2cgc` 重新生成；CMake 会校验全部生成文件身份。命令与边界见[离线 shader](shaders.md)。上游其它 variant 的历史运行时编译路径仍单独保留。
+`knife/vita/vendor/` 内的头文件、静态库、来源和许可证是构建输入。生成 shader 头、startup profile、atlas / stream 索引也是构建输入，不能当缓存删除。仓库不提供编译器、Sony 运行时模块、密钥或商业游戏数据。
 
-素材转换另需 Pillow／NumPy、kdu 及相应原始数据工具；编译 VPK 本身不需要重新解包游戏，也不需要再次复制 `dist`。
-
-## 命令
+## 常用命令
 
 从仓库根执行：
 
-```sh
+~~~sh
 python3 tools/build-vita.py --check
+# 需要已备齐依赖；禁止构建入口自动下载
 KNIFE_VITA_OFFLINE=1 python3 tools/build-vita.py --variant tsukihime540 game release
 python3 tools/check-vita-package.py release/knife-vita-tsukihime-540p.vpk KNIF00541 --release
-```
+~~~
 
-Windows 使用 `py -3` 替代 `python3`，或：
+Windows：
 
-```powershell
+~~~powershell
 ./tools/build-vita.ps1 -Check
 ./tools/build-vita.ps1 -Variant tsukihime540 -Mode game -BuildKind release
-```
+~~~
 
-`--check` 为只读探测。正常构建可能安装缺失的固定 Rust 工具链；`KNIFE_VITA_OFFLINE=1` 禁止自动下载。`--sdk`／`VITASDK` 选择 SDK，Windows 的 `--wsl` 选择发行版，`KNIFE_VITA_CACHE` 可选择缓存目录。
+`--check` 只探测环境。常规构建可安装缺失的固定 Rust 工具链，`KNIFE_VITA_OFFLINE=1` 禁止自动下载。`VITASDK` / `--sdk` 选择 SDK，Windows `--wsl` 选择发行版，`KNIFE_VITA_CACHE` 指定构建缓存。
 
-正式构建 feature 为 `vita-gxm,assets-540p,tsukihime`，TITLE ID 为 `KNIF00541`，`ATTRIBUTE2=12`。newlib 堆上限 256 MiB；SDK 文件位置 `SceOff` 为 64 位，程序指针和目标架构仍为 32 位。
+正式 feature 为 `vita-gxm,assets-540p,tsukihime`，TITLE ID `KNIF00541`，ATTRIBUTE2=12。月姬 feature 引入稳定预算。程序是 ELF32 ARM；SDK 的 64 位文件位置不改变 CPU 架构。
 
-月姬正式包默认启用后台控制台（`KNIFE_VITA_QUIET=0`、`KNIFE_PERF_CONSOLE=1`），不启用 DEV 同步文件日志或运行帧数上限。可显式覆盖编译变量；VitaDeck/CatLog 使用见[性能与日志](performance.md#vitadeck-实时日志)。
+## Shader 与生成文件
 
-## 产物与清理
+普通月姬 VPK 构建直接使用内嵌的 109 个 GXP，不需要 `libshacccg.suprx`。CMake 会验证生成文件与输入身份。修改 Cg 后使用唯一入口 `compile-vita-offline-shaders.py`；修改共享运行时源码时同步 `generate-runtime-shaders.py`。完整命令与回归见[Shader 手册](shaders.md)。
 
-最终包为 `release/knife-vita-tsukihime-540p.vpk`。构建日志、ELF、map、SELF、临时 VPK 和收据写入 `.work/vita/game-release-tsukihime-540p/`；Rust cache 可能在仓库外。
+旧的两个部分 PowerShell shader 生成器已经移除，避免覆盖完整清单。非月姬 variant 仍保留自己的 runtime shader 路径，不因本项目默认离线化而删去公共后端。
 
-当前离线 shader 版使用默认 VPK 文件名，交付 build tag 为 `tsukihime540-offline-shaders-20261106`（构建时通过 `KNIFE_BUILD_TAG` 指定）。`tsukihime` feature 同时启用 `knife-perf/vita-stable`，沿用 2026-11-02 稳定素材与可选缓存预算。已有稳定素材仅更新 VPK；原高清素材仍按[升级范围](assets.md#升级范围)处理。
+## 打包默认与产物
 
-发布前验证包结构、成员 SHA／CRC、当前 `sce_sys` 以及素材 profile／atlas／stream 索引。只修改文档或清理缓存，无需重建当前已验证 VPK。今后换包时，将对应的小型收据更新到 `doc/evidence/`，不要把过期包 hash 当成当前值。
+- 最终产物：`release/knife-vita-tsukihime-540p.vpk`；release 仅保留最终 VPK。
+- 构建中间目录：`.work/vita/game-release-tsukihime-540p/`，包含日志、ELF、map、SELF、临时 VPK 和收据；Rust cache 可在外部。
+- 当前交付 tag：`tsukihime540-offline-shaders-20261106`，通过 `KNIFE_BUILD_TAG` 指定；不要把同一 tag 当作任何修改后产物的证明。
+- 默认后台控制台开启，`KNIFE_VITA_QUIET=0`、`KNIFE_PERF_CONSOLE=1`；无 DEV 逐帧文件日志与运行帧数上限。普通玩家不需要开关 TXT。
+- 只构建 VPK 不需要复制 dist 或重新解包游戏。素材实际变化才需要重新生成配套索引。
 
-磁盘紧张时用[维护说明](maintenance.md)清理中间产物。清理编译缓存后下次构建会重新编译，SDK、Rust 工具链和依赖仍可复用。
+## 交付核验
 
-## 桌面与探针
+核对 ELF 架构、包 TITLE / SFO、ZIP 成员 SHA / CRC、当前 LiveArea、输入清单，以及素材 profile / atlas / stream 的一致性。当前已验证产物身份集中在[验证手册](validation.md)。
 
-`build-windows.sh`、`build-compact.*`、`build-540p.ps1` 是桌面／兼容开发入口，不是当前 Vita 打包入口。桌面资源不能直接用 Vita GXT 包替代；Linux 桌面构建还需要 GStreamer 开发库。本机此前完整桌面游戏测试因此受限，没有计为通过。
+2026-11-06 本次整理只调整文档与维护 / 离线转换工具，运行时代码、shader 字节、LiveArea 和素材未改，保留现有 VPK。构建收据是产生时的不可变事实，维护工具的后续清理不能通过改写旧收据冒充重新构建。
 
-宿主与设备探针命令见[验证说明](validation.md)，源码工作区见 [knife/README.md](../knife/README.md)。
+## 桌面、探针与清理
+
+`build-windows.sh`、`build-compact.*`、`build-540p.ps1` 保留桌面 / 兼容入口，不是月姬 Vita 打包入口。桌面不能混用当前 Vita GXT 素材；Linux 完整桌面游戏构建还需 GStreamer 开发库，缺失时不能报完整桌面验证通过。
+
+宿主探针按[验证手册](validation.md)选择。完成后运行 `python3 tools/clean-project.py` 预览，`--apply` 删除可重建缓存；外部工具链和 WSL 缓存不由该工具擅自删除。版本控制保持本地，用户明确要求推送后才操作远端。

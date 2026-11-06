@@ -1,46 +1,65 @@
-# 当前架构
+# 架构与运行契约
 
-## 工作区
+[文档导航](README.md) · [优化总表](optimizations.md) · [预算](performance.md)
 
-| 位置 | 职责 |
+## 工作区职责
+
+| 路径 | 职责 |
 | --- | --- |
-| `knife/knife` | 月姬 VM、剧情、舞台、UI、文字、输入与缓存调度 |
-| `knife/knife-core` | HED/NAM/MRG、NX、KIMG/KATL、字体和脚本解析；Vita 大文件 IO |
-| `knife/knife-render`、`knife-render-api` | 桌面 WGPU／Vita GXM 与共享绘制契约 |
-| `knife/knife-platform-vita` | 平台初始化、启动素材检查、存储、图像 worker、原生音视频封装 |
-| `knife/knife-audio` | 音频资源、混音与流式准备 |
-| `knife/knife-perf` | 优化 mask、计数、内存预算与采样 |
-| `knife/vita` | C/GXM、Cg、原生解码、SDK 依赖和 LiveArea |
-| `knife/kdu`、`knife/probes`、`tools/probes` | 转换器、开发探针与有界回归 |
+| `knife/knife` | 剧情 VM、舞台、UI、文字、输入、存档和资源调度 |
+| `knife/knife-core` | HED / NAM / MRG、NX、KIMG / KATL / GXT、字体与脚本解析；Vita 文件 IO |
+| `knife/knife-render` / `knife-render-api` | 桌面 WGPU、Vita GXM 与共享绘制契约 |
+| `knife/knife-platform-vita` | 平台初始化、素材启动检查、存储、图像 worker、原生音视频封装 |
+| `knife/knife-audio` / `knife-perf` | 音频、优化 mask、计数与内存预算 |
+| `knife/vita` | C / GXM、Cg / GXP、原生解码、SDK 依赖及 LiveArea |
+| `knife/kdu`、`knife/probes`、`tools/probes` | 素材工具与开发 / 回归探针 |
 
-入口为 `knife/knife/src/vita_entry.rs`；月姬分支由 `tsukihime` feature 选择。当前 TITLE ID 为 `KNIF00541`，运行数据根为 `ux0:data/TSUKIHIME-RE`，JA/ZC 原始语言 ID 为 0/2，默认 2。
+入口是 [vita_entry.rs](../knife/knife/src/vita_entry.rs)。月姬通过 `tsukihime` feature 选择，自动启用稳定预算。TITLE ID 为 `KNIF00541`，数据根为 `ux0:data/TSUKIHIME-RE`。默认选中简体中文 ID 2，日文为 ID 0。
 
-## 资源与文件
+## 资源读取链
 
-启动检查只用一个 8192 字节缓冲：小型关键文件校验完整 CRC，大文件比较精确长度及首尾各 4096 字节 CRC。107 个关键文件绑定当前素材清单；这不是整包 hash 检查。
+~~~text
+配套素材清单 / 生成索引
+  → 启动精确长度与分级 CRC 检查
+  → SDK 文件句柄 + 归档范围 / NX 解压
+  → KIMG 或 KATL / 选中语言
+  → GXT 压缩上传，或有界 CPU 解码 / 调色
+  → 真实纹理存储预留 + owner
+  → 帧 pin / 提交 / GPU 完成后回收
+~~~
 
-MRG 的偏移以 `u64` 表达，单条记录从 HED 扇区索引计算。Vita 使用 `file_io_native.rs` 的 SDK 只读句柄，通过 `sceIoLseek` 读写位置，解决 newlib 有符号 32 位 `off_t` 对超过 2 GiB 归档的截断。每个归档的 seek/read 由同一个 mutex 保护，索引和正文界限、解压预算均保留。桌面仍可使用 mmap。
+启动 profile 绑定 107 个关键文件：小文件完整 CRC，大文件精确长度与首尾各 4096 字节 CRC，复用 8192 字节缓冲。它检测常见缺失 / 错配，不等价于整包 SHA。
 
-KIMG 保存逻辑尺寸、物理尺寸、编码和精确 payload；KATL 保存图集成员。GXT 可直接上传，CPU 回退服务调色、语言条带与软件取样。图集及流资源索引由最终素材生成，均绑定同一清单 hash。
+Vita [原生文件层](../knife/knife-core/src/file_io_native.rs)持有 SceUID，经 `sceIoLseek` 使用 64 位文件位置；每个归档的 seek/read 受同一 mutex 保护。程序仍是 ARMv7 32 位。范围、短读、索引和解压预算保持检查；桌面可继续使用 mmap。
 
-当前月姬稳定包离线限定全部剧情图片的最坏 RGBA 行距占用为 512 KiB，缩小物理像素而保留逻辑尺寸。UI／字体／分页缩略图保持原有分辨率。`tsukihime` 启用 `knife-perf/vita-stable` 收紧可选缓存；换图前让出可选目标及文字缓存所有权，已记录的原生纹理继续由命令编码器与完成 fence 保活。详见[素材](assets.md)与[性能预算](performance.md#内存上限)。
+KIMG 区分逻辑宽高、物理宽高、编码与 payload；KATL 保存成员。脚本逻辑尺寸和坐标不随纹理降采样改变。图集 / 流索引从最终素材生成并绑定同一清单 hash。
 
-纹理准入通过 `kv_gxm_texture_reserve` 持有一份真实像素存储，匹配的后续上传直接接管；池化／非池化均支持，替换预留或关闭 owner 时释放。CDRAM 物理页不足和干净的预算拒绝允许有界回收未被待提交帧引用的纹理；映射、描述符和不确定释放错误继续上报，不能盲目重试。缓存的 slice charge、8 像素行距和新物理页的 256 KiB 对齐分别计量。
+## 线程、状态与生命周期
 
-## 线程与渲染
+| Owner | 工作与约束 |
+| --- | --- |
+| 主线程 | 游戏状态、UI、GXM 调用和显示提交；CPU worker 不调用 GXM |
+| 图像 worker | 有界读盘 / 解码；异步 rebake 只在整组完成且 generation 一致时发布 |
+| VM 屏障 | 准备未完成时保留 PC，资源就绪后重试；延迟时间不能重复消费 |
+| 音效 / 音频线程 | 有界准备、混音与 AudioOut 队列 |
+| 影片线程 | 持续拥有原生解码器，主线程 GPU 取样完成后 ACK 帧租约 |
+| 命令编码器与完成 fence | 保活已记录纹理；释放缓存引用不能让 GPU 在途资源提前销毁 |
 
-- 主线程拥有游戏状态、UI、GXM 调用与显示提交；CPU worker 不直接操作 GXM。
-- 图像 worker 有界读盘／解码；异步 rebake 仅在整组完成、generation 仍一致时发布，等待期间保留完整旧画面。
-- 音效 worker 负责准备；VM 屏障保留原 PC 并在资源就绪后重试。音频流与 AudioOut 有独立的有界队列。
-- 影片打开、轮询、控制与关闭由持续 owner 线程处理；主线程完成 GPU 取样后才 ACK 原生帧租约。
-- 缓存与可选目标轮换按真实输入、源内容版本和目标版本判定；预算是上限，不是启动时全部预分配。
+换图 / 调色前释放可选缓存所有权，为旧新图片同驻留让出空间。必要画布及历史效果目标保留。输出复用必须核对输入、源内容版本和目标版本，不以“上一帧看似相同”判断。
 
-脚本逻辑坐标保持原游戏语义，scene／composite 为 960×540，显示输出 960×544。逻辑图像尺寸不等于纹理像素尺寸，不应对长立绘、动画条带和缩略图整页再做统一的整屏缩放。
+纹理准入保留一份真实存储，匹配上传直接接管。干净的预算 / 物理页不足允许有界回收；描述符、映射、不确定释放错误继续失败。池切片与物理页分别计费；详见[性能与内存](performance.md)。
 
-## 存储与输入
+## 渲染与 shader
 
-存档位于统一数据根的 `saves/`，保留备份、临时提交、回读核验和恢复流程。资源失败记录为根目录的 `resource-error.json`。当前月姬 shader 全部内嵌 GXP，不再使用旧版 `shader-cache/`；详见[离线 shader](shaders.md)。磁盘清理工具不操作设备数据。
+场景 / 合成画布为 960×540，显示输出为 960×544。物理纹理可以是长图、分片或图集，不能统一拉伸成整屏。剧情图离线最坏 RGBA 行距上限为 512 KiB，UI / 字体 / 分页缩略图另按格式预算检查。
 
-Vita ○ 映射 A、× 映射 B、□ 映射 X、△ 映射 Y，摇杆中心死区为 ±16。JA/ZC 选择、约 8 秒致谢开场与 R4 CG 页面由月姬适配负责，不能被魔夜专用 UI 默认值覆盖。
+月姬使用 `offline_shaders.c` 和两个生成头，内嵌 109 个程序。专用 shader 在验证输入、驱动准入和混合状态后选择，不适用时走同类通用程序。设备仍执行 program check / 注册 / patch。共享非月姬构建保留运行时 shader 编译源码，不能按月姬单一 feature 将其误判为死代码。
 
-详见[性能预算](performance.md)、[素材契约](assets.md)及[排错](troubleshooting.md)。
+## 存储、语言与输入
+
+- `saves/` 保存配置、进度和存档，保留临时提交、备份、回读核验与恢复。
+- 数据根的 `resource-error.json` 用于资源失败定位。当前月姬离线 shader 不再读写旧 shader cache。
+- A / B / X / Y 对应 ○ / × / □ / △；摇杆 ±16 死区。菜单操作、快存许可仍由游戏状态决定。
+- 双语言 ID、原归档 ID、分页缩略图映射、字体和 8 秒致谢是月姬契约，不能由魔夜专用 UI 默认值覆盖。
+
+格式研究另见 [engine-writeup.md](../knife/engine-writeup.md) 与 [knife/doc](../knife/doc)。这些资料保留来源与研究边界；当前包验收以[验证手册](validation.md)为准。

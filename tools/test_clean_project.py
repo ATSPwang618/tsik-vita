@@ -37,6 +37,25 @@ class CleanupTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     clean.targets(root, [invalid])
 
+    def test_nested_cargo_targets_are_removed_but_unrelated_targets_survive(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            crates = ['tools/probes/example', 'knife/probes/example']
+            for crate in crates:
+                directory = root / crate
+                (directory / 'target/debug').mkdir(parents=True)
+                (directory / 'Cargo.toml').write_text('[package]')
+                (directory / 'target/debug/probe').write_bytes(b'cache')
+            unrelated = root / 'tools/fixtures/target/input.bin'
+            unrelated.parent.mkdir(parents=True)
+            unrelated.write_bytes(b'source fixture')
+            selected = clean.targets(root)
+            self.assertEqual(set(selected), {root / c / 'target' for c in crates})
+            for path in selected:
+                clean.remove(root, path)
+            self.assertTrue(unrelated.is_file())
+            self.assertTrue(all((root / c / 'Cargo.toml').is_file() for c in crates))
+
     def test_directory_link_is_removed_without_touching_its_target(self):
         with tempfile.TemporaryDirectory() as folder, tempfile.TemporaryDirectory() as other:
             root, outside = Path(folder), Path(other)

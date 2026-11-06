@@ -1,28 +1,30 @@
-# Basic GXM shaders
+# Authored GXM shaders
 
-Build the original Cg sources with the user's locally installed offline compiler:
+The Tsukihime Vita build embeds all 109 programs: basic quad, engine effects,
+framebuffer-fetch and blend-chain paths, and 63 specialized variants.
+`effects.cg` and `quad_v.cg` / `quad_f.cg` are the authored inputs;
+`generated/effects.h` and `generated/shaders.h` are required build inputs.
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File tools/compile-vita-shaders.ps1
-```
+Run from the repository root:
 
-Set `KNIFE_VITA_CGC` or pass `-Compiler` to select another installed compiler.
-The script never copies the compiler or Sony runtime modules. It fixes the
-profile, entry point and precision/optimization flags, compiles each shader
-twice, checks GXP magic and size, and rejects differing output digests. The
-receipt records the exact compiler, source, script, flags, generated header and
-GXP identities. Generated binaries remain under `.work/vita/shaders`; the C11
-header used by the native build is `generated/shaders.h`.
+~~~sh
+python3 tools/compile-vita-offline-shaders.py --check
+python3 tools/compile-vita-offline-shaders.py --compiler /path/to/psp2cgc
+python3 tools/generate-runtime-shaders.py
+python3 -B -m unittest discover -s tools -p 'test_offline_shaders.py'
+~~~
 
-The vertex shader takes `aPosition` (`float2`, clip space), `aTexcoord`
-(`float2`) and `aColor` (`float4`). It emits a position at depth zero and
-passes texture coordinates and color through. The fragment shader samples
-`uTexture` at texture unit 0 and multiplies all four channels by the interpolated
-color. The caller controls viewport placement and blend configuration. A white
-1×1 texture also supports solid colored quads without a separate program.
+The single offline generator owns both headers and the inventory receipt. Each
+program is compiled twice and checked for identical bytes, bounded GXP layout,
+reflection, stage and parameter contracts. CMake rejects stale generated output.
+Checking existing files does not need a compiler. Supply the compiler locally;
+never copy it or Sony runtime modules into the repository.
 
-These programs only cover the basic rendering probe. The game's masks, blur,
-color conversion, transitions and other effects are not implemented here. File
-checks and repeatable compilation do not establish that `sceGxmProgramCheck`,
-program patching, rasterization or actual Vita hardware work; those checks must
-be recorded by the runtime verification.
+The two older partial PowerShell generators have been retired.
+`generate-runtime-shaders.py` remains necessary for the shared non-Tsukihime
+runtime compilation path; it is not the default Tsukihime route.
+
+Offline compilation does not replace device-side program checking, registration
+and patching. Static instruction counts are not GPU frame-time measurements.
+See the [shader guide](../../../doc/shaders.md) and
+[inventory receipt](../../../doc/evidence/offline-shaders.json).

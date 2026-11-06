@@ -1,12 +1,16 @@
 # tsik-vita · 月姬 PS Vita 移植版
 
-《月姬 -A piece of blue glass moon-》的 **PlayStation Vita** 引擎移植，基于 [AuroraWright/knife](https://github.com/AuroraWright/knife) 0.9.4，以 [mofa-vita](https://github.com/ATSPwang618/mofa-vita) 的实机工程为参考。使用 Rust 游戏逻辑和原生 GXM 后端，场景／合成画布为 **960×540**，输出到 **960×544** 屏幕。
+**简体中文** | [English](README.en.md)
 
-**当前交付：2026-11-06，全部离线 shader 与像素运算精简版。** 内嵌 109 个 GXM 程序，覆盖全部引擎特效入口及混合组合；新增 63 个按绘制条件选择的专用变体，减少无用波纹／裁剪、文字、模糊和混合模式分支。无需启动时编译，也不需要 shader 编译器模块。沿用 2026-11-02 的稳定素材、512 KiB 剧情 RGBA 上限与缓存回收策略，本次未修改素材清晰度。程序仍为 **ARMv7 32 位**；已有稳定素材只需更新 VPK。编译与宿主验证不代表实机 GPU 加速幅度或全路线稳定性，详见[shader 说明](doc/shaders.md)。
+将《月姬 -A piece of blue glass moon-》移植到 **PlayStation Vita / PS TV**。基于 [AuroraWright/knife](https://github.com/AuroraWright/knife) 0.9.4，参考 [mofa-vita](https://github.com/ATSPwang618/mofa-vita) 的 Vita 工程；使用 Rust 游戏逻辑与原生 GXM 渲染，目标为 **ARMv7 32 位**。
+
+场景与合成画布为 **960×540**，输出到 **960×544**。当前交付使用稳定素材与完整离线 shader：**默认开启已实现优化，无需创建任何 TXT 开关文件**。部分优化还受显存预算、绘制条件和驱动能力约束。
+
+> 源码仓库不包含游戏数据、字体原件或 VPK。请使用自行合法取得、与本项目配套的素材。当前 ARM 构建和有界宿主测试已通过；尚无本版全路线实机验收或 GPU 性能提升测量。
 
 ## 项目截图
 
-以下为玩家提供的 PS Vita 实机截图，拍摄于 2026-10-31；监控叠层中的帧率只代表对应场景。
+玩家提供的 PS Vita 实机截图，拍摄于 2026-10-31。截图早于当前离线 shader 版；叠层帧率仅代表拍摄时的场景。
 
 | 主界面气泡 | LiveArea |
 | --- | --- |
@@ -14,123 +18,107 @@
 
 | 标题画面 | 简体中文剧情 |
 | --- | --- |
-| ![游戏标题](项目截图/2026-10-31-203203.jpg) | ![中文剧情](项目截图/2026-10-31-203307.jpg) |
+| ![标题画面](项目截图/2026-10-31-203203.jpg) | ![简体中文剧情](项目截图/2026-10-31-203307.jpg) |
 
-## 当前特性
+## 主要特性
 
-- **双语言**：仅保留简体中文／日本語，新配置默认简体中文，选择后保存；原始语言 ID 为 2／0。
-- **统一字体**：日中剧情、动态界面与回看共用 `arshanghaisonggbpro_lt.otf`，保留补充字形及特殊符号。图片内文字随对应语言美术资源显示。
-- **剧情与鉴赏**：剧情推进、选项、设置、存读档、快速存读档、自动播放、快进、回看，以及 CG／Music／Flowchart／Movie／Ending List 实现；鉴赏内容依进度解锁。
-- **Vita 适配**：实体按键、双摇杆、前触摸、原生音频与影片；**A→○、B→×**。
-- **画质与稳定性**：保留 R4 的 UI 与 CG 缩略图分页，两语言共 3960 格保持原 ID；剧情大图按显存边界降采样，明确牺牲细节以降低峰值，逻辑坐标与图片比例保留。
-- **无损纹理存储**：全 RGBA 色数不超过 256 且能节省显存页时使用 P8，透明与半透明均保留；高色数不透明调色图片用 RGB24，其余保留 RGBA8。原生压缩 GXT 沿用直接上传。
-- **性能调度**：渲染输出复用、分段文字缓存、异步图片／音效准备、影片持续服务线程与有界缓存；本版关闭可选 stage／canvas spare 和静态前缀目标，文字／分组缓存各限 4 MiB，实际效果需设备采样。
-- **离线 shader**：全部 GXP 内嵌，专用变体按状态准入并保留原路径回退；支持 `all -shader-specialization` 实机 A/B。
-- **统一目录**：素材、存档、配置和错误记录集中在 `ux0:data/TSUKIHIME-RE/`，旧 shader cache 不再使用。
-- **实时日志**：后台队列输出启动、UI 图集、警告／错误和每 5 秒性能窗口，兼容魔夜使用的 VitaDeck/CatLog 接收方式；不持续写入游戏日志文件。
+- **日中双语**：仅简体中文与日本語，新配置默认简体中文，保留原语言 ID 2 / 0；动态文字共用指定字体及补充字形。
+- **游戏功能**：剧情、选项、设置、存读档、快存快读、自动播放、快进、回看，以及 CG / Music / Flowchart / Movie / Ending List；鉴赏内容依进度解锁。
+- **Vita 操作**：实体按键、双摇杆、前触摸、原生音频和影片；A 对应 ○，B 对应 ×。
+- **致谢开场**：先显示正确的 @Zarathustra / @lisen 致谢图，淡入、停留、淡出合计约 8 秒。
+- **独立数据目录**：素材、存档、配置和资源错误记录集中在 `ux0:data/TSUKIHIME-RE/`；支持 VitaDeck / CatLog 实时控制台输出。
 
-## 安装与更新
+## 已落地的优化
 
-1. 完全退出游戏，用 VitaShell 安装 `release/knife-vita-tsukihime-540p.vpk`。
-2. 首次安装时，将本地 `dist/TSUKIHIME-RE/assets/` 整体传到 `ux0:data/TSUKIHIME-RE/assets/`，避免多套一层目录。
-3. 启动游戏；默认简体中文，需要日文时在设置中切换。
+| 方向 | 当前实现 |
+| --- | --- |
+| 离线特效 | 109 个内嵌 GXM 程序，包含 63 个按绘制状态选择的专用变体；无需运行时 shader 编译器或缓存文件 |
+| 像素运算 | 精简无波纹图片、文字、模糊及 24 种混合模式的不必要分支，保留原程序回退 |
+| 剧情显存 | 提前处理全部剧情图片：23,177 条扫描，15,901 条降采样；单图最坏 RGBA 行距占用不超过 512 KiB |
+| 无损存储 | 合适的不可变 RGBA 图片使用精确 P8 调色板或 RGB24；包含透明及半透明；原生 GXT 保留压缩上传 |
+| 缓存与调度 | 渲染输出复用、分段文字缓存、异步整组换图、音效准备、影片 owner 线程和有界资源缓存 |
+| 稳定预算 | 文字 / 分组缓存各 4 MiB；可选目标轮换与静态前缀预算为 0；换图前释放可选缓存所有权 |
+| UI 与读取 | 修复宽长图集拒绝、音乐字体、CG 加载与分页缩略图；SDK 大文件读取修复保持 ARM32 |
 
+**剧情大图降采样有画质损失。** UI、字体和分页 CG 缩略图不随剧情图统一缩小。P8 / RGB24 上传本身保持输入像素，不代表整套素材无损。完整 29 项开关、适用范围和证据见[优化总表](doc/optimizations.md)。
 
+## 安装
 
-```text
+1. 完全退出游戏，使用 VitaShell 安装本地 `release/knife-vita-tsukihime-540p.vpk`。
+2. 将配套的 `dist/TSUKIHIME-RE/assets/` 整体复制到 `ux0:data/TSUKIHIME-RE/assets/`，不要多套一层目录。
+3. 启动游戏。默认简体中文，需要日文时在设置切换并保存。
+
+~~~text
 ux0:data/TSUKIHIME-RE/
-├── assets/                 # 完整配套素材
-├── saves/                  # 存档、配置及进度
-└── resource-error.json     # 资源失败时生成
-```
+├── assets/                 # 配套素材
+├── saves/                  # 存档、配置与进度
+└── resource-error.json     # 资源加载失败时生成
+~~~
 
-当前素材针对 **Switch 海外版合并 v1.0.1**，程序 build ID 为 `d10d239aade1d526`。。
+素材对应 **Switch 海外版 base + update v1.0.1**，源程序 build ID 为 `d10d239aade1d526`。原始 NSP / romfs 不能直接替代转换后的素材。正常游玩不需要创建优化或日志开关文件。版本配套与开发者转换约定见[素材手册](doc/assets.md)。
 
-
-## 操作
+## 按键
 
 | Vita 输入 | 常用操作 |
 | --- | --- |
-| ○| 确认、推进；消息隐藏时先恢复消息窗 |
-| × | 取消／返回；剧情中先停止快进，否则切换消息窗 |
-| □ | 打开／关闭回看 |
-| △ | 打开／关闭系统菜单 |
-| L／R | 剧情自动播放／快进；菜单按当前页面切换项目 |
-| 方向键／右摇杆 | 菜单导航；剧情方向键 ↑ 打开模式面板 |
-| 左摇杆 | 列表、CG、流程图滚动等；中心 ±16 死区 |
+| ○ / A | 确认、推进；消息隐藏时先恢复消息窗 |
+| × / B | 取消、返回；剧情中先停止快进，否则切换消息窗 |
+| □ / X | 打开或关闭回看 |
+| △ / Y | 打开或关闭系统菜单 |
+| L / R | 剧情自动播放 / 快进；菜单按页面切换项目 |
+| 方向键 / 右摇杆 | 菜单导航；剧情方向键 ↑ 打开模式面板 |
+| 左摇杆 | 列表、CG、流程图滚动；中心 ±16 死区 |
 | 前触摸 | 点击、拖动；剧情顶部可打开模式面板 |
-| START | 影片鉴赏播放时跳过影片 |
-| SELECT | CG 查看切换为保持比例的铺满显示 |
+| START | 影片鉴赏中跳过影片 |
+| SELECT | CG 查看切换为保持比例的铺满显示，会裁掉部分边缘 |
 
-快速存读档使用剧情模式面板的 **Q.SAVE／Q.LOAD**，或系统菜单；操作受剧情存档许可与已有快存状态限制。
+快存快读使用剧情模式面板的 **Q.SAVE / Q.LOAD** 或系统菜单，并受剧情存档许可及已有快存状态限制。
 
-## VitaDeck 日志
+## 日志与排错
 
-与魔夜使用相同的 CatLog 插件和 VitaDeck「日志」接收端。FTP（本机配置为 `1337`）用于传文件，实时日志走独立通道（本机配置为 `8080`）；只有 FTP 连通不代表日志接收已经开启。先在 VitaDeck 开启日志接收，再启动月姬。若用 VitaDeck 启动应用，TITLE ID 填 **`KNIF00541`**，不要沿用魔夜的 `KNIF00540`。
+当前包默认输出控制台日志。先在 VitaDeck 开启日志接收，再启动游戏；CatLog 配置可沿用已正常工作的魔夜环境。FTP 负责传文件，与实时日志是独立通道。通过 VitaDeck 启动时使用 **TITLE ID `KNIF00541`**。
 
-本包默认打开日志；`perf-enable.txt` 为 `0` 会关闭性能采样，为 `1` 则开启，位置为 `ux0:data/TSUKIHIME-RE/`，重启生效。启动／UI／警告等普通日志独立于性能开关。完整开关、队列边界和排错见[性能与日志](doc/performance.md#vitadeck-实时日志)。
+报错时保留具体文件名、剧情位置、语言、截图与资源错误记录。不要通过删除检查或手改清单绕过版本校验。参见[排错手册](doc/troubleshooting.md)和[日志与预算](doc/performance.md)。
 
-## 当前包识别
+## 当前交付与验证
 
 | 项目 | 当前值 |
 | --- | --- |
-| 本地安装包 | `release/knife-vita-tsukihime-540p.vpk` |
-| 大小 | 5,385,822 字节，约 5.14 MiB |
 | 构建标识 | `tsukihime540-offline-shaders-20261106` |
-| 目标 | `armv7-sony-vita-newlibeabihf`，ELF32 ARM |
-| TITLE ID／APP_VER | `KNIF00541`／`00.01` |
-| 素材 | 16,764 个数据文件＋清单，共约 2.26 GiB |
-| 素材 schema／method | `knife-540p-assets-v1`／`native-540p-encoded-unorm-v2` |
-| 色彩／codec | `encoded-unorm8-v1`／1、2、7、9 |
+| VPK | 5,385,822 字节，约 5.14 MiB |
+| TITLE ID / APP_VER | `KNIF00541` / `00.01` |
+| 架构 | `armv7-sony-vita-newlibeabihf`，ELF32 ARM |
+| 素材 | 16,764 个数据文件及清单，约 2.26 GiB |
+| 最新 shader 回归 | Python 4 项；原生路由 28 案例 / 6,287 检查；输入校验 877 案例 / 2,631 检查 |
+| 渲染验证边界 | 默认配置 127 项通过；稳定配置压力夹具通过；稳定配置全套仍有 5 项预算假设不匹配，未标为全通过 |
 
-VPK SHA-256：
-
-```text
-732a8b147b2d87c3139bffb99db2566745d99cba2bad200c46199fe9c3c9bba9
-```
-
-`assets/vita-540p-assets.json` SHA-256：
-
-```text
-0c4188c923f744870d660a384e0c55f59f1d3e3d8997e9baf6150a5eb7e0fc75
-```
-
-当前包与素材身份以本节和[构建收据](doc/evidence/current-build.json)为准。不要通过手改清单绕过校验。
+当前包、素材 hash、分阶段测试和待完成的实机验证集中维护在[验证记录](doc/validation.md)。2026-11-06 仓库整理不改变游戏程序或素材，也没有重新打包或发布 Release。
 
 ## 开发与文档
 
 从仓库根目录执行：
 
-```sh
+~~~sh
 python3 tools/build-vita.py --check
 python3 tools/build-vita.py --variant tsukihime540 game release
 python3 tools/check-vita-package.py release/knife-vita-tsukihime-540p.vpk KNIF00541 --release
-```
+~~~
 
-Windows 可用 `py -3` 替代 `python3`，或运行 `tools/build-vita.ps1 -Variant tsukihime540`。构建环境、原生依赖及本地模块的准备见[构建说明](doc/build.md)，不要将桌面构建入口当作 Vita 打包入口。
+Windows 可用 `py -3`，或运行 `tools/build-vita.ps1 -Variant tsukihime540`。环境、离线模式及源码生成文件见[构建手册](doc/build.md)。
 
 | 文档 | 内容 |
 | --- | --- |
-| [技术文档总览](doc/README.md) | 当前文档入口 |
-| [架构](doc/architecture.md) | 工作区、线程、数据流与坐标契约 |
-| [构建](doc/build.md) | 工具链、命令、产物与依赖 |
-| [素材](doc/assets.md) | 双语言、画质、格式、升级与重建边界 |
-| [性能](doc/performance.md) | 魔夜优化迁移、缓存上限与采样 |
-| [验证](doc/validation.md) | 当前测试、收据与未验证范围 |
-| [排错](doc/troubleshooting.md) | 大文件报错、画质、字体和设备日志 |
-| [仓库维护](doc/maintenance.md) | 目录职责、磁盘清理及保留规则 |
-| [工具索引](tools/README.md) | 当前常用工具与兼容工具的用途 |
+| [技术文档导航](doc/README.md) | 按安装、开发、排错和维护查找 |
+| [优化总表](doc/optimizations.md) | 全部 29 项开关及历次专项优化、修复与限制 |
+| [架构](doc/architecture.md) · [素材](doc/assets.md) | 资源、坐标、线程、双语言与转换契约 |
+| [性能与内存](doc/performance.md) · [Shader](doc/shaders.md) | 默认行为、预算、离线程序与开发者 A/B |
+| [验证](doc/validation.md) · [排错](doc/troubleshooting.md) | 可复现证据与实机待验收项 |
+| [仓库维护](doc/maintenance.md) · [工具索引](tools/README.md) | 目录职责、清理范围及工具依赖 |
 
-本地只保留一套 `dist` 素材和一个最终 VPK；`.work`、Rust target 与 Python 缓存可重建。执行 `python3 tools/clean-project.py` 预览，增加 `--apply` 清理。原始 NSP、解包中间数据及工具链应放在仓库外，旧转换尝试不长期保留。
-
-## 验证状态
-
-本次渲染 **127 项**、平台 68 项、月姬／日志 helper 69 项、Python 素材 23 项、稳定内存策略 3 项通过；另有 80 张旧新 RGBA 图片与必需目标同驻留的 48 MiB 压力夹具通过。完整素材 16,764 个文件 hash、813 次正式 PNG／语言分片解码、23,113 张 GXT 解码以及 3,606 种实际尺寸的上传／重载检查通过。ARM 构建、328 个源码输入与 VPK 21 个成员核验通过。
-
-当前包尚待实机启动、后半段剧情／CG、影片与长时间稳定性复测。已有实机截图与参考项目数据不等于本版全内容验收；详情见[验证记录](doc/validation.md)。
+本地仅保留一套 `dist/` 素材和最终 VPK。使用 `python3 tools/clean-project.py` 预览缓存清理，确认输出后增加 `--apply` 执行。默认仅修改本地；只有用户明确要求推送时才写远端。
 
 ## 致谢与许可证
 
-感谢 **@Zarathustra、@lisen** 对本项目的长期付出，感谢参考项目 mofa-vita、上游 knife，以及提供实机测试、问题截图和反馈的玩家。
+感谢 **@Zarathustra、@lisen** 长期付出，感谢 **AuroraWright / knife**、**mofa-vita**，以及提供实机测试、截图和反馈的玩家。
 
-引擎沿用 [MPL 2.0](knife/LICENSE)，来源见 [UPSTREAM.txt](knife/UPSTREAM.txt)。原生依赖许可证保留在 `knife/vita/vendor/`。游戏本体、美术、音视频、字体和汉化资源归各自权利人所有，由使用者自行准备。
+引擎沿用 [MPL 2.0](knife/LICENSE)，源码来源见 [UPSTREAM.txt](knife/UPSTREAM.txt)。第三方原生依赖的许可证保留在 `knife/vita/vendor/`。游戏、美术、音视频、字体与汉化资源归各自权利人所有。

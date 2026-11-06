@@ -92,7 +92,14 @@ def targets(root, keep_work=()):
                 if name in ('__pycache__', '.pytest_cache'):
                     paths.append(path)
                     dirs.remove(name)
-                elif name == 'target' or is_link(path):
+                elif name == 'target':
+                    # Nested probes are separate Cargo workspaces. Only select
+                    # a target next to an actual manifest; arbitrary directories
+                    # named target and linked parents remain out of scope.
+                    if (Path(directory) / 'Cargo.toml').is_file():
+                        paths.append(path)
+                    dirs.remove(name)
+                elif is_link(path):
                     dirs.remove(name)
     for relative in ('tools/hactool/hactool-1.4.0-win.zip', 'tools/nstool/nstool.zip'):
         path = root / relative

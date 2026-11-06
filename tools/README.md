@@ -1,47 +1,60 @@
 # 工具索引
 
-从仓库根运行工具。当前产品是月姬 Vita 540p；本目录还保留上游共享格式、桌面和探针工具，它们有被其它脚本调用的依赖关系，不按名称相似就删除源码。
+[项目 README](../README.md) · [构建](../doc/build.md) · [素材](../doc/assets.md) · [验证](../doc/validation.md)
 
-## 常用入口
+从仓库根运行。当前产品是月姬 Vita 540p；工具分为当前交付入口、公共转换组件和有限探针。需要自备的素材 / SDK / 二进制不应靠复制整套历史工作目录解决。
 
-| 工作 | 入口 |
+## 当前交付与维护
+
+| 工作 | 入口 / 依赖 |
 | --- | --- |
-| Vita 环境／构建 | `build-vita.py`、`build-vita.ps1`、`build-vita.sh` |
-| 正式包检查 | `check-vita-package.py` |
-| 全部离线 shader | `compile-vita-offline-shaders.py --compiler <psp2cgc>`；`--check` 只读验证；`test_offline_shaders.py` 检查清单／二进制／指令缩减，见[说明](../doc/shaders.md) |
-| 安全预览／清理缓存 | `clean-project.py`，增加 `--apply` 执行 |
-| 月姬启动 profile | `generate_vita_asset_profile_tsukihime_540.py --check` |
-| 图集索引 | `generate-vita-atlas-index.py ... --archive w_allui --check` |
-| 流索引 | `generate-vita-stream-index.py` |
-| 性能日志 | `summarize-vita-artemis-performance.py`；`read-vita-performance.py` 的缺失本地依赖见性能文档 |
-| 实际双语言／CG 探针 | `probes/tsukihime-bilingual/` |
-| 实际 UI／按钮 alpha 检查 | 同一探针的 `--example verify_ui_atlases -- dist/TSUKIHIME-RE/assets`，24 图集逐成员检查 |
-| 原生 CDRAM 预留／故障注入 | `test-vita-reservation.sh`，真实 C 分配器＋显式 SDK doubles，池化开／关 |
-| 无损 RGB24／RGBA 调色板 | `test-vita-lossless.sh`，生产 C 精确打包／读回、256 alpha、物理预留转移和故障回滚，ASan／UBSan；不执行 GPU |
-| 全图透明度／精确色数审计 | `audit-lossless-png.py assets --report ...`（Pillow／NumPy），以及 bilingual probe 的 `audit_lossless_textures` Rust example（GXT）；只读，不生成第二套资源 |
-| 整包尺寸／行距／页对齐 | `verify-tsukihime-runtime-assets.py --layouts ...`，输出临时 TSV 供 `KNIFE_IMAGE_LAYOUTS` 渲染宿主回归使用 |
+| 构建环境、VPK | `build-vita.py`，PowerShell / Bash 包装为 `build-vita.ps1`、`build-vita.sh` |
+| 包结构检查 | `check-vita-package.py`，核对 TITLE / SFO / 成员 |
+| 完整离线 shader | `compile-vita-offline-shaders.py`；`--check` 无需编译器，重编使用自备 psp2cgc |
+| 共享 runtime shader 源码生成 | `generate-runtime-shaders.py`，保留非月姬 variant 的构建需求 |
+| 启动 / atlas / stream 索引 | `generate_vita_asset_profile_tsukihime_540.py`、`generate-vita-atlas-index.py`、`generate-vita-stream-index.py` |
+| 构建输入收据 | `vita-build-receipt.py`，历史收据不随文档编辑改写 |
+| 缓存清理 | `clean-project.py` 默认预览，`--apply` 执行；保护素材、VPK、Git、证据与 vendor |
 
-## 素材工具
+`release/` 只留最终 VPK，临时输出写 `.work/`。本地 `kdu.exe`、`hactool.exe`、`nstool.exe` 是转换辅助工具，不提交 Git，也不打进 VPK。
 
-| 阶段 | 文件与前置条件 |
+## 素材处理
+
+| 阶段 | 工具 / 边界 |
 | --- | --- |
-| NSP／romfs 检查 | `hactool/`、`nstool/`、`inventory_romfs.py`、`inspect_romfs_archives.py`；自行准备原始 dump 和工具／密钥路径 |
-| compact／媒体 | `create_compact.py`、`compact_media.py`；需上游匹配输入和 ffmpeg 等本地工具 |
-| 原生 GXT | `make-vita-assets.py`、`migrate-vita-native-color.py`、`native-color-blocks.c` |
-| 资源修复 | `repair-tsukihime-assets.py`、`vita_image_metadata.py` |
-| JA/ZC 与字体 | `make-tsukihime-ja-zc.py`，需要原始主字体和 fonttools |
-| 稳定剧情预处理 | `stabilize-tsukihime-assets.py --report ...` 只读，`--apply` 原地缩小超限图；512 KiB 最坏 RGBA、一个临时归档、可恢复事务；需要现有双语表与 Pillow／NumPy／GXT 工具 |
-| R4 像素密度（历史高清恢复） | `restore_tsukihime_quality.py`，需要原始 romfs／UI PNG cache 和 kdu |
-| 离线校验 | `verify-tsukihime-runtime-assets.py`，全包 hash＋正式 C decoder；GXT CPU 验证还需相应原生探针 |
+| 自备原始数据检查 | `hactool/extract_tsukihime.py`、`hactool/nsp_tool.py`、`inventory_romfs.py`、`inspect_romfs_archives.py` |
+| 公共图像 / 媒体 | `compact_media.py`、`create_compact.py` 等；需匹配输入与对应媒体工具 |
+| 原生 GXT 编码 | `make-vita-assets.py`、`migrate-vita-native-color.py`、`native-color-blocks.c`；后两者也被其他转换器导入 |
+| 资源格式 / 尺寸修复 | `repair-tsukihime-assets.py`、`vita_image_metadata.py` |
+| JA / ZC 与字体 | `make-tsukihime-ja-zc.py`，自备字体，依赖 fonttools 等 |
+| 稳定剧情预处理 | `stabilize-tsukihime-assets.py`，默认只读、`--apply` 原地事务改写；Pillow / NumPy / GXT 工具 |
+| 历史高清恢复组件 | `restore_tsukihime_quality.py`，公共函数仍被当前工具和测试引用；完整恢复需原 romfs / UI cache / kdu，不直接覆盖稳定包 |
+| 全图精确色数 / alpha 审计 | `audit-lossless-png.py` 和 bilingual probe 的 `audit_lossless_textures`；只读统计不生成第二套资源 |
+| 全包解码与物理布局 | `verify-tsukihime-runtime-assets.py`，正式宿主 C decoder；可输出 layouts TSV 给 renderer 回归 |
 
-`tools/kdu.exe`、`hactool.exe`、`nstool.exe` 是本地辅助二进制，不提交 Git；当前保留以便再转换。重复 ZIP 和未使用的 `unpack-vita-assets.exe` 已移除，后者源码仍在 `knife/kdu/src/bin/`，需要时可重编。
+旧 compact / 270p / native540、语言精简和桌面工具保留为受测试的公共格式链及兼容开发入口。它们不是“当前稳定素材一键重建器”，不能直接拿旧默认路径覆盖月姬数据。当前没有验证从任意 NSP 一步生成正式素材的通用命令。
 
-## 兼容与测试
+## 回归与探针
 
-`create_270p.py`、`create_540p.py`、`create_native540.py`、`package_*`、`build-windows.sh`、`build-compact.*`、`build-540p.ps1` 等保留上游／桌面格式支持，并非当前稳定包的一键重建步骤。当前稳定包有固定 RGBA 上限，勿直接用旧统一缩放链或高清恢复工具覆盖它。
+| 范围 | 入口 |
+| --- | --- |
+| 目录清理边界 / 链接 / 嵌套 probe target | `test_clean_project.py` |
+| shader 清单 / 二进制损坏 / 静态指令数 | `test_offline_shaders.py` |
+| JA / ZC、质量、稳定预处理、事务 / 幂等 | `test_tsukihime_*.py` |
+| 真实双语表、字体、CG、UI alpha | [tsukihime-bilingual](probes/tsukihime-bilingual/README.md)，examples 下的实际资源探针 |
+| 原生预留 / P8 / RGB24 / 压缩上传 | `test-vita-reservation.sh`、`test-vita-lossless.sh`、`test-vita-compressed.sh` |
+| 原生拷贝 / shader 路由与输入 | `test-vita-gxm-copy.sh`、`test-vita-effects-inputs.sh` |
+| 图片、字形、present / viewport | `test-vita-image-*`、`test-vita-glyph-pages.sh`、`test-vita-gxm-*` 等按目标运行 |
+| 共享模拟器证据 helper | `vita-*-evidence.mjs` 及相应测试；有限观察不是完整实机验收 |
+| 桌面 / 兼容构建 | `build-windows.sh`、`build-compact.*`、`build-540p.ps1`；需相应桌面素材与依赖 |
 
-`test_*`、`test-vita-*`、`vita-*-evidence.*`、`verify-vita-*` 覆盖图片、shader 输入、缓存、设备日志与探针契约，按目标选择运行。`test_clean_project.py` 验证清理路径、保留目录及链接不外溢。
+回归有明确依赖和范围，不能因为脚本存在就宣称所有入口都能在空环境运行。设备采样目前通过 VitaDeck / CatLog 保存原始捕获；当前不提供已验证的通用日志汇总 CLI。
 
-旧 `cleanup-obsolete-assets.ps1` 依赖魔夜桌面包和已不存在的历史收据，已删除。当前 Vita 构建日志与产物写 `.work/`；部分兼容工具仍向 `doc/logs/` 或 `doc/` 顶层 JSON 输出临时报表，这些也由清理工具选择。需要长期保留的当前验证事实整理到 `doc/evidence/`。
+## 已移除的失效入口
 
-完整说明见[构建](../doc/build.md)、[素材](../doc/assets.md)和[验证](../doc/validation.md)。
+- 两个旧部分 shader PowerShell 生成器：由完整 109 程序生成器取代。
+- 旧 compact / 270p 交付报告写入器、两份固定魔夜 release 观察脚本：依赖旧包、已删除临时 fixture 或旧版语言布局。
+- 旧性能读取器与测试：依赖仓库未提供的 `vita_audit_log.py` / `render-audit/compare-hardware.py`。
+- 旧 Artemis 性能汇总器：绑定已删除的固定调查路径，不是当前日志分析工具。
+
+删除原因和文件身份见[本轮整理收据](../doc/evidence/repository-maintenance-20261106.json)。历史代码在 Git 中可追溯，不在当前目录保存重复旧版本。

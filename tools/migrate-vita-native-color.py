@@ -58,12 +58,6 @@ def gxt_decode(raw):
  image=Image.open(io.BytesIO(dds(linear,bw,bh,'DXT1'if bpe==8 else'DXT5'))).convert('RGBA')
  return image,(w,h),(bw,bh),fmt
 
-def rgb565(words):
- words=np.asarray(words,dtype=np.int32)
- return np.stack((((words>>11)&31)*8+(((words>>11)&31)>>2),((words>>5)&63)*4+(((words>>5)&63)>>4),(words&31)*8+((words&31)>>2)),axis=-1)
-def quant565(rgb):
- v=np.clip(np.rint(rgb),0,255).astype(np.int32)
- return (((v[...,0]*31+127)//255)<<11)|(((v[...,1]*63+127)//255)<<5)|((v[...,2]*31+127)//255)
 @functools.lru_cache(maxsize=1)
 def load_refiner():
  import ctypes,subprocess,sys
