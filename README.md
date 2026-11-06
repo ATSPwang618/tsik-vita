@@ -35,19 +35,17 @@
 2. 首次安装时，将本地 `dist/TSUKIHIME-RE/assets/` 整体传到 `ux0:data/TSUKIHIME-RE/assets/`，避免多套一层目录。
 3. 启动游戏；默认简体中文，需要日文时在设置中切换。
 
-**从上一版 R4／无损存储版更新时，安装新 VPK，并覆盖当前 `assets/` 中下列 7 个文件：** `w_allpac.hed`、`w_allpac.mrg`、`w_allpaccg.hed`、`w_allpaccg.mrg`、`w_allpacml.hed`、`w_allpacml.mrg`、`vita-540p-assets.json`。请覆盖原文件，不要追加或保留旧长度。其余当前 R4 素材无需重传，保留 `saves/` 与配置。原始 NSP／romfs 不能直接当作 Vita 素材使用，源码仓库不包含游戏数据或 VPK。
+
 
 ```text
 ux0:data/TSUKIHIME-RE/
 ├── assets/                 # 完整配套素材
 ├── saves/                  # 存档、配置及进度
-├── shader-cache/           # 旧版遗留，本版不再读写
 └── resource-error.json     # 资源失败时生成
 ```
 
-当前素材针对 **Switch 海外版合并 v1.0.1**，程序 build ID 为 `d10d239aade1d526`。旧 `ux0:data/knife-tsukihime-540p/` 可在退出游戏后重命名为 `TSUKIHIME-RE`；已有同名目录时先核对存档，避免覆盖。旧 shader cache 无需迁移；本次 shader 更新无需重传稳定版素材。
+当前素材针对 **Switch 海外版合并 v1.0.1**，程序 build ID 为 `d10d239aade1d526`。。
 
-其它旧版的升级范围、致谢图处理及语言版本差异见[素材说明](doc/assets.md#升级范围)。
 
 ## 操作
 
